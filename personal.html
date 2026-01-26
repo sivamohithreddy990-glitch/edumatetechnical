@@ -1,0 +1,29 @@
+<div class="profile-menu-container">
+    <div class="profile-header">
+        <span class="close-icon" onclick="closeSidebar()">&times;</span>
+        <h1>Profile Menu</h1>
+    </div>
+
+    <div id="guest-view" class="menu-items">
+        <div class="guest-info">
+            <p>Welcome, Guest!</p>
+            <small>Log in to see your personal details.</small>
+        </div>
+        
+        <button class="menu-btn login-highlight" onclick="showLoginForm()">Login / Sign Up</button>
+        <button class="menu-btn">Help & Support</button>
+    </div>
+
+    <div id="logged-in-view" class="menu-items" style="display: none;">
+        <button class="menu-btn">Change Photo (Gallery)</button>
+        <button class="menu-btn" onclick="toggleDetails()">Personal Details</button>
+        
+        <div id="personal-details-content" class="details-box" style="display: none;">
+            <p><strong>Name:</strong> <span id="user-name">---</span></p>
+            <p><strong>Email:</strong> <span id="user-email">---</span></p>
+        </div>
+
+        <button class="menu-btn">Meta AI</button>
+        <button class="menu-btn logout">Logout</button>
+    </div>
+</div>

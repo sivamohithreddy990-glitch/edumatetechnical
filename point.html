@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Infinite Magic Path</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root { --gold: #ffd700; --magic: #00d4ff; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0c29;
+      color: white;
+      text-align: center;
+      margin: 0;
+      touch-action: none;
+    }
+    .container { padding: 15px; max-width: 400px; margin: auto; }
+    h1 { color: var(--gold); text-shadow: 0 0 10px var(--gold); margin: 10px 0; font-size: 24px; }
+    .stats { display: flex; justify-content: space-around; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--magic); }
+    canvas {
+      background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
+      border: 3px solid #4a4e69;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+    }
+    #msg { height: 30px; margin-top: 15px; font-weight: bold; font-size: 18px; color: var(--gold); }
+    #next-btn {
+      display: none;
+      margin: 15px auto;
+      padding: 15px 40px;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--gold);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>✨ Infinite Path ✨</h1>
+  <div class="stats">
+    <div>Quest: <b id="lvl">1</b></div>
+    <div>Score: <b id="score">0</b></div>
+  </div>
+  
+  <canvas id="gameCanvas" width="320" height="320"></canvas>
+  
+  <div id="msg"></div>
+  <button id="next-btn" onclick="generateNewLevel()">Next Quest ➔</button>
+</div>
+
+<script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  let level = 1;
+  let score = 0;
+  let dots = [];
+  let edges = [];
+  let currentPath = [];
+  let lastDot = null;
+  let isLevelComplete = false;
+
+  // GENERATOR: Creates a unique shape based on the level number
+  function generateProceduralShape(lvl) {
+    dots = [];
+    edges = [];
+    
+    // Number of points grows as you level up
+    const pointCount = Math.min(4 + Math.floor(lvl / 2), 10); 
+    const radius = 100;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    // Create dots in a unique circular pattern
+    for (let i = 0; i < pointCount; i++) {
+      const angle = (i / pointCount) * Math.PI * 2;
+      // Add a little randomness so every level looks different
+      const offsetX = (Math.random() - 0.5) * 40;
+      const offsetY = (Math.random() - 0.5) * 40;
+      dots.push({
+        x: centerX + Math.cos(angle) * radius + offsetX,
+        y: centerY + Math.sin(angle) * radius + offsetY
+      });
+    }
+
+    // Connect dots to create a path that is SOLVABLE (Eulerian Path logic)
+    // We connect them in a loop, then add internal cross-lines
+    for (let i = 0; i < pointCount; i++) {
+      edges.push([i, (i + 1) % pointCount]);
+    }
+    
+    // Add extra "magical" cross-lines for higher levels
+    if (lvl > 2) {
+      const extraLines = Math.min(lvl - 1, 6);
+      for (let i = 0; i < extraLines; i++) {
+        let a = Math.floor(Math.random() * pointCount);
+        let b = Math.floor(Math.random() * pointCount);
+        if (a !== b && !edges.some(e => (e[0]===a && e[1]===b) || (e[0]===b && e[1]===a))) {
+          edges.push([a, b]);
+        }
+      }
+    }
+    
+    resetGame();
+  }
+
+  function resetGame() {
+    currentPath = [];
+    lastDot = null;
+    isLevelComplete = false;
+    document.getElementById('msg').textContent = "";
+    document.getElementById('next-btn').style.display = 'none';
+    draw();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw Background Lines (Faint)
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.lineWidth = 4;
+    edges.forEach(e => {
+      ctx.beginPath();
+      ctx.moveTo(dots[e[0]].x, dots[e[0]].y);
+      ctx.lineTo(dots[e[1]].x, dots[e[1]].y);
+      ctx.stroke();
+    });
+
+    // Draw Your Magic Path (Glowing Blue)
+    ctx.strokeStyle = "#00d4ff";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#00d4ff";
+    ctx.lineWidth = 6;
+    currentPath.forEach(e => {
+      ctx.beginPath();
+      ctx.moveTo(dots[e[0]].x, dots[e[0]].y);
+      ctx.lineTo(dots[e[1]].x, dots[e[1]].y);
+      ctx.stroke();
+    });
+    ctx.shadowBlur = 0;
+
+    // Draw Points
+    dots.forEach((d, i) => {
+      ctx.fillStyle = (lastDot === i) ? "#ffd700" : "white";
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, 8, 0, Math.PI*2);
+      ctx.fill();
+      if(lastDot === i) {
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    });
+  }
+
+  canvas.addEventListener('pointerdown', (e) => {
+    if(isLevelComplete) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    dots.forEach((d, i) => {
+      if(Math.hypot(d.x - x, d.y - y) < 25) {
+        if(lastDot === null) {
+          lastDot = i;
+        } else {
+          const from = lastDot;
+          const to = i;
+          
+          const edgeIdx = edges.findIndex(e => (e[0]===from && e[1]===to) || (e[0]===to && e[1]===from));
+          const used = currentPath.some(p => (p[0]===from && p[1]===to) || (p[0]===to && p[1]===from));
+
+          if(edgeIdx !== -1 && !used) {
+            currentPath.push([from, to]);
+            lastDot = to;
+            if(currentPath.length === edges.length) win();
+          } else if (used) {
+            document.getElementById('msg').textContent = "⚠️ Magic Broken! Path Re-used.";
+            setTimeout(resetGame, 800);
+          }
+        }
+        draw();
+      }
+    });
+  });
+
+  function win() {
+    isLevelComplete = true;
+    score += level * 100;
+    document.getElementById('score').textContent = score;
+    document.getElementById('msg').textContent = "✨ Constellation Formed! ✨";
+    document.getElementById('next-btn').style.display = 'block';
+  }
+
+  function generateNewLevel() {
+    level++;
+    document.getElementById('lvl').textContent = level;
+    generateProceduralShape(level);
+  }
+
+  generateProceduralShape(1);
+</script>
+</body>
+</html>

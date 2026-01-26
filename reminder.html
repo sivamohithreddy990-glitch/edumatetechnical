@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edumate Emergency Alert</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Emergency Container */
+.container {
+    max-width: 420px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 0, 0, 0.15);
+    border: 3px solid red;
+    box-shadow: 0 0 30px red;
+    animation: pulse 1s infinite;
+}
+
+/* Inputs */
+input, select, button {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+}
+
+button {
+    background: red;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#enableBtn {
+    background: #00ff99;
+    color: black;
+    font-size: 18px;
+}
+
+#stopBtn {
+    display: none;
+    background: black;
+    color: red;
+    border: 2px solid red;
+    font-size: 20px;
+    animation: shake 0.4s infinite;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { box-shadow: 0 0 10px red; }
+    50% { box-shadow: 0 0 40px red; }
+    100% { box-shadow: 0 0 10px red; }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+.status {
+    font-size: 12px;
+    color: #ffb3b3;
+    margin-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🚨 EDUMATE ALERT</h1>
+
+<button id="enableBtn" onclick="enableSound()">🔊 ENABLE SOUND</button>
+<div class="status" id="status">Sound locked by browser</div>
+
+<button id="stopBtn" onclick="stopAlarm()">🛑 STOP ALERT</button>
+
+<div class="container">
+    <input id="title" placeholder="Alert Title">
+    <input type="time" id="time">
+
+    <select id="sound">
+        <option value="siren">🚨 Emergency Siren</option>
+        <option value="digital">⏰ Digital Alarm</option>
+    </select>
+
+    <button onclick="setAlert()">SET ALERT</button>
+</div>
+
+<!-- Sounds -->
+<audio id="siren" src="https://actions.google.com/sounds/v1/alarms/alarm_siren.ogg" loop></audio>
+<audio id="digital" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" loop></audio>
+
+<script>
+let enabled = false;
+let activeAudio = null;
+
+function enableSound() {
+    ["siren", "digital"].forEach(id => {
+        const a = document.getElementById(id);
+        a.volume = 1.0; // max browser volume
+        a.play().then(() => {
+            a.pause();
+            a.currentTime = 0;
+        });
+    });
+
+    enabled = true;
+    document.getElementById("enableBtn").style.display = "none";
+    document.getElementById("status").innerText = "Sound READY 🔥";
+    document.getElementById("status").style.color = "#00ff99";
+
+    Notification.requestPermission();
+}
+
+function setAlert() {
+    if (!enabled) {
+        alert("Enable sound first!");
+        return;
+    }
+
+    const title = document.getElementById("title").value;
+    const time = document.getElementById("time").value;
+    const sound = document.getElementById("sound").value;
+
+    if (!title || !time) {
+        alert("Fill all fields");
+        return;
+    }
+
+    const now = new Date();
+    const [h, m] = time.split(":");
+    const target = new Date();
+    target.setHours(h, m, 0);
+
+    if (target < now) target.setDate(target.getDate() + 1);
+
+    const delay = target - now;
+    alert("Alert set!");
+
+    setTimeout(() => triggerAlarm(title, sound), delay);
+}
+
+function triggerAlarm(title, soundId) {
+    activeAudio = document.getElementById(soundId);
+    activeAudio.play();
+
+    // vibration for danger feeling
+    if (navigator.vibrate) {
+        navigator.vibrate([500, 300, 500, 300, 800]);
+    }
+
+    // notification symbol
+    if (Notification.permission === "granted") {
+        new Notification("🚨 " + title, {
+            body: "Emergency Alert – Open app",
+            requireInteraction: true
+        });
+    }
+
+    document.getElementById("stopBtn").style.display = "block";
+
+    // auto stop after 25 seconds
+    setTimeout(stopAlarm, 25000);
+}
+
+function stopAlarm() {
+    if (activeAudio) {
+        activeAudio.pause();
+        activeAudio.currentTime = 0;
+    }
+    document.getElementById("stopBtn").style.display = "none";
+}
+</script>
+
+</body>
+</html>

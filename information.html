@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Student Future Portal 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* MASTER CSS - PREMIUM THEME */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+:root {
+    --primary: #1f1c21; --secondary: #2c88b6; --accent: #00ffcc;
+    --bg: #050505; --card-bg: #111; --gold: #facc15;
+}
+body{ background: radial-gradient(circle at top,#1b0034,#000); color:white; min-height:100vh; padding-bottom:50px; overflow-x: hidden; }
+
+header{ padding:60px 10px; text-align: center; }
+header h1 { font-size: 36px; text-shadow:0 0 20px var(--primary); letter-spacing: 1px; }
+
+.ticker-wrap { width: 100%; background: #111; border-top: 2px solid var(--primary); border-bottom: 2px solid var(--primary); padding: 12px 0; margin-bottom: 30px; overflow: hidden; }
+.ticker{ display: inline-block; white-space: nowrap; animation: scroll 30s linear infinite; color: var(--accent); font-weight: bold; font-size: 14px; }
+@keyframes scroll{ 0%{transform:translateX(100%);} 100%{transform:translateX(-100%);} }
+
+.features{ display:grid; grid-template-columns: repeat(2, 1fr); gap:20px; padding:20px; max-width: 900px; margin: 0 auto; }
+@media(min-width: 600px) { .features { grid-template-columns: repeat(3, 1fr); } }
+
+.circle-card{
+  width:150px; height:150px; border-radius:50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display:flex; justify-content:center; align-items:center; text-align:center;
+  font-size:12px; font-weight:700; cursor:pointer; box-shadow:0 0 20px rgba(120,90,255,0.4);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid rgba(255,255,255,0.1);
+}
+.circle-card:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 40px var(--accent); }
+
+#content-page { display: none; padding: 25px; max-width: 1000px; margin: 0 auto; line-height: 1.8; animation: slideUp 0.6s ease-out; }
+@keyframes slideUp { from{opacity:0; transform:translateY(40px);} to{opacity:1; transform:translateY(0);} }
+
+.back-btn { background: none; border: 2px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: 30px; cursor: pointer; margin-bottom: 25px; font-weight: bold; }
+.info-card { background: var(--card-bg); border-radius: 20px; padding: 30px; margin-bottom: 25px; border: 1px solid #222; transition: 0.3s; }
+.tier-1 { border-left: 8px solid var(--gold); }
+.tier-2 { border-left: 8px solid var(--secondary); }
+
+.badge { background: #1a1a1a; color: var(--accent); padding: 5px 12px; border-radius: 6px; border: 1px solid var(--accent); font-size: 12px; font-weight: bold; float: right; }
+.long-text { font-size: 15px; color: #ddd; margin-top: 15px; text-align: justify; }
+.timeline-box { background: rgba(0,255,204,0.1); padding: 12px; border-radius: 8px; border: 1px dashed var(--accent); color: var(--accent); margin: 15px 0; font-weight: bold; font-size: 13px; }
+
+.btn-group { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
+.btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 13px; display: inline-block; transition: 0.3s; }
+.btn-apply { background: var(--primary); color: white; }
+.btn-yt { background: #ff0000; color: white; }
+.btn-track { background: var(--accent); color: #000; }
+#search-input { width: 100%; padding: 18px; border-radius: 15px; border: 2px solid var(--primary); background: #000; color: white; margin-bottom: 30px; outline: none; }
+</style>
+</head>
+<body>
+
+<header id="main-header">
+  <h1>Future Guidance Hub 2026 ✨</h1>
+  <p>100% Complete Career Operating System for Students</p>
+</header>
+
+<div class="ticker-wrap">
+  <div class="ticker">🔥 [LIVE] Google & Amazon Hiring Jan 2026 Batch • Apply to 5+ Scholarships via Buddy4Study Portal • New Resume Practice Platform Online • GATE 2026 Syllabus Updated...</div>
+</div>
+
+<div id="dashboard">
+    <div class="features">
+      <div class="circle-card" onclick="showSection('companies')">10 TOP<br>RECRUITERS</div>
+      <div class="circle-card" onclick="showSection('roadmap')">8-SEMESTER<br>PLAN</div>
+      <div class="circle-card" onclick="showSection('resume')">RESUME<br>BUILDER</div>
+      <div class="circle-card" onclick="showSection('scholarships')">SCHOLARSHIP<br>PORTAL</div>
+      <div class="circle-card" onclick="showSection('gate')">GATE HUB<br>2026</div>
+      <div class="circle-card" onclick="showSection('nptel')">NPTEL<br>CERTIFIED</div>
+    </div>
+</div>
+
+<div id="content-page">
+    <button class="back-btn" onclick="closeSection()">← Back to Dashboard</button>
+    <div id="dynamic-content"></div>
+</div>
+
+<script>
+// COMPLETE DATA STORAGE
+const companyList = [
+    { name: "Google", tier: "tier-1", sal: "₹45L - ₹60L", time: "Study: Jan-June | Apply: July", info: "Elite Tier. Focus on Distributed Systems, Advanced DSA, and Scalability. Google interviews are famous for testing deep logic and clean code. They value participation in Open Source and competitive programming like CodeJam.", link: "https://careers.google.com/", yt: "https://www.youtube.com/watch?v=XKtFBESe78w" },
+    { name: "Microsoft", tier: "tier-1", sal: "₹42L - ₹52L", time: "Study: Feb-July | Apply: Aug", info: "Elite Tier. Azure Cloud, Operating Systems, and high-level Algorithm design. Microsoft looks for candidates who can solve complex architectural problems and have a strong grasp of Software Development Life Cycle (SDLC).", link: "https://careers.microsoft.com/", yt: "https://www.youtube.com/watch?v=jW_97tY3Ubg" },
+    { name: "Amazon", tier: "tier-1", sal: "₹38L - ₹48L", time: "Study: Mar-Aug | Apply: Sept", info: "Elite Tier. Heavy focus on Amazon Leadership Principles. You must excel in both technical coding and 'behavioral' rounds where they test your ownership and customer obsession qualities.", link: "https://www.amazon.jobs/", yt: "https://www.youtube.com/watch?v=8m9InOQeT7M" },
+    { name: "NVIDIA", tier: "tier-1", sal: "₹35L - ₹45L", time: "Study: Jan-May | Apply: June", info: "Elite Tier. Leader in AI hardware. Requires strong C++, Graphics programming, and Hardware-Software interface knowledge. NVIDIA is perfect for students targeting high-end Research or GPU computing roles.", link: "https://www.nvidia.com/careers/", yt: "https://www.youtube.com/watch?v=0kFshX3vT7M" },
+    { name: "Adobe", tier: "tier-1", sal: "₹30L - ₹40L", time: "Study: Feb-June | Apply: July", info: "Elite Tier. Known for hiring high-talent individuals for Design and Cloud products. They have specialized diversity hiring drives like 'Adobe WIT' (Women in Tech) with incredible packages.", link: "https://www.adobe.com/careers.html", yt: "https://www.youtube.com/results?search_query=adobe+interview+experience" },
+    { name: "TCS Prime", tier: "tier-2", sal: "₹9L - ₹12L", time: "Study: May-Aug | Apply: Sept", info: "Mid Tier. The premium hiring variant for TCS. Requires high scores in the NQT (Advanced Section). This role bridges the gap between mass hiring and elite product-based roles.", link: "https://nextstep.tcs.com/", yt: "https://www.youtube.com/watch?v=UyLjCyPAtno" },
+    { name: "Accenture", tier: "tier-2", sal: "₹6.5L - ₹10L", time: "Study: June-Aug | Apply: Sept", info: "Mid Tier. Accenture Digital and Consulting roles. They look for logical reasoning, cloud awareness, and adaptability. Their hiring process is very smooth and automated for the 2026 batch.", link: "https://www.accenture.com/careers", yt: "https://www.youtube.com/watch?v=OXjatbO11bA" },
+    { name: "ZS Associates", tier: "tier-2", sal: "₹11L - ₹14L", time: "Study: Apr-July | Apply: Aug", info: "Mid Tier. Top choice for Data Analytics and Consulting. Focus on Guesstimates, Puzzles, and Case Study interviews. Strong math and data interpretation skills are mandatory.", link: "https://www.zs.com/careers", yt: "https://www.youtube.com/results?search_query=zs+associates+interview" },
+    { name: "Infosys DSE", tier: "tier-3", sal: "₹6.5L - ₹9.5L", time: "Study: May-Aug | Apply: Sept", info: "Specialist Tier. The Digital Specialist Engineer role focuses on full-stack development and complex coding tests. It offers much faster growth than the standard 'System Engineer' role.", link: "https://www.infosys.com/careers/", yt: "https://www.youtube.com/results?search_query=infosys+dse+interview" },
+    { name: "Wipro Turbo", tier: "tier-3", sal: "₹6.5L - ₹8.5L", time: "Study: June-Aug | Apply: Oct", info: "Premium Tier. Wipro's top-level hiring through the Turbo challenge. Focuses on Java/Python proficiency and ability to solve real-world logic modules within strict time limits.", link: "https://www.wipro.com/careers/", yt: "https://www.youtube.com/results?search_query=wipro+turbo+interview" }
+];
+
+function showSection(type) {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('main-header').style.display = 'none';
+    document.getElementById('content-page').style.display = 'block';
+    let container = document.getElementById('dynamic-content');
+    window.scrollTo(0,0);
+
+    if(type === 'companies') {
+        container.innerHTML = `<h2>10 Big Recruiters Database</h2><input type="text" id="search-input" placeholder="Search Company (Google, TCS, etc)..." onkeyup="searchComp()"><div id="clist"></div>`;
+        renderComp(companyList);
+    } 
+    else if(type === 'roadmap') {
+        container.innerHTML = `
+            <h2>Detailed 8-Semester Success Plan</h2>
+            <div class="info-card tier-1">
+                <h3>Year 1 (Semester 1 & 2): Logic Phase</h3>
+                <p class="long-text">Start with ONE core language—C or Python. Do not try to learn 100 tools. Focus on understanding how a computer thinks, how memory is used, and how loops work. This is the time to build your foundation. Aim for a CGPA of 8.5+ because elite companies use GPA as a primary filter. Work on your English communication; if you can't explain your code, nobody will hire you. Participate in one non-tech club to build teamwork skills.</p>
+            </div>
+            <div class="info-card tier-2">
+                <h3>Year 2 (Semester 3 & 4): DSA Phase</h3>
+                <p class="long-text">This is the most critical year. Master Data Structures and Algorithms (DSA) and Object-Oriented Programming (OOPS). Start solving 2-3 problems on LeetCode every day. By the end of Sem 4, you should have solved 200+ problems. Also, take your first NPTEL course (DBMS or OS) to validate your technical expertise. This is also the time to learn Git and GitHub to store your work professionally.</p>
+            </div>
+            <div class="info-card tier-2">
+                <h3>Year 3 (Semester 5 & 6): Project Phase</h3>
+                <p class="long-text">Move from 'coding' to 'building'. Create 2 solid projects (e.g., a Web App using React or a Machine Learning model). These projects will go on your resume. Semester 6 is when you apply for Summer Internships. Companies like Google (STEP) and Amazon (WoW) hire now. An internship is a 2-month interview that usually leads to a full-time job offer (PPO).</p>
+            </div>
+            <div class="info-card tier-1">
+                <h3>Year 4 (Semester 7 & 8): Placement Phase</h3>
+                <p class="long-text">Placement season begins in Sem 7. Focus on Aptitude, SQL, and Mock Interviews. Polish your resume using the 'Regiment' format. Be prepared for rejections—it's part of the game. Once you land an offer, use Sem 8 to complete your major project and learn corporate etiquettes like email writing and professional ethics before joining your company.</p>
+            </div>
+        `;
+    }
+    else if(type === 'resume') {
+        container.innerHTML = `
+            <h2>Resume Builder & Practice</h2>
+            <div class="info-card tier-1">
+                <h3>The 2026 Resume Strategy</h3>
+                <p class="long-text">Recruiters spend 6 seconds on your resume. For 2026, use a single-column layout (Regiment Format) without any photos or skill bars. Use the 'XYZ' formula for your projects: "Accomplished [X] as measured by [Y], by doing [Z]." For example: 'Reduced app loading time by 30% by optimizing database queries.' This makes your impact clear. Ensure your GitHub and LinkedIn links are at the top and clickable. Save your resume ONLY as a PDF to maintain formatting across all devices.</p>
+                <div class="btn-group">
+                    <a href="https://rxresu.me/" target="_blank" class="btn btn-apply">Practice on Live Builder</a>
+                    <a href="https://www.youtube.com/watch?v=Tt08KmFfIYQ" target="_blank" class="btn btn-yt">Formatting Masterclass</a>
+                </div>
+            </div>
+        `;
+    }
+    else if(type === 'scholarships') {
+        container.innerHTML = `
+            <h2>Scholarship Strategy: Apply All, Track One</h2>
+            <div class="info-card tier-1">
+                <h3>Maximum Opportunity Plan</h3>
+                <p class="long-text">You should never apply to just one scholarship. Apply to Reliance, HDFC, Adobe, and NSP simultaneously to maximize your chances. Use 'Buddy4Study' as your central tracking platform to manage all your applications and deadlines in one place. Keep an application essay (500 words) ready about your career goals and financial need. Most private scholarships open between January and June. Being a scholarship holder adds a badge of excellence to your resume that recruiters love to see.</p>
+                <div class="btn-group">
+                    <a href="https://www.buddy4study.com/" target="_blank" class="btn btn-track">Master Tracking Portal</a>
+                    <a href="http://www.youtube.com/watch?v=QYBl7gubjIU" target="_blank" class="btn btn-yt">Apply Step-by-Step Guide</a>
+                </div>
+            </div>
+        `;
+    }
+    else if(type === 'gate') {
+        container.innerHTML = `
+            <h2>GATE 2026 Strategy (IITs & PSUs)</h2>
+            <div class="info-card tier-1">
+                <h3>Entrance to Elite Careers</h3>
+                <p class="long-text">GATE is the key to M.Tech at IITs or high-paying government jobs in PSUs (ONGC, IOCL). Start preparing in Sem 5. Mathematics and Aptitude carry 30% of the marks—master them first. Use previous years' papers as your main study material. A top 500 rank can change your life. Focus on conceptual clarity in Operating Systems, Algorithms, and DBMS, as these are common for both GATE and Top Company interviews.</p>
+                <div class="btn-group"><a href="https://gate2026.iitg.ac.in/" target="_blank" class="btn btn-apply">Official GATE Portal</a></div>
+            </div>
+        `;
+    }
+    else if(type === 'nptel') {
+        container.innerHTML = `
+            <h2>NPTEL Swayam Certifications</h2>
+            <div class="info-card tier-2">
+                <h3>Validating Your Skills</h3>
+                <p class="long-text">Certificates from IIT professors are highly valued by HRs. Enroll in courses like 'The Joy of Computing' or 'Advanced DSA'. These 8-12 week courses end with a proctored exam. Aim for 'Elite Gold' or 'Silver' medals. This proves to recruiters at companies like Google or Amazon that you have an academic standard equal to an IIT student. It also helps you gain extra credits in your college degree.</p>
+                <div class="btn-group"><a href="https://swayam.gov.in/" target="_blank" class="btn btn-apply">NPTEL Course Portal</a></div>
+            </div>
+        `;
+    }
+}
+
+function renderComp(list) {
+    let div = document.getElementById('clist'); div.innerHTML = "";
+    list.forEach(c => {
+        div.innerHTML += `<div class="info-card ${c.tier}"><span class="badge">${c.sal}</span><h3>${c.name}</h3><div class="timeline-box">📅 Timeline: ${c.time}</div><p class="long-text">${c.info}</p><div class="btn-group"><a href="${c.link}" target="_blank" class="btn btn-apply">Apply Portal</a><a href="${c.yt}" target="_blank" class="btn btn-yt">Interview Guide</a></div></div>`;
+    });
+}
+
+function searchComp() {
+    let val = document.getElementById('search-input').value.toLowerCase();
+    let filtered = companyList.filter(c => c.name.toLowerCase().includes(val));
+    renderComp(filtered);
+}
+
+function closeSection() {
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('main-header').style.display = 'block';
+    document.getElementById('content-page').style.display = 'none';
+}
+</script>
+</body>
+</html>

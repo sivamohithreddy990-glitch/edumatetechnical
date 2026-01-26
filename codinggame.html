@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Coding Game – No Repeats</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px 10px; background: #041b29; color: #fff; }
+    .card { max-width: 500px; margin: 0 auto; padding: 20px; border-radius: 18px; background: #06263a; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+    .info-bar { display: flex; justify-content: space-around; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+    pre { text-align: left; background: #031018; padding: 15px; border-radius: 10px; font-size: 14px; border-left: 4px solid #00d4ff; margin-bottom: 20px; overflow-x: auto; }
+    .options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .opt-btn { padding: 12px; border-radius: 8px; border: 2px solid #1a4a6e; background: #0a314d; color: white; cursor: pointer; font-size: 15px; text-align: left; }
+    .btn-correct { background: #15803d !important; border-color: #22c55e !important; }
+    .btn-wrong { background: #991b1b !important; border-color: #ef4444 !important; }
+    #result { margin-top: 15px; font-weight: bold; font-size: 18px; }
+    #correctAnswerDisplay { color: #00d4ff; margin-top: 5px; font-weight: bold; font-size: 16px; }
+    #explanation { color: #aaa; margin-top: 5px; font-size: 14px; }
+    .highlight { color: #00d4ff; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Code Master</h2>
+  <div class="info-bar">
+    <span>Level: <b id="level" class="highlight">1</b></span>
+    <span>Score: <b id="score" class="highlight">0</b></span>
+    <span>Progress: <b id="correctLevel" class="highlight">0</b>/3</span>
+  </div>
+
+  <pre id="codeBlock"><code></code></pre>
+  <div id="question" style="margin-bottom: 15px; font-weight: bold;"></div>
+
+  <div class="options">
+    <button class="opt-btn" id="opt0" onclick="choose(0)"></button>
+    <button class="opt-btn" id="opt1" onclick="choose(1)"></button>
+    <button class="opt-btn" id="opt2" onclick="choose(2)"></button>
+    <button class="opt-btn" id="opt3" onclick="choose(3)"></button>
+  </div>
+
+  <div id="result"></div>
+  <div id="correctAnswerDisplay"></div> 
+  <div id="explanation"></div>
+</div>
+
+<script>
+  // BIG LIST OF UNIQUE QUESTIONS
+  const masterPool = [
+    { code: "let x = 5 + '5';", q: "What is x?", options: ["10", "55", "NaN", "Error"], answer: 1, exp: "Number + String = String concatenation." },
+    { code: "console.log(2 ** 3);", q: "What is the result?", options: ["5", "6", "8", "9"], answer: 2, exp: "** is the exponent operator (2 cubed)." },
+    { code: "let colors = ['red', 'green'];\ncolors.length = 0;", q: "What is the array now?", options: ["['red']", "['green']", "[]", "Error"], answer: 2, exp: "Setting length to 0 empties the array." },
+    { code: "let a = true + true;", q: "What is a?", options: ["true", "2", "1", "Error"], answer: 1, exp: "In math, true is 1 and false is 0. 1+1=2." },
+    { code: "Math.random();", q: "What is the range?", options: ["0 to 10", "1 to 100", "0 to 0.999...", "Exactly 1"], answer: 2, exp: "It returns a float between 0 (inclusive) and 1 (exclusive)." },
+    { code: "let x = null;\nconsole.log(typeof x);", q: "What prints?", options: ["null", "undefined", "object", "string"], answer: 2, exp: "In JS, typeof null is an 'object' (this is a famous bug)." },
+    { code: "let x = (1, 2, 3);", q: "What is x?", options: ["1", "3", "undefined", "[1,2,3]"], answer: 1, exp: "The comma operator returns the last expression." },
+    { code: "JSON.stringify({a:1});", q: "Output type?", options: ["Object", "Array", "String", "Number"], answer: 2, exp: "stringify converts an object into a JSON string." },
+    { code: "let a = [1,2];\nlet b = [1,2];\na == b;", q: "Result?", options: ["true", "false", "undefined", "error"], answer: 1, exp: "Arrays are compared by reference, not value." },
+    { code: "Boolean('');", q: "Result?", options: ["true", "false", "undefined", "NaN"], answer: 1, exp: "An empty string is a 'falsy' value." },
+    { code: "3 > 2 > 1;", q: "What is the result?", options: ["true", "false", "1", "0"], answer: 1, exp: "3>2 is true. true > 1 becomes 1 > 1 which is false." },
+    { code: "isNaN('Hello');", q: "Result?", options: ["true", "false", "undefined", "error"], answer: 0, exp: "'Hello' is Not-a-Number." },
+    { code: "let x = 10;\nfunction f(){ x = 20; }\nf();", q: "Value of x?", options: ["10", "20", "undefined", "error"], answer: 1, exp: "The function updates the global x." },
+    { code: "['a','b'].join('-');", q: "Result?", options: ["ab", "a-b", "['a-b']", "error"], answer: 1, exp: "Join combines array elements with a separator." },
+    { code: "let x = 0.1 + 0.2;", q: "Is x === 0.3?", options: ["Yes", "No", "Always", "Depends"], answer: 1, exp: "Floating point math: 0.1+0.2 is actually 0.30000000000000004." },
+    { code: "parseInt('10px');", q: "Result?", options: ["10", "NaN", "10px", "Error"], answer: 0, exp: "parseInt extracts the number from the start of a string." },
+    { code: "let s = 'Hi';\ns[0] = 'B';", q: "What is s?", options: ["Hi", "Bi", "B", "Error"], answer: 0, exp: "Strings are immutable; you can't change characters by index." },
+    { code: "let x = !!'text';", q: "What is x?", options: ["text", "true", "false", "undefined"], answer: 1, exp: "Double bang converts a truthy value to a boolean true." },
+    { code: "Array.isArray({});", q: "Result?", options: ["true", "false", "object", "error"], answer: 1, exp: "{} is an Object, not an Array." },
+    { code: "1 + 2 + '3';", q: "Result?", options: ["6", "33", "123", "Error"], answer: 1, exp: "1+2=3. 3 + '3' = '33' (concatenation)." }
+  ];
+
+  let score = 0, level = 1, correctInLevel = 0;
+  let currentPool = [...masterPool]; // Our working copy
+  let currentQuestion = null;
+
+  function initGame() {
+    // Shuffle the starting pool once
+    currentPool.sort(() => Math.random() - 0.5);
+    newQuestion();
+  }
+
+  function newQuestion() {
+    if (currentPool.length === 0) {
+      document.body.innerHTML = "<div class='card'><h1>🏆 Game Over!</h1><p>You finished ALL unique questions!</p><h2>Score: " + score + "</h2><button onclick='location.reload()' style='padding:10px; cursor:pointer;'>Restart Game</button></div>";
+      return;
+    }
+
+    // REMOVE THE QUESTION FROM THE POOL SO IT NEVER REPEATS
+    currentQuestion = currentPool.pop(); 
+
+    document.getElementById("codeBlock").textContent = currentQuestion.code;
+    document.getElementById("question").textContent = currentQuestion.q;
+    document.getElementById("result").textContent = "";
+    document.getElementById("correctAnswerDisplay").textContent = ""; 
+    document.getElementById("explanation").textContent = "";
+
+    const optButtons = [0,1,2,3].map(i => document.getElementById(`opt${i}`));
+    currentQuestion.options.forEach((opt, i) => {
+      optButtons[i].textContent = opt;
+      optButtons[i].className = "opt-btn";
+      optButtons[i].disabled = false;
+    });
+  }
+
+  function choose(index) {
+    const correctIdx = currentQuestion.answer;
+    const correctValue = currentQuestion.options[correctIdx];
+    const optButtons = [0,1,2,3].map(i => document.getElementById(`opt${i}`));
+    
+    optButtons.forEach(btn => btn.disabled = true);
+
+    if (index === correctIdx) {
+      optButtons[index].classList.add("btn-correct");
+      score += 10;
+      correctInLevel++;
+      document.getElementById("result").textContent = "✅ Correct!";
+      document.getElementById("result").style.color = "#4ade80";
+    } else {
+      optButtons[index].classList.add("btn-wrong");
+      optButtons[correctIdx].classList.add("btn-correct");
+      document.getElementById("result").textContent = "❌ Wrong!";
+      document.getElementById("result").style.color = "#f87171";
+      document.getElementById("correctAnswerDisplay").textContent = "Correct Answer: " + correctValue;
+    }
+
+    document.getElementById("explanation").textContent = "Note: " + currentQuestion.exp;
+    document.getElementById("score").textContent = score;
+    document.getElementById("correctLevel").textContent = correctInLevel;
+
+    setTimeout(() => {
+      if (correctInLevel >= 3) {
+        level++;
+        correctInLevel = 0;
+        document.getElementById("level").textContent = level;
+        document.getElementById("correctLevel").textContent = 0;
+        alert("Moving to Level " + level);
+      }
+      newQuestion();
+    }, (index === correctIdx ? 1200 : 3500));
+  }
+
+  initGame();
+</script>
+</body>
+</html>

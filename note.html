@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multi Page Notepad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #1f2933, #0a192f);
+      color: #fff;
+      min-height: 100vh;
+    }
+    .screen { display: none; min-height: 100vh; padding: 16px; }
+    .screen.active { display: block; }
+
+    .header {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 10px 0 16px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.85;
+      margin-bottom: 10px;
+    }
+
+    .notes-list {
+      margin-top: 10px;
+    }
+    .note-item {
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .note-main {
+      flex: 1;
+      cursor: pointer;
+    }
+    .note-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .note-meta {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+    .note-empty {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .note-delete-btn {
+      border: none;
+      background: transparent;
+      color: #ff7676;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px 6px;
+    }
+
+    .fab {
+      position: fixed;
+      right: 16px;
+      bottom: 20px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      font-size: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+    }
+
+    .back-btn {
+      border: none;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      padding: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      background: #ffffff;
+      color: #000;
+      resize: vertical;
+    }
+
+    .editor-label {
+      font-size: 13px;
+      margin: 6px 0 3px;
+      opacity: 0.9;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .buttons-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-save   { background: #4caf50; color: #fff; }
+    .btn-cancel { background: #9e9e9e; color: #fff; }
+    .btn-delete { background: #f44336; color: #fff; }
+
+    .status {
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: 0.9;
+      text-align: center;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- SCREEN 1: LIST OF PAGES / NOTES -->
+<div id="screen-list" class="screen active">
+  <div class="header">📒 My Pages</div>
+  <div class="subtitle">Tap a page to open, or press + to create a new page.</div>
+
+  <div id="notes-list" class="notes-list"></div>
+  <div id="notes-empty" class="note-empty" style="display:none;">
+    No pages yet. Tap the + button to create your first notepad page.
+  </div>
+
+  <!-- + button -->
+  <button class="fab" onclick="openNewNote()">+</button>
+</div>
+
+<!-- SCREEN 2: EDITOR -->
+<div id="screen-editor" class="screen">
+  <button class="back-btn" onclick="backToListWithoutSave()">← Back</button>
+
+  <div class="header" id="editor-heading">New Page</div>
+  <div class="subtitle">Write your letter / notice / note and save. It will appear on the first page.</div>
+
+  <div class="editor-label">Type:</div>
+  <select id="note-type" onchange="applyTemplateFromType(true)">
+    <option value="custom">✏ Custom Page (empty)</option>
+    <option value="formal">📄 Formal Letter</option>
+    <option value="leave">📝 Leave Application</option>
+    <option value="complaint">⚠ Complaint Letter</option>
+    <option value="simple">🗒 Simple Note</option>
+  </select>
+
+  <div class="editor-label">Content:</div>
+  <textarea id="note-content" placeholder="Write your page here..."></textarea>
+
+  <div class="buttons-row">
+    <button class="btn btn-delete" id="editor-delete-btn" onclick="deleteCurrentNote()" style="display:none;">Delete</button>
+    <button class="btn btn-cancel" onclick="backToListWithoutSave()">Cancel</button>
+    <button class="btn btn-save" onclick="saveCurrentNote()">Save</button>
+  </div>
+
+  <div id="editor-status" class="status"></div>
+</div>
+
+<script>
+  // ===== STATE & STORAGE =====
+  const STORAGE_KEY = "multi_page_notepad_notes";
+
+  let notes = [];           // {id, title, content, type, updatedAt}
+  let currentNoteId = null; // null = new note
+
+  const screenList   = document.getElementById("screen-list");
+  const screenEditor = document.getElementById("screen-editor");
+
+  const notesListEl   = document.getElementById("notes-list");
+  const notesEmptyEl  = document.getElementById("notes-empty");
+  const headingEl     = document.getElementById("editor-heading");
+  const noteTypeEl    = document.getElementById("note-type");
+  const noteContentEl = document.getElementById("note-content");
+  const editorStatusEl= document.getElementById("editor-status");
+  const editorDeleteBtn = document.getElementById("editor-delete-btn");
+
+  // ===== UTIL: STORAGE =====
+  function loadFromStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      notes = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      notes = [];
+    }
+  }
+
+  function saveToStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+  }
+
+  // ===== SCREEN SWITCHING =====
+  function showListScreen() {
+    screenList.classList.add("active");
+    screenEditor.classList.remove("active");
+    renderNotesList();
+  }
+
+  function showEditorScreen() {
+    screenList.classList.remove("active");
+    screenEditor.classList.add("active");
+  }
+
+  // ===== LIST RENDERING =====
+  function renderNotesList() {
+    notesListEl.innerHTML = "";
+    if (!notes.length) {
+      notesEmptyEl.style.display = "block";
+      return;
+    }
+    notesEmptyEl.style.display = "none";
+
+    // sort by updatedAt descending
+    notes.sort((a,b) => b.updatedAt - a.updatedAt);
+
+    notes.forEach(note => {
+      const item = document.createElement("div");
+      item.className = "note-item";
+
+      const main = document.createElement("div");
+      main.className = "note-main";
+      main.onclick = () => openExistingNote(note.id);
+
+      const title = document.createElement("div");
+      title.className = "note-title";
+      title.textContent = note.title || "Untitled page";
+
+      const meta = document.createElement("div");
+      meta.className = "note-meta";
+      const dateStr = new Date(note.updatedAt).toLocaleString();
+      meta.textContent = (note.type || "Custom") + " • " + dateStr;
+
+      main.appendChild(title);
+      main.appendChild(meta);
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "note-delete-btn";
+      delBtn.innerHTML = "🗑";
+      delBtn.onclick = (e) => {
+        e.stopPropagation(); // don't open editor
+        deleteNote(note.id);
+      };
+
+      item.appendChild(main);
+      item.appendChild(delBtn);
+
+      notesListEl.appendChild(item);
+    });
+  }
+
+  // ===== NEW NOTE / EXISTING NOTE =====
+  function openNewNote() {
+    currentNoteId = null;
+    headingEl.textContent = "New Page";
+    noteTypeEl.value = "custom";
+    noteContentEl.value = "";
+    editorStatusEl.textContent = "";
+    editorDeleteBtn.style.display = "none"; // no delete button for brand new note
+    showEditorScreen();
+  }
+
+  function openExistingNote(id) {
+    const n = notes.find(n => n.id === id);
+    if (!n) return;
+    currentNoteId = id;
+    headingEl.textContent = "Edit Page";
+    noteTypeEl.value = n.type || "custom";
+    noteContentEl.value = n.content || "";
+    editorStatusEl.textContent = "";
+    editorDeleteBtn.style.display = "inline-block"; // show delete for existing note
+    showEditorScreen();
+  }
+
+  // ===== TITLE HELPER =====
+  function extractTitleFromContent(text) {
+    if (!text) return "Untitled page";
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length);
+    if (!lines.length) return "Untitled page";
+    const first = lines[0];
+    return first.length > 40 ? first.slice(0, 37) + "..." : first;
+  }
+
+  // ===== TEMPLATES =====
+  function getTemplateText(type) {
+    if (type === "formal") {
+      return `From,
+Your Name
+Your Address
+
+To,
+The Manager
+Company Name
+
+Subject: Regarding __________
+
+Respected Sir/Madam,
+
+I would like to inform you that _____________________________.
+
+Thanking you.
+
+Yours sincerely,
+Your Name`;
+    }
+    if (type === "leave") {
+      return `To,
+The Principal
+
+Subject: Leave Application
+
+Respected Sir/Madam,
+
+I request you to kindly grant me leave for _____ days due to __________.
+
+Thanking you.
+
+Yours obediently,
+Your Name`;
+    }
+    if (type === "complaint") {
+      return `To,
+The Officer
+
+Subject: Complaint regarding __________
+
+Respected Sir/Madam,
+
+I would like to bring to your attention that ____________________.
+
+Kindly take necessary action.
+
+Thanking you.
+
+Yours faithfully,
+Your Name`;
+    }
+    if (type === "simple") {
+      return `Date:
+
+Title:
+
+Write your note here...`;
+    }
+    return "";
+  }
+
+  // Insert template only if user selected it and content empty
+  function applyTemplateFromType(fromUserSelect) {
+    const type = noteTypeEl.value;
+    if (type === "custom") return;
+
+    if (fromUserSelect) {
+      if (!noteContentEl.value.trim()) {
+        noteContentEl.value = getTemplateText(type);
+        editorStatusEl.textContent = "📄 Template inserted.";
+      }
+    }
+  }
+
+  // ===== SAVE / BACK =====
+  function saveCurrentNote() {
+    const content = noteContentEl.value;
+    const type = noteTypeEl.value || "custom";
+    const title = extractTitleFromContent(content);
+    const now = Date.now();
+
+    if (!content.trim()) {
+      editorStatusEl.textContent = "⚠ Please write something before saving.";
+      return;
+    }
+
+    if (currentNoteId === null) {
+      // New note
+      const newNote = {
+        id: Date.now().toString() + Math.random().toString(16).slice(2),
+        title,
+        content,
+        type,
+        updatedAt: now
+      };
+      notes.push(newNote);
+      editorStatusEl.textContent = "✅ Page saved.";
+    } else {
+      // Update existing note
+      const idx = notes.findIndex(n => n.id === currentNoteId);
+      if (idx !== -1) {
+        notes[idx].title = title;
+        notes[idx].content = content;
+        notes[idx].type = type;
+        notes[idx].updatedAt = now;
+        editorStatusEl.textContent = "✅ Changes saved.";
+      }
+    }
+
+    saveToStorage();
+    setTimeout(() => {
+      showListScreen();
+    }, 400);
+  }
+
+  function backToListWithoutSave() {
+    showListScreen();
+  }
+
+  // ===== DELETE =====
+  function deleteNote(id) {
+    const note = notes.find(n => n.id === id);
+    if (!note) return;
+
+    const ok = confirm("Delete this page?\n\n" + (note.title || "Untitled page"));
+    if (!ok) return;
+
+    notes = notes.filter(n => n.id !== id);
+    saveToStorage();
+    renderNotesList();
+  }
+
+  function deleteCurrentNote() {
+    if (!currentNoteId) return;
+    deleteNote(currentNoteId);
+    currentNoteId = null;
+    showListScreen();
+  }
+
+  // ===== INIT =====
+  window.onload = function() {
+    loadFromStorage();
+    renderNotesList();
+  };
+</script>
+
+</body>
+</html>

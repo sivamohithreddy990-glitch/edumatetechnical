@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDUMATE Advanced Coding Library</title>
+<style>
+/* CORE DESIGN */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#0b0f19;color:#fff;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;padding:20px;text-align:center;}
+
+.circle{
+  width:160px;height:160px;border-radius:50%;background:#111;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:20px;cursor:pointer;box-shadow:0 0 20px #00f2ff;
+  transition:.3s;border:2px solid transparent;
+}
+.circle:hover{transform:translateY(-8px);box-shadow:0 0 35px #00f2ff;border-color:#00f2ff;}
+.small{width:110px;height:110px;font-size:14px;margin:10px;box-shadow:0 0 10px cyan;}
+
+.header{
+  height:60px;background:#000;display:flex;align-items:center;
+  padding:0 20px;border-bottom:2px solid #00f2ff;
+}
+.header button{
+  border:1px solid cyan;background:none;color:cyan;
+  padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:bold;
+}
+
+iframe{width:100%;height:calc(100vh - 60px);border:none;background:#fdfdfd;}
+</style>
+</head>
+
+<body>
+
+<div id="s1" class="screen" style="display:block;">
+  <h1 style="margin-top:40px;color:cyan;font-size: 2.5em;">EDUMATE PRO</h1>
+  <p style="color:#aaa;">Advanced Engineering Learning Library</p>
+  <div style="display:flex;justify-content:center;flex-wrap:wrap;margin-top:40px;">
+    <div class="circle" onclick="go('compiler')">💻<br><b>COMPILER</b></div>
+    <div class="circle" onclick="go('course')">📘<br><b>COURSES</b></div>
+  </div>
+</div>
+
+<div id="s2" class="screen">
+  <h2 id="menu-title" style="margin-bottom:30px;color:cyan;">Choose Subject</h2>
+  <div style="display:flex;justify-content:center;flex-wrap:wrap;max-width:900px;margin:auto;">
+    <div class="circle small" onclick="openLang('html')">HTML5</div>
+    <div class="circle small" onclick="openLang('css')">CSS3</div>
+    <div class="circle small" onclick="openLang('javascript')">JS (ES6+)</div>
+    <div class="circle small" onclick="openLang('python')">Python</div>
+    <div class="circle small" onclick="openLang('java')">Java</div>
+    <div class="circle small" onclick="openLang('c')">C</div>
+    <div class="circle small" onclick="openLang('cpp')">C++</div>
+    <div class="circle small" onclick="openLang('sql')">SQL</div>
+    <div class="circle small" onclick="openLang('mongodb')">MongoDB</div>
+    <div class="circle small" onclick="openLang('oracle')">Oracle</div>
+    <div class="circle small" onclick="openLang('dbms')">DBMS</div>
+  </div>
+  <br>
+  <button onclick="back1()" style="color:cyan;border:1px solid cyan;background:none;padding:10px 20px;border-radius:20px;cursor:pointer;">⬅ Back Home</button>
+</div>
+
+<div id="s3" class="screen" style="padding:0">
+  <div class="header">
+    <button onclick="back2()">⬅ BACK</button>
+    <b id="display-title" style="margin-left:20px;color:cyan;text-transform:uppercase;"></b>
+  </div>
+  <iframe id="frame"></iframe>
+</div>
+
+<script>
+let mode="";
+const s1=document.getElementById("s1");
+const s2=document.getElementById("s2");
+const s3=document.getElementById("s3");
+const frame=document.getElementById("frame");
+const displayTitle=document.getElementById("display-title");
+
+/* COMPILERS */
+const compilerLinks={
+  html:"https://onecompiler.com/html",
+  css:"https://onecompiler.com/html",
+  javascript:"https://onecompiler.com/javascript",
+  python:"https://onecompiler.com/python",
+  java:"https://onecompiler.com/java",
+  c:"https://onecompiler.com/c",
+  cpp:"https://onecompiler.com/cpp",
+  sql:"https://www.w3schools.com/sql/trysql.asp",
+  mongodb:"https://onecompiler.com/mongodb",
+  oracle:"https://onecompiler.com/postgresql",
+  dbms:"https://www.w3schools.com/sql/trysql.asp"
+};
+
+/* ADVANCED TEXTBOOK DATA */
+const courseData={
+
+html:`
+<h1>HTML5: Professional Web Textbook</h1>
+<p>HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser. It is the building block of the World Wide Web.</p>
+
+<h3>Core Advanced Modules:</h3>
+<ul>
+  <li><b>Structural Semantics:</b> Designing for SEO and accessibility.</li>
+  <li><b>Canvas & SVG:</b> High-performance vector graphics.</li>
+  <li><b>Web Storage:</b> Using localStorage and sessionStorage.</li>
+  <li><b>Responsive Media:</b> Implementing &lt;picture&gt; and &lt;video&gt; tags.</li>
+</ul>
+<p>To master HTML, you must understand how the browser parses the Document Object Model (DOM). This determines how elements are rendered and how JavaScript interacts with the page.</p>
+<a href="https://www.w3schools.com/html/" class="book-btn" target="_blank">📖 Open W3Schools HTML Textbook</a>`,
+
+javascript:`
+<h1>JavaScript: Advanced Engineering Notes</h1>
+<p>JavaScript is a high-level, often just-in-time compiled language that conforms to the ECMAScript specification.</p>
+
+<h3>Key Learning Areas:</h3>
+<ul>
+  <li><b>Asynchronous Programming:</b> Promises, Async/Await, and the Event Loop.</li>
+  <li><b>Scope & Closures:</b> Lexical scoping and memory persistence.</li>
+  <li><b>Prototypes:</b> Object-oriented inheritance in JS.</li>
+  <li><b>ES6+ Syntax:</b> Destructuring, spread operators, and modules.</li>
+</ul>
+<a href="https://www.w3schools.com/js/" class="book-btn" target="_blank">📖 Open W3Schools JS Textbook</a>`,
+
+python:`
+<h1>Python 3: Advanced Development Guide</h1>
+<p>Python is an interpreted, high-level, general-purpose programming language. Its design philosophy emphasizes code readability.</p>
+
+<h3>Technical Chapters:</h3>
+<ul>
+  <li><b>Data Structures:</b> Advanced use of Dictionaries, Sets, and Tuples.</li>
+  <li><b>Object Oriented Python:</b> Classes, Inheritance, and Dunder methods.</li>
+  <li><b>File I/O & Exception Handling:</b> Managing system resources safely.</li>
+  <li><b>Libraries:</b> NumPy for math, Pandas for data, and Django for web.</li>
+</ul>
+<a href="https://www.w3schools.com/python/" class="book-btn" target="_blank">📖 Open W3Schools Python Textbook</a>`,
+
+sql:`
+<h1>SQL: Relational Database Textbook</h1>
+<p>SQL (Structured Query Language) is used to communicate with a database. It is the standard language for relational database management systems.</p>
+[attachment_0](attachment)
+<h3>Mastery Topics:</h3>
+<ul>
+  <li><b>Joins:</b> Inner, Left, Right, and Full Outer Joins.</li>
+  <li><b>Constraints:</b> Primary Key, Foreign Key, Unique, and Check.</li>
+  <li><b>Aggregation:</b> Group By, Having, and Window Functions.</li>
+  <li><b>Subqueries:</b> Correlated vs non-correlated queries.</li>
+</ul>
+<a href="https://www.w3schools.com/sql/" class="book-btn" target="_blank">📖 Open W3Schools SQL Textbook</a>`,
+
+java:`<h1>Java Programming</h1><p>Class-based, object-oriented programming for enterprise apps.</p><a href="https://www.w3schools.com/java/" class="book-btn" target="_blank">📖 Open W3Schools Java Textbook</a>`,
+css:`<h1>CSS3 Styling</h1><p>Advanced layouts using Grid and Flexbox.</p><a href="https://www.w3schools.com/css/" class="book-btn" target="_blank">📖 Open W3Schools CSS Textbook</a>`,
+c:`<h1>C Programming</h1><p>The foundation of computer science and memory management.</p><a href="https://www.w3schools.com/c/" class="book-btn" target="_blank">📖 Open W3Schools C Textbook</a>`,
+cpp:`<h1>C++ Systems</h1><p>High performance and object-oriented extensions of C.</p><a href="https://www.w3schools.com/cpp/" class="book-btn" target="_blank">📖 Open W3Schools C++ Textbook</a>`,
+mongodb:`<h1>MongoDB NoSQL</h1><p>Document-based storage for modern applications.</p><a href="https://www.w3schools.com/mongodb/" class="book-btn" target="_blank">📖 Open W3Schools MongoDB Textbook</a>`,
+oracle:`<h1>Oracle/PL-SQL</h1><p>Enterprise grade relational database management.</p><a href="https://www.w3schools.com/sql/" class="book-btn" target="_blank">📖 Open W3Schools SQL Textbook</a>`,
+dbms:`<h1>DBMS Fundamentals</h1><p>Theoretical concepts of database systems and architecture.</p><a href="https://www.w3schools.com/sql/" class="book-btn" target="_blank">📖 Open W3Schools DBMS Textbook</a>`
+};
+
+function go(m){
+  mode=m; s1.style.display="none"; s2.style.display="block";
+  document.getElementById("menu-title").innerText=(m==="compiler"?"Live Editor":"Engineering Courses");
+}
+
+function back1(){s2.style.display="none";s1.style.display="block";}
+function back2(){s3.style.display="none";s2.style.display="block";frame.src="about:blank";}
+
+function openLang(lang){
+  s2.style.display="none"; s3.style.display="block";
+  displayTitle.innerText=mode+" → "+lang;
+  
+  if(mode==="compiler"){
+      frame.src=compilerLinks[lang] || "https://onecompiler.com/";
+  } else {
+    frame.src="about:blank";
+    setTimeout(()=>{
+      const d=frame.contentDocument || frame.contentWindow.document;
+      d.open();
+      d.write(`
+        <html>
+        <head>
+          <style>
+            body { font-family: 'Segoe UI', sans-serif; padding: 40px; line-height: 1.8; color: #222; background: #fff; }
+            h1 { color: #008CBA; border-bottom: 3px solid #00f2ff; padding-bottom: 10px; }
+            h3 { color: #333; margin-top: 25px; }
+            .book-btn { display: inline-block; margin-top: 30px; background: #4CAF50; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; }
+            .book-btn:hover { background: #45a049; }
+            ul { margin: 15px 0; padding-left: 20px; }
+            li { margin-bottom: 10px; }
+          </style>
+        </head>
+        <body>${courseData[lang]}</body>
+        </html>
+      `);
+      d.close();
+    },100);
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🪄 Magical Scholar - Unlimited</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* --- 1. THE MAGICAL THEME --- */
+:root {
+    --magic-purple: #6366f1;
+    --magic-cyan: #22d3ee;
+    --magic-gold: #fbbf24;
+    --glass: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+body, html {
+    width: 100%; height: 100%;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #020617;
+    color: #f8fafc;
+    overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
+}
+
+/* Animated Magic Stars Background */
+.stars-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% 50%, #1e1b4b, #020617);
+    z-index: -1;
+}
+
+.stars-container::after {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                      radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                      radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0));
+    background-repeat: repeat; background-size: 200px 200px;
+    animation: magicFloat 60s linear infinite; opacity: 0.3;
+}
+
+@keyframes magicFloat { from { transform: translateY(0); } to { transform: translateY(-2000px); } }
+
+/* --- 2. THE UI CARD --- */
+.app-card {
+    width: 95%; max-width: 600px; height: 90vh;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 40px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 0 50px rgba(99, 102, 241, 0.2);
+}
+
+#home-view, #reader-view { height: 100%; display: flex; flex-direction: column; }
+
+/* --- 3. HOME VIEW --- */
+.magic-title {
+    font-size: 38px; font-weight: 900; text-align: center;
+    background: linear-gradient(to right, var(--magic-cyan), var(--magic-purple), var(--magic-gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.lang-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 30px 0;
+}
+
+.magic-btn {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    padding: 18px; border-radius: 20px;
+    color: white; font-weight: 600; cursor: pointer;
+    font-size: 16px;
+}
+
+.magic-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); border-color: var(--magic-cyan); }
+.magic-btn.active { background: var(--magic-purple); color: white; box-shadow: 0 0 20px var(--magic-purple); }
+
+.start-action {
+    margin-top: auto; padding: 22px; border-radius: 25px;
+    background: linear-gradient(135deg, var(--magic-purple), var(--magic-cyan));
+    color: white; border: none; font-size: 20px; font-weight: 900; cursor: pointer;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+}
+
+/* --- 4. READER VIEW --- */
+.top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.exit-btn {
+    background: transparent; color: #94a3b8; border: 1px solid #334155;
+    padding: 8px 18px; border-radius: 12px; cursor: pointer; font-size: 14px;
+}
+.exit-btn:hover { color: #fca5a5; border-color: #ef4444; }
+
+.content-display {
+    flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 30px;
+}
+
+.text-glow {
+    position: relative; padding: 25px; border-radius: 25px;
+    background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border);
+}
+
+.native-txt { font-size: 28px; font-weight: 800; line-height: 1.3; color: #fff; }
+.english-txt { font-size: 20px; font-weight: 500; color: #94a3b8; font-style: italic; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="stars-container"></div>
+
+<div class="app-card">
+    <div id="home-view">
+        <div class="magic-title">🪄 Magical Dash</div>
+        <p style="text-align: center; opacity: 0.7; font-size: 14px;">Unlimited Wisdom • India & Beyond</p>
+        
+        <div class="lang-grid">
+            <button class="magic-btn" onclick="setLang('en', this)">English (Original)</button>
+            <button class="magic-btn" onclick="setLang('hi', this)">Hindi (हिन्दी)</button>
+            <button class="magic-btn" onclick="setLang('te', this)">Telugu (తెలుగు)</button>
+            <button class="magic-btn" onclick="setLang('ta', this)">Tamil (தமிழ்)</button>
+            <button class="magic-btn" onclick="setLang('kn', this)">Kannada (ಕನ್ನಡ)</button>
+            <button class="magic-btn" onclick="setLang('ml', this)">Malayalam (മലയാളം)</button>
+        </div>
+
+        <button class="start-action" onclick="startSession()">Enter the Lab ✨</button>
+    </div>
+
+    <div id="reader-view" class="hidden">
+        <div class="top-nav">
+            <button class="exit-btn" onclick="exitSession()">← Change Path</button>
+            <div style="color: var(--magic-gold); font-weight: bold; font-family: monospace;" id="timer">20:00</div>
+        </div>
+
+        <div class="content-display">
+            <div class="text-glow">
+                <div class="native-txt" id="display-native"></div>
+            </div>
+            <div class="text-glow">
+                <div class="english-txt" id="display-english"></div>
+            </div>
+        </div>
+
+        <button class="start-action" onclick="generateNew()">Next Unique Insight 🪄</button>
+        <p style="text-align: center; margin-top: 15px; font-size: 11px; opacity: 0.5;">REPETITION BLOCKED | GLOBAL SOURCES</p>
+    </div>
+</div>
+
+<script>
+/* 🪄 THE UNLIMITED KNOWLEDGE ENGINE */
+const matrix = {
+    subjects: [
+        {en: "Modern science", hi: "आधुनिक विज्ञान", te: "ఆధునిక విజ్ఞానం", ta: "நவீன அறிவியல்", kn: "ಆಧುನಿಕ ವಿಜ್ಞಾನ", ml: "ആധുനിക ശാസ്ത്രം"},
+        {en: "The spirit of India", hi: "भारत की आत्मा", te: "భారతీయ ఆత్మ", ta: "இந்தியாவின் ஆன்மா", kn: "ಭಾರತದ ಆತ್ಮ", ml: "ഇന്ത്യയുടെ ആത്മാവ്"},
+        {en: "Artificial Intelligence", hi: "कृत्रिम बुद्धिमत्ता", te: "కృత్రిమ మేధస్సు", ta: "செயற்கை நுண்ணறிவு", kn: "ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ", ml: "നിർമ്മിത ബുദ്ധി"},
+        {en: "Solar energy", hi: "सौर ऊर्जा", te: "సౌర శక్తి", ta: "சூரிய சக்தி", kn: "ಸೌರ ಶಕ್ತಿ", ml: "സൗര ഊർജ്ജം"},
+        {en: "Great literature", hi: "महान साहित्य", te: "గొప్ప సాహిత్యం", ta: "சிறந்த இலக்கியம்", kn: "ಶ್ರೇಷ್ಠ ಸಾಹಿತ್ಯ", ml: "മഹത്തായ സാഹിത്യം"},
+        {en: "Ocean protection", hi: "महासागर संरक्षण", te: "సముద్ర పరిరక్షణ", ta: "கடல் பாதுகாப்பு", kn: "ಸಾಗರ ಸಂರಕ್ಷಣೆ", ml: "സമുദ്ര സംരക്ഷണം"}
+    ],
+    verbs: [
+        {en: "is transforming the world", hi: "दुनिया को बदल रहा है", te: "ప్రపంచాన్ని మారుస్తోంది", ta: "உலகத்தை மாற்றுகிறது", kn: "ಜಗತ್ತನ್ನು ಬದಲಾಯಿಸುತ್ತಿದೆ", ml: "ലോകത്തെ മാറ്റുന്നു"},
+        {en: "provides endless light", hi: "अनंत प्रकाश प्रदान करता है", te: "అనంతమైన వెలుగును ఇస్తుంది", ta: "முடிவில்லாத ஒளியைத் தருகிறது", kn: "ಅನಂತ ಬೆಳಕನ್ನು ನೀಡುತ್ತದೆ", ml: "അനന്തമായ പ്രകാശം നൽകുന്നു"},
+        {en: "creates new wisdom", hi: "नया ज्ञान पैदा करता है", te: "కొత్త జ్ఞానాన్ని సృష్టిస్తుంది", ta: "புதிய ஞானத்தை உருவாக்குகிறது", kn: "ಹೊಸ ಜ್ಞಾನವನ್ನು ಸೃಷ್ಟಿಸುತ್ತದೆ", ml: "പുതിയ അറിവ് സൃഷ്ടിക്കുന്നു"},
+        {en: "unites different cultures", hi: "विभिन्न संस्कृतियों को जोड़ता है", te: "విభిన్న సంస్కృతులను కలుపుతుంది", ta: "வெவ்வேறு கலாச்சாரங்களை இணைக்கிறது", kn: "ವಿವಿಧ ಸಂಸ್ಕೃತಿಗಳನ್ನು ಒಂದುಗೂಡಿಸುತ್ತದೆ", ml: "വിവിധ സംസ്കാരങ്ങളെ ഒന്നിപ്പിക്കുന്നു"}
+    ],
+    contexts: [
+        {en: "for a better tomorrow.", hi: "एक बेहतर कल के लिए।", te: "మంచి రేపటి కోసం.", ta: "சிறந்த நாளைக்காக.", kn: "ಉತ್ತಮ ನಾಳೆಗಾಗಿ.", ml: "നല്ലൊരു നാളേക്കായി."},
+        {en: "across every continent.", hi: "हर महाद्वीप में।", te: "ప్రతి ఖండంలో.", ta: "ஒவ்வொரு கண்டத்திலும்.", kn: "ಪ್ರತಿ ಖಂಡದಲ್ಲೂ.", ml: "എല്ലാ ഭൂഖണ്ഡങ്ങളിലും."},
+        {en: "in this digital age.", hi: "इस डिजिटल युग में।", te: "ఈ డిజిటల్ యుగంలో.", ta: "இந்த டிஜிட்டல் யுகத்தில்.", kn: "ಈ ಡಿಜಿಟಲ್ ಯುಗದಲ್ಲಿ.", ml: "ഈ ഡിജിറ്റൽ യുഗത്തിൽ."}
+    ]
+};
+
+let activeLang = "";
+let memory = new Set();
+
+function setLang(code, btn) {
+    activeLang = code;
+    document.querySelectorAll('.magic-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function startSession() {
+    if (!activeLang) { alert("Please select a magical path (Language)!"); return; }
+    document.getElementById('home-view').classList.add('hidden');
+    document.getElementById('reader-view').classList.remove('hidden');
+    generateNew();
+}
+
+function exitSession() {
+    document.getElementById('reader-view').classList.add('hidden');
+    document.getElementById('home-view').classList.remove('hidden');
+}
+
+function generateNew() {
+    let s, v, c, key;
+    const max = matrix.subjects.length * matrix.verbs.length * matrix.contexts.length;
+    
+    // Prevent repetition
+    if (memory.size >= max) memory.clear();
+
+    do {
+        s = Math.floor(Math.random() * matrix.subjects.length);
+        v = Math.floor(Math.random() * matrix.verbs.length);
+        c = Math.floor(Math.random() * matrix.contexts.length);
+        key = `${s}-${v}-${c}`;
+    } while (memory.has(key));
+
+    memory.add(key);
+
+    const subject = matrix.subjects[s];
+    const verb = matrix.verbs[v];
+    const context = matrix.contexts[c];
+
+    // Handle English Selection specially
+    if (activeLang === 'en') {
+        document.getElementById('display-native').innerText = `${subject.en} ${verb.en} ${context.en}`;
+        document.getElementById('display-english').innerText = "Focus Mode: Primary Language Active";
+    } else {
+        document.getElementById('display-native').innerText = `${subject[activeLang]} ${verb[activeLang]} ${context[activeLang]}`;
+        document.getElementById('display-english').innerText = `${subject.en} ${verb.en} ${context.en}`;
+    }
+}
+
+// 20 Minute Magical Refresh
+setInterval(() => {
+    const m = new Date().getMinutes();
+    const s = new Date().getSeconds();
+    const remain = 19 - (m % 20);
+    const secRemain = 59 - s;
+    document.getElementById('timer').innerText = `${remain}:${secRemain < 10 ? '0'+secRemain : secRemain}`;
+    if (m % 20 === 0 && s === 0) location.reload();
+}, 1000);
+</script>
+
+</body>
+</html>

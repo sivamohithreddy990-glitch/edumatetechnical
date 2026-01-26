@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B.Tech Study Hub</title>
+
+<style>
+:root{
+  --bg:#f4f6fb;
+  --card:#ffffff;
+  --text:#1e293b;
+  --primary:#2563eb;
+  --shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+body.dark{
+  --bg:#0f172a;
+  --card:#1e293b;
+  --text:#e5e7eb;
+  --primary:#60a5fa;
+  --shadow:0 8px 25px rgba(0,0,0,0.4);
+}
+
+body{
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:0.3s;
+}
+
+.container{
+  max-width:600px;
+  margin:auto;
+  padding:20px;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+h1{
+  color:var(--primary);
+  font-size:24px;
+}
+
+button{
+  border:none;
+  padding:10px 16px;
+  border-radius:30px;
+  cursor:pointer;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  font-weight:600;
+}
+
+#search{
+  width:100%;
+  padding:14px;
+  margin:20px 0;
+  border:none;
+  outline:none;
+  border-radius:14px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  font-size:15px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:var(--shadow);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+}
+
+.icon{
+  font-size:36px;
+  text-align:center;
+}
+
+.title{
+  text-align:center;
+  font-weight:600;
+  margin:8px 0;
+}
+
+.btn-box{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.btn{
+  flex:1;
+  padding:10px;
+  text-align:center;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:600;
+  text-decoration:none;
+}
+
+.view{
+  border:2px solid var(--primary);
+  color:var(--primary);
+}
+
+.view:hover{
+  background:rgba(37,99,235,0.15);
+}
+
+.download{
+  background:var(--primary);
+  color:white;
+}
+
+.download:hover{
+  opacity:0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <h1>📚 B.Tech Study Hub</h1>
+  <button onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+</header>
+
+<input type="text" id="search" placeholder="Search subjects..." onkeyup="searchSubjects()">
+
+<div id="subjectList"></div>
+
+</div>
+
+<script>
+const subjects = [
+  {icon:"☕", name:"Java Programming", file:"java.pdf"},
+  {icon:"EN", name:"English", file:"english.pdf"},
+   {icon:"⚡", name:"BEEE", file:"beee.pdf"},
+    {icon:"🏗️", name:"BCME", file:"bcme.pdf"},
+  {icon:"🅲", name:"C Programming", file:"c.pdf"},
+  {icon:"🐍", name:"Python Programming", file:"python.pdf"},
+  {icon:"📊", name:"Data Structures", file:"ds.pdf"},
+  {icon:"🗄️", name:"DBMS", file:"dbms.pdf"},
+ 
+  {icon:"💻", name:"Operating System", file:"os.pdf"},
+  {icon:"🌐", name:"Computer Networks", file:"cn.pdf"},
+  {icon:"📐", name:"Linear Algebra & Calculus", file:"m1.pdf"},
+  {icon:"√x", name:"Vector Calculus", file:"m2.pdf"},
+ {icon:"♾️", name:"DISCRETE MATHEMATICS AND GRAPH THEORY", file:"dmgt.html"},
+      {icon:"🔢", name:"PROBABILITY AND STATISTICS", file:"m2.pdf"},
+  {icon:"⚛️", name:"Engineering Physics", file:"physics.pdf"},
+  {icon:"🧪", name:"Engineering Chemistry", file:"chemistry.pdf"},
+  {icon:"🌱", name:"Environmental Science", file:"evs.pdf"}
+];
+
+function loadSubjects(list){
+  const box = document.getElementById("subjectList");
+  box.innerHTML = "";
+  list.forEach(s=>{
+    box.innerHTML += `
+      <div class="card">
+        <div class="icon">${s.icon}</div>
+        <div class="title">${s.name}</div>
+        <div class="btn-box">
+          <a class="btn view" href="${s.file}" target="_blank">👁 View</a>
+          <a class="btn download" href="${s.file}" download>⬇ Download</a>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function searchSubjects(){
+  const key = document.getElementById("search").value.toLowerCase();
+  const filtered = subjects.filter(s => s.name.toLowerCase().includes(key));
+  loadSubjects(filtered);
+}
+
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  themeBtn.innerText = document.body.classList.contains("dark") ? "☀ Light" : "🌙 Dark";
+}
+
+loadSubjects(subjects);
+</script>
+
+</body>
+</html>
