@@ -322,5 +322,54 @@ function openCalculator(){ alert("Calculator will open here."); }
     }
 })();
 </script>
+
+<script type="module">
+  // Firebase modular SDK (CDN) initialization
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuKiIO5uoaLPz8tzDcjeSy-uhT8Y29PBM",
+    authDomain: "edumate-technical.firebaseapp.com",
+    projectId: "edumate-technical",
+    storageBucket: "edumate-technical.firebasestorage.app",
+    messagingSenderId: "856347096269",
+    appId: "1:856347096269:web:af2d3e4874e3f330652584",
+    measurementId: "G-7BZKYQ4H2D"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  try {
+    const analytics = getAnalytics(app);
+    console.log('Firebase initialized');
+  } catch (err) {
+    // analytics may fail in some environments (e.g. file://), ignore
+    console.warn('Firebase analytics not available', err);
+  }
+</script>
+<script>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAuKiIO5uoaLPz8tzDcjeSy-uhT8Y29PBM",
+  authDomain: "edumate-technical.firebaseapp.com",
+  projectId: "edumate-technical",
+  storageBucket: "edumate-technical.firebasestorage.app",
+  messagingSenderId: "856347096269",
+  appId: "1:856347096269:web:af2d3e4874e3f330652584",
+  measurementId: "G-7BZKYQ4H2D"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
