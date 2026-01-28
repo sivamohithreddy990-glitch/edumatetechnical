@@ -232,7 +232,7 @@ body{
   <div class="input-bar-container">
 
     <div class="staged-box" id="stagedBox">
-      <img src="" id="stagedImg">
+      <img src="" id="stagedImg" style="display:none;">
       <div class="staged-text">Image ready to send...</div>
       <div class="remove-staged" id="removeStaged">×</div>
     </div>
@@ -472,8 +472,17 @@ function appendTextMessage(text, role = 'user') {
   appendMessageEl(d, role);
 }
 function appendImageMessage(dataUrl, role = 'user') {
+  // ✅ STOP if image is empty or invalid
+  if (!dataUrl || dataUrl === "" || dataUrl === window.location.href) return;
+
   const img = document.createElement('img');
   img.src = dataUrl;
+
+  // ✅ if image fails to load, remove it
+  img.onerror = function () {
+    this.remove();
+  };
+
   appendMessageEl(img, role);
 }
 function clearChatArea(keepWelcome = true) {
@@ -629,7 +638,7 @@ removeStaged.addEventListener('click', () => {
 //   when user clicks "New Chat".
 sendBtn.addEventListener('click', async () => {
   const text = questionInput.value.trim();
-  const hasImage = stagedImg.src && stagedImg.src.length > 0;
+  const hasImage = stagedImg.src && stagedImg.src.startsWith("data:image");
   if (!text && !hasImage) return;
 
   // Add image first if exists
