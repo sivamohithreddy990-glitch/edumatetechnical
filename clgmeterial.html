@@ -4,193 +4,127 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>B.Tech Study Hub</title>
-
 <style>
-:root{
-  --bg:#f4f6fb;
-  --card:#ffffff;
-  --text:#1e293b;
-  --primary:#2563eb;
-  --shadow:0 8px 20px rgba(0,0,0,0.08);
-}
-
-body.dark{
-  --bg:#0f172a;
-  --card:#1e293b;
-  --text:#e5e7eb;
-  --primary:#60a5fa;
-  --shadow:0 8px 25px rgba(0,0,0,0.4);
-}
-
-body{
-  margin:0;
-  font-family:Poppins, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  transition:0.3s;
-}
-
-.container{
-  max-width:600px;
-  margin:auto;
-  padding:20px;
-}
-
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-h1{
-  color:var(--primary);
-  font-size:24px;
-}
-
-button{
-  border:none;
-  padding:10px 16px;
-  border-radius:30px;
-  cursor:pointer;
-  background:var(--card);
-  box-shadow:var(--shadow);
-  font-weight:600;
-}
-
-#search{
-  width:100%;
-  padding:14px;
-  margin:20px 0;
-  border:none;
-  outline:none;
-  border-radius:14px;
-  background:var(--card);
-  box-shadow:var(--shadow);
-  font-size:15px;
-}
-
-.card{
-  background:var(--card);
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:var(--shadow);
-  transition:0.3s;
-}
-
-.card:hover{
-  transform:translateY(-4px);
-}
-
-.icon{
-  font-size:36px;
-  text-align:center;
-}
-
-.title{
-  text-align:center;
-  font-weight:600;
-  margin:8px 0;
-}
-
-.btn-box{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-}
-
-.btn{
-  flex:1;
-  padding:10px;
-  text-align:center;
-  border-radius:12px;
-  font-size:14px;
-  font-weight:600;
-  text-decoration:none;
-}
-
-.view{
-  border:2px solid var(--primary);
-  color:var(--primary);
-}
-
-.view:hover{
-  background:rgba(37,99,235,0.15);
-}
-
-.download{
-  background:var(--primary);
-  color:white;
-}
-
-.download:hover{
-  opacity:0.9;
-}
+body{font-family:Poppins,sans-serif;background:#f4f6fb;margin:0;padding:20px;}
+.container{max-width:720px;margin:auto;}
+h1{text-align:center;color:#2563eb;margin-bottom:10px;}
+#search{width:100%;padding:14px;border:none;border-radius:14px;margin:15px 0;font-size:15px;box-shadow:0 6px 15px rgba(0,0,0,0.08);}
+.card{background:white;border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 20px rgba(0,0,0,0.08);transition:0.25s;cursor:pointer;}
+.card:hover{transform:translateY(-4px);}
+.subject-box{text-align:center;}
+.sub-icon{font-size:40px;margin-bottom:6px;}
+.sub-name{font-size:18px;font-weight:600;}
+.units{margin-top:14px;}
+.unit{display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:10px 12px;border-radius:10px;margin:8px 0;}
+.unit-left{display:flex;align-items:center;gap:8px;font-weight:600;}
+.unit-icon{font-size:18px;}
+.btn{text-decoration:none;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600;margin-left:6px;}
+.view{border:2px solid #2563eb;color:#2563eb;}
+.download{background:#2563eb;color:white;}
+.back-btn{display:inline-block;margin-bottom:15px;padding:8px 14px;background:#2563eb;color:white;border-radius:8px;text-decoration:none;}
 </style>
 </head>
-
 <body>
 
-<div class="container">
-
-<header>
-  <h1>📚 B.Tech Study Hub</h1>
-  <button onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
-</header>
-
-<input type="text" id="search" placeholder="Search subjects..." onkeyup="searchSubjects()">
-
+<div class="container" id="mainPage">
+<h1>📚 B.Tech Study Hub</h1>
+<input type="text" id="search" placeholder="Search subject..." onkeyup="searchSubjects()">
 <div id="subjectList"></div>
+</div>
 
+<div class="container" id="subjectPage" style="display:none;">
+<a href="#" class="back-btn" onclick="showMain()">← Back to Subjects</a>
+<h1 id="subjectTitle"></h1>
+<div id="subjectUnits"></div>
 </div>
 
 <script>
 const subjects = [
-  {icon:"☕",
-   name:"Java Programming", 
-   file:[
-       {title:"Unit 1", file:"pdf/java/unit1.pdf"},
-       {title:"Unit 2", file:"pdf/java/unit2.pdf"},
-       {title:"Unit 3", file:"pdf/java/unit3.pdf"},
-       {title:"Unit 4", file:"pdf/java/unit4.pdf"},
-       {title:"Unit 5", file:"pdf/java/unit5.pdf"},
-       {title:"Question Bank", file:"pdf/java/questionbank.pdf"}
-       ]
-      },
-  {icon:"EN", name:"English", file:"pdf/english_QB.pdf"},
-  {icon:"⚡", name:"BEEE", file:"pdf/beee.pdf"},
-  {icon:"🏗️", name:"BCME", file:"pdf/bcme.pdf"},
-  {icon:"🅲", name:"C Programming", file:"pdf/c.pdf"},
-  {icon:"🐍", name:"Python Programming", file:"pdf/python.pdf"},
-  {icon:"📊", name:"Data Structures", file:"pdf/ds.pdf"},
-  {icon:"🗄️", name:"DBMS", file:"pdf/dbms.pdf"},
-
-  {icon:"💻", name:"Operating System", file:"pdf/os.pdf"},
-  {icon:"🌐", name:"Computer Networks", file:"pdf/cn.pdf"},
-  {icon:"📐", name:"Linear Algebra & Calculus", file:"pdf/m1.pdf"},
-  {icon:"√x", name:"Vector Calculus", file:"pdf/m2.pdf"},
- {icon:"♾️", name:"DISCRETE MATHEMATICS AND GRAPH THEORY", file:"pdf/m3.html"},
-      {icon:"🔢", name:"PROBABILITY AND STATISTICS", file:"pdf/m2.pdf"},
-  {icon:"⚛️", name:"Engineering Physics", file:"pdf/physics.pdf"},
-  {icon:"🧪", name:"Engineering Chemistry", file:"pdf/chemistry.pdf"},
-  {icon:"🌱", name:"Environmental Science", file:"pdf/evs.pdf"}
+{
+  icon:"☕",
+  name:"Java Programming",
+  units:[
+    {icon:"📘", title:"Unit 1", file:"pdf/java/unit1.pdf"},
+    {icon:"📗", title:"Unit 2", file:"pdf/java/unit2.pdf"},
+    {icon:"📕", title:"Unit 3", file:"pdf/java/unit3.pdf"},
+    {icon:"📙", title:"Unit 4", file:"pdf/java/unit4.pdf"},
+    {icon:"📒", title:"Unit 5", file:"pdf/java/unit5.pdf"},
+    {icon:"📝", title:"Question Bank", file:"pdf/java/questionbank.pdf"}
+  ]
+},
+{
+  icon:"📖",
+  name:"English",
+  units:[
+    {icon:"📘", title:"Unit 1", file:"pdf/english/unit1.pdf"},
+    {icon:"📗", title:"Unit 2", file:"pdf/english/unit2.pdf"},
+    {icon:"📕", title:"Unit 3", file:"pdf/english/unit3.pdf"},
+    {icon:"📙", title:"Unit 4", file:"pdf/english/unit4.pdf"},
+    {icon:"📒", title:"Unit 5", file:"pdf/english/unit5.pdf"},
+    {icon:"📝", title:"Question Bank", file:"pdf/english/questionbank.pdf"}
+  ]
+},
+{
+  icon:"⚡",
+  name:"BEEE",
+  units:[
+    {icon:"📘", title:"Unit 1", file:"pdf/beee/unit1.pdf"},
+    {icon:"📗", title:"Unit 2", file:"pdf/beee/unit2.pdf"},
+    {icon:"📕", title:"Unit 3", file:"pdf/beee/unit3.pdf"},
+    {icon:"📙", title:"Unit 4", file:"pdf/beee/unit4.pdf"},
+    {icon:"📒", title:"Unit 5", file:"pdf/beee/unit5.pdf"},
+    {icon:"📝", title:"Question Bank", file:"pdf/beee/questionbank.pdf"}
+  ]
+},
+{
+  icon:"🅲",
+  name:"C Programming",
+  units:[
+    {icon:"📘", title:"Unit 1", file:"pdf/c/unit1.pdf"},
+    {icon:"📗", title:"Unit 2", file:"pdf/c/unit2.pdf"},
+    {icon:"📕", title:"Unit 3", file:"pdf/c/unit3.pdf"},
+    {icon:"📙", title:"Unit 4", file:"pdf/c/unit4.pdf"},
+    {icon:"📒", title:"Unit 5", file:"pdf/c/unit5.pdf"},
+    {icon:"📝", title:"Question Bank", file:"pdf/c/questionbank.pdf"}
+  ]
+}
 ];
 
 function loadSubjects(list){
   const box = document.getElementById("subjectList");
   box.innerHTML = "";
-  list.forEach(s=>{
+  list.forEach((s,index)=>{
     box.innerHTML += `
-      <div class="card">
-        <div class="icon">${s.icon}</div>
-        <div class="title">${s.name}</div>
-        <div class="btn-box">
-          <a class="btn view" href="${s.file}" target="_blank">👁 View</a>
-          <a class="btn download" href="${s.file}" download>⬇ Download</a>
+      <div class="card" onclick="openSubject(${index})">
+        <div class="subject-box">
+          <div class="sub-icon">${s.icon}</div>
+          <div class="sub-name">${s.name}</div>
         </div>
       </div>
     `;
   });
+}
+
+function openSubject(i){
+  const s = subjects[i];
+  document.getElementById("mainPage").style.display = "none";
+  document.getElementById("subjectPage").style.display = "block";
+  document.getElementById("subjectTitle").innerHTML = `${s.icon} ${s.name}`;
+  const unitsHTML = s.units.map(u=>{
+    return `<div class="unit">
+      <div class="unit-left"><span class="unit-icon">${u.icon}</span>${u.title}</div>
+      <div>
+        <a class="btn view" href="${u.file}" target="_blank">View</a>
+        <a class="btn download" href="${u.file}" download>Download</a>
+      </div>
+    </div>`;
+  }).join("");
+  document.getElementById("subjectUnits").innerHTML = unitsHTML;
+}
+
+function showMain(){
+  document.getElementById("subjectPage").style.display = "none";
+  document.getElementById("mainPage").style.display = "block";
 }
 
 function searchSubjects(){
@@ -199,13 +133,7 @@ function searchSubjects(){
   loadSubjects(filtered);
 }
 
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-  themeBtn.innerText = document.body.classList.contains("dark") ? "☀ Light" : "🌙 Dark";
-}
-
 loadSubjects(subjects);
 </script>
-
 </body>
 </html>
