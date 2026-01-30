@@ -66,7 +66,7 @@ header h1 { font-size: 36px; text-shadow:0 0 20px var(--primary); letter-spacing
 
 <div id="dashboard">
     <div class="features">
-      <div class="circle-card" onclick="showSection('companies')">10 TOP<br>RECRUITERS</div>
+      <div class="circle-card" onclick="showSection('companies')"> TOP <br>RECRUITERS</div>
       <div class="circle-card" onclick="showSection('roadmap')">8-SEMESTER<br>PLAN</div>
       <div class="circle-card" onclick="showSection('resume')">RESUME<br>BUILDER</div>
       <div class="circle-card" onclick="showSection('scholarships')">SCHOLARSHIP<br>PORTAL</div>
@@ -1049,7 +1049,7 @@ function showSection(type) {
     window.scrollTo(0,0);
 
     if(type === 'companies') {
-        container.innerHTML = `<h2>10 Big Recruiters Database</h2><input type="text" id="search-input" placeholder="Search Company (Google, TCS, etc)..." onkeyup="searchComp()"><div id="clist"></div>`;
+        container.innerHTML = `<h2> JOB Recruitments </h2><input type="text" id="search-input" placeholder="Search Company (Google, TCS, etc)..." onkeyup="searchComp()"><div id="clist"></div>`;
         renderComp(companyList);
     } 
     else if(type === 'roadmap') {
