@@ -83,17 +83,963 @@ header h1 { font-size: 36px; text-shadow:0 0 20px var(--primary); letter-spacing
 <script>
 // COMPLETE DATA STORAGE
 const companyList = [
-    { name: "Google", tier: "tier-1", sal: "₹45L - ₹60L", time: "Study: Jan-June | Apply: July", info: "Elite Tier. Focus on Distributed Systems, Advanced DSA, and Scalability. Google interviews are famous for testing deep logic and clean code. They value participation in Open Source and competitive programming like CodeJam.", link: "https://careers.google.com/", yt: "https://www.youtube.com/watch?v=XKtFBESe78w" },
-    { name: "Microsoft", tier: "tier-1", sal: "₹42L - ₹52L", time: "Study: Feb-July | Apply: Aug", info: "Elite Tier. Azure Cloud, Operating Systems, and high-level Algorithm design. Microsoft looks for candidates who can solve complex architectural problems and have a strong grasp of Software Development Life Cycle (SDLC).", link: "https://careers.microsoft.com/", yt: "https://www.youtube.com/watch?v=jW_97tY3Ubg" },
-    { name: "Amazon", tier: "tier-1", sal: "₹38L - ₹48L", time: "Study: Mar-Aug | Apply: Sept", info: "Elite Tier. Heavy focus on Amazon Leadership Principles. You must excel in both technical coding and 'behavioral' rounds where they test your ownership and customer obsession qualities.", link: "https://www.amazon.jobs/", yt: "https://www.youtube.com/watch?v=8m9InOQeT7M" },
-    { name: "NVIDIA", tier: "tier-1", sal: "₹35L - ₹45L", time: "Study: Jan-May | Apply: June", info: "Elite Tier. Leader in AI hardware. Requires strong C++, Graphics programming, and Hardware-Software interface knowledge. NVIDIA is perfect for students targeting high-end Research or GPU computing roles.", link: "https://www.nvidia.com/careers/", yt: "https://www.youtube.com/watch?v=0kFshX3vT7M" },
-    { name: "Adobe", tier: "tier-1", sal: "₹30L - ₹40L", time: "Study: Feb-June | Apply: July", info: "Elite Tier. Known for hiring high-talent individuals for Design and Cloud products. They have specialized diversity hiring drives like 'Adobe WIT' (Women in Tech) with incredible packages.", link: "https://www.adobe.com/careers.html", yt: "https://www.youtube.com/results?search_query=adobe+interview+experience" },
-    { name: "TCS Prime", tier: "tier-2", sal: "₹9L - ₹12L", time: "Study: May-Aug | Apply: Sept", info: "Mid Tier. The premium hiring variant for TCS. Requires high scores in the NQT (Advanced Section). This role bridges the gap between mass hiring and elite product-based roles.", link: "https://nextstep.tcs.com/", yt: "https://www.youtube.com/watch?v=UyLjCyPAtno" },
-    { name: "Accenture", tier: "tier-2", sal: "₹6.5L - ₹10L", time: "Study: June-Aug | Apply: Sept", info: "Mid Tier. Accenture Digital and Consulting roles. They look for logical reasoning, cloud awareness, and adaptability. Their hiring process is very smooth and automated for the 2026 batch.", link: "https://www.accenture.com/careers", yt: "https://www.youtube.com/watch?v=OXjatbO11bA" },
-    { name: "ZS Associates", tier: "tier-2", sal: "₹11L - ₹14L", time: "Study: Apr-July | Apply: Aug", info: "Mid Tier. Top choice for Data Analytics and Consulting. Focus on Guesstimates, Puzzles, and Case Study interviews. Strong math and data interpretation skills are mandatory.", link: "https://www.zs.com/careers", yt: "https://www.youtube.com/results?search_query=zs+associates+interview" },
-    { name: "Infosys DSE", tier: "tier-3", sal: "₹6.5L - ₹9.5L", time: "Study: May-Aug | Apply: Sept", info: "Specialist Tier. The Digital Specialist Engineer role focuses on full-stack development and complex coding tests. It offers much faster growth than the standard 'System Engineer' role.", link: "https://www.infosys.com/careers/", yt: "https://www.youtube.com/results?search_query=infosys+dse+interview" },
-    { name: "Wipro Turbo", tier: "tier-3", sal: "₹6.5L - ₹8.5L", time: "Study: June-Aug | Apply: Oct", info: "Premium Tier. Wipro's top-level hiring through the Turbo challenge. Focuses on Java/Python proficiency and ability to solve real-world logic modules within strict time limits.", link: "https://www.wipro.com/careers/", yt: "https://www.youtube.com/results?search_query=wipro+turbo+interview" }
+
+  // ===================== TIER 1 (TOP PRODUCT-BASED COMPANIES) =====================
+
+  {
+    name: "Google",
+    tier: "tier-1",
+    role: "Software Engineer",
+    sal: "₹45L - ₹60L",
+    info: `Google is a global leader in AI, cloud, and search technologies.
+Focus on DSA, System Design, Distributed Systems, and scalability.
+Strong coding skills in C++, Java, Python are required.
+Google values open-source contributions and problem-solving ability.
+Interview includes coding, system design, and behavioral rounds.`,
+    link: "https://careers.google.com/",
+    yt: "https://www.youtube.com/results?search_query=google+software+engineer+interview"
+  },
+
+  {
+    name: "Microsoft",
+    tier: "tier-1",
+    role: "Software Engineer",
+    sal: "₹42L - ₹52L",
+    info: `Microsoft focuses on cloud (Azure), OS, and enterprise solutions.
+Requires strong fundamentals in DSA, OS, DBMS, and OOPS.
+Candidates with real-world projects and internships are preferred.
+Interview process includes coding, technical, and managerial rounds.
+Microsoft values teamwork, innovation, and problem-solving skills.`,
+    link: "https://careers.microsoft.com/",
+    yt: "https://www.youtube.com/results?search_query=microsoft+interview+experience"
+  },
+
+  {
+    name: "Amazon",
+    tier: "tier-1",
+    role: "SDE",
+    sal: "₹38L - ₹48L",
+    info: `Amazon is known for its strong leadership principles.
+Focus on DSA, OOPS, and behavioral interview questions.
+Candidates must show ownership, customer obsession, and scalability skills.
+Interview includes online coding test and multiple technical rounds.
+Amazon values logical thinking and real-world problem-solving.`,
+    link: "https://www.amazon.jobs/",
+    yt: "https://www.youtube.com/results?search_query=amazon+sde+interview"
+  },
+
+  {
+    name: "Meta (Facebook)",
+    tier: "tier-1",
+    role: "Web / Backend Engineer",
+    sal: "₹40L - ₹55L",
+    info: `Meta builds large-scale social media platforms.
+Focus on React, Backend systems, APIs, and System Design.
+Strong coding and scalable architecture knowledge are required.
+Interview includes coding, design, and cultural fit rounds.
+Meta values innovation, speed, and product thinking.`,
+    link: "https://www.metacareers.com/",
+    yt: "https://www.youtube.com/results?search_query=meta+software+engineer+interview"
+  },
+
+  {
+    name: "Apple",
+    tier: "tier-1",
+    role: "Software Engineer",
+    sal: "₹35L - ₹50L",
+    info: `Apple focuses on hardware-software integration and product design.
+Requires knowledge of C++, Swift, OS, and low-level systems.
+Candidates must understand performance optimization and architecture.
+Interview includes technical deep-dive and managerial discussions.
+Apple values creativity, precision, and engineering excellence.`,
+    link: "https://jobs.apple.com/",
+    yt: "https://www.youtube.com/results?search_query=apple+software+engineer+interview"
+  },
+
+  {
+    name: "Netflix",
+    tier: "tier-1",
+    role: "Backend Engineer",
+    sal: "₹50L - ₹70L",
+    info: `Netflix is a high-paying product-based company.
+Focus on distributed systems, microservices, and cloud architecture.
+Requires strong backend knowledge and system design skills.
+Interview includes architecture design and coding challenges.
+Netflix values senior-level engineering and scalability expertise.`,
+    link: "https://jobs.netflix.com/",
+    yt: "https://www.youtube.com/results?search_query=netflix+software+engineer+interview"
+  },
+
+  {
+    name: "NVIDIA",
+    tier: "tier-1",
+    role: "AI / Systems Engineer",
+    sal: "₹35L - ₹45L",
+    info: `NVIDIA is a leader in AI hardware and GPU computing.
+Focus on C++, AI algorithms, and hardware-software integration.
+Candidates should understand graphics, ML, and system programming.
+Interview includes technical coding and research-based questions.
+NVIDIA values innovation in AI and high-performance computing.`,
+    link: "https://www.nvidia.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=nvidia+interview+experience"
+  },
+
+  {
+    name: "Adobe",
+    tier: "tier-1",
+    role: "Full Stack Developer",
+    sal: "₹30L - ₹40L",
+    info: `Adobe develops creative and cloud-based products.
+Focus on Java, JavaScript, React, and system design.
+Candidates must have strong coding and design skills.
+Interview includes coding, technical discussion, and HR rounds.
+Adobe values creativity, problem-solving, and teamwork.`,
+    link: "https://www.adobe.com/careers.html",
+    yt: "https://www.youtube.com/results?search_query=adobe+interview+experience"
+  },
+
+  // ===================== TIER 2 (MID PRODUCT + SERVICE COMPANIES) =====================
+
+  {
+    name: "Flipkart",
+    tier: "tier-2",
+    role: "Backend Engineer",
+    sal: "₹18L - ₹25L",
+    info: `Flipkart is India’s largest e-commerce platform.
+Focus on backend systems, DSA, and scalability.
+Candidates must understand databases and distributed systems.
+Interview includes coding, system design, and HR rounds.
+Flipkart values problem-solving and business understanding.`,
+    link: "https://www.flipkartcareers.com/",
+    yt: "https://www.youtube.com/results?search_query=flipkart+interview"
+  },
+
+  {
+    name: "Paytm",
+    tier: "tier-2",
+    role: "Software Engineer",
+    sal: "₹15L - ₹22L",
+    info: `Paytm is a leading fintech company in India.
+Focus on backend systems, APIs, and fintech architecture.
+Candidates must know Java, databases, and system design.
+Interview includes technical coding and product discussions.
+Paytm values innovation and fintech knowledge.`,
+    link: "https://jobs.paytm.com/",
+    yt: "https://www.youtube.com/results?search_query=paytm+interview"
+  },
+
+  {
+    name: "Swiggy",
+    tier: "tier-2",
+    role: "Backend Developer",
+    sal: "₹14L - ₹20L",
+    info: `Swiggy is a food-tech and logistics company.
+Focus on microservices, backend systems, and scalability.
+Candidates must understand distributed architecture.
+Interview includes coding and design discussions.
+Swiggy values fast problem-solving and scalability skills.`,
+    link: "https://careers.swiggy.com/",
+    yt: "https://www.youtube.com/results?search_query=swiggy+interview"
+  },
+
+  {
+    name: "Zomato",
+    tier: "tier-2",
+    role: "Full Stack Developer",
+    sal: "₹14L - ₹20L",
+    info: `Zomato is a global food delivery platform.
+Focus on full-stack development and system scalability.
+Candidates must know React, Node.js, and databases.
+Interview includes coding and architecture questions.
+Zomato values product thinking and user experience.`,
+    link: "https://www.zomato.com/careers",
+    yt: "https://www.youtube.com/results?search_query=zomato+interview"
+  },
+
+  {
+    name: "PhonePe",
+    tier: "tier-2",
+    role: "Backend Engineer",
+    sal: "₹16L - ₹23L",
+    info: `PhonePe is a UPI-based fintech platform.
+Focus on distributed systems and backend engineering.
+Candidates must understand scalability and fintech systems.
+Interview includes coding and system design rounds.
+PhonePe values security and reliability.`,
+    link: "https://www.phonepe.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=phonepe+interview"
+  },
+
+  {
+    name: "TCS",
+    tier: "tier-2",
+    role: "Software Engineer",
+    sal: "₹3.5L - ₹12L",
+    info: `TCS is India’s largest IT services company.
+Focus on aptitude, coding basics, and technical fundamentals.
+Candidates must clear NQT and technical interviews.
+Interview includes aptitude, coding, and HR rounds.
+TCS values consistency and technical basics.`,
+    link: "https://nextstep.tcs.com/",
+    yt: "https://www.youtube.com/results?search_query=tcs+interview"
+  },
+
+  {
+    name: "Accenture",
+    tier: "tier-2",
+    role: "Full Stack / Cloud Engineer",
+    sal: "₹6.5L - ₹10L",
+    info: `Accenture is a global consulting and IT services company.
+Focus on cloud, full-stack development, and logical reasoning.
+Candidates must know Java, databases, and cloud basics.
+Interview includes aptitude, technical, and HR rounds.
+Accenture values adaptability and communication skills.`,
+    link: "https://www.accenture.com/careers",
+    yt: "https://www.youtube.com/results?search_query=accenture+interview"
+  },
+
+  // ===================== TIER 3 (SERVICE BASED COMPANIES) =====================
+
+  {
+    name: "Infosys",
+    tier: "tier-3",
+    role: "Software Engineer",
+    sal: "₹3.6L - ₹9L",
+    info: `Infosys is a major IT service company.
+Focus on Java, SQL, aptitude, and technical fundamentals.
+Candidates must clear online test and technical interview.
+Interview includes aptitude, coding, and HR rounds.
+Infosys values technical basics and communication skills.`,
+    link: "https://www.infosys.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=infosys+interview"
+  },
+
+  {
+    name: "Wipro",
+    tier: "tier-3",
+    role: "Developer",
+    sal: "₹3.5L - ₹8.5L",
+    info: `Wipro is a global IT services company.
+Focus on coding basics, aptitude, and logical reasoning.
+Candidates must clear online test and technical interview.
+Interview includes coding and HR discussions.
+Wipro values adaptability and technical fundamentals.`,
+    link: "https://www.wipro.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=wipro+interview"
+  },
+
+  {
+    name: "HCL",
+    tier: "tier-3",
+    role: "Software Engineer",
+    sal: "₹4L - ₹9L",
+    info: `HCL focuses on enterprise IT solutions.
+Requires knowledge of Java, networking, and databases.
+Candidates must clear technical and HR rounds.
+Interview includes aptitude and technical questions.
+HCL values infrastructure and system knowledge.`,
+    link: "https://www.hcltech.com/careers",
+    yt: "https://www.youtube.com/results?search_query=hcl+interview"
+  },
+
+
+  // ===================== TIER 1 (GLOBAL PRODUCT COMPANIES) =====================
+
+  {
+    name: "Tesla",
+    tier: "tier-1",
+    role: "Software Engineer",
+    sal: "₹35L - ₹50L",
+    info: `Tesla builds software for electric vehicles and AI systems.
+Focus on C++, Python, AI, and embedded systems.
+Candidates must understand system-level programming.
+Interview includes coding and technical design rounds.
+Tesla values innovation and engineering excellence.`,
+    link: "https://www.tesla.com/careers",
+    yt: "https://www.youtube.com/results?search_query=tesla+software+engineer+interview"
+  },
+
+  {
+    name: "IBM",
+    tier: "tier-1",
+    role: "Cloud Engineer",
+    sal: "₹20L - ₹35L",
+    info: `IBM focuses on cloud computing and enterprise solutions.
+Requires knowledge of cloud, AI, and backend systems.
+Candidates must know Java, Python, and databases.
+Interview includes technical and behavioral rounds.
+IBM values research and enterprise-level skills.`,
+    link: "https://www.ibm.com/careers",
+    yt: "https://www.youtube.com/results?search_query=ibm+interview"
+  },
+
+  {
+    name: "Oracle",
+    tier: "tier-1",
+    role: "Database Engineer",
+    sal: "₹22L - ₹32L",
+    info: `Oracle is a leader in database and enterprise software.
+Focus on SQL, Java, and system design.
+Candidates must understand databases deeply.
+Interview includes coding and database questions.
+Oracle values technical depth and scalability knowledge.`,
+    link: "https://www.oracle.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=oracle+interview"
+  },
+
+  {
+    name: "SAP",
+    tier: "tier-1",
+    role: "Enterprise Developer",
+    sal: "₹18L - ₹30L",
+    info: `SAP builds enterprise ERP software.
+Focus on Java, ABAP, and enterprise systems.
+Candidates must understand business processes.
+Interview includes technical and functional questions.
+SAP values enterprise knowledge and problem-solving.`,
+    link: "https://jobs.sap.com/",
+    yt: "https://www.youtube.com/results?search_query=sap+interview"
+  },
+
+  {
+    name: "Intel",
+    tier: "tier-1",
+    role: "Systems Engineer",
+    sal: "₹25L - ₹40L",
+    info: `Intel designs processors and hardware systems.
+Focus on C++, OS, and hardware architecture.
+Candidates must understand low-level programming.
+Interview includes technical and system questions.
+Intel values performance optimization skills.`,
+    link: "https://jobs.intel.com/",
+    yt: "https://www.youtube.com/results?search_query=intel+interview"
+  },
+
+  // ===================== TIER 2 (INDIAN PRODUCT & MID COMPANIES) =====================
+
+  {
+    name: "Myntra",
+    tier: "tier-2",
+    role: "Full Stack Developer",
+    sal: "₹12L - ₹20L",
+    info: `Myntra is an Indian fashion e-commerce company.
+Focus on frontend, backend, and scalability.
+Candidates must know React, Node.js, and databases.
+Interview includes coding and system design.
+Myntra values UI/UX and performance optimization.`,
+    link: "https://careers.myntra.com/",
+    yt: "https://www.youtube.com/results?search_query=myntra+interview"
+  },
+
+  {
+    name: "Ola",
+    tier: "tier-2",
+    role: "Backend Engineer",
+    sal: "₹12L - ₹18L",
+    info: `Ola is a ride-sharing and mobility company.
+Focus on backend systems and APIs.
+Candidates must understand scalability and microservices.
+Interview includes coding and design rounds.
+Ola values real-time system knowledge.`,
+    link: "https://www.olacabs.com/careers",
+    yt: "https://www.youtube.com/results?search_query=ola+interview"
+  },
+
+  {
+    name: "Byju’s",
+    tier: "tier-2",
+    role: "Software Developer",
+    sal: "₹10L - ₹16L",
+    info: `Byju’s is an ed-tech company.
+Focus on full-stack development and mobile apps.
+Candidates must know JavaScript and backend basics.
+Interview includes coding and technical discussions.
+Byju’s values product development skills.`,
+    link: "https://byjus.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=byjus+interview"
+  },
+
+  {
+    name: "Razorpay",
+    tier: "tier-2",
+    role: "Backend Engineer",
+    sal: "₹15L - ₹22L",
+    info: `Razorpay is a fintech payment platform.
+Focus on APIs, backend systems, and security.
+Candidates must understand distributed systems.
+Interview includes coding and fintech questions.
+Razorpay values reliability and scalability.`,
+    link: "https://razorpay.com/jobs/",
+    yt: "https://www.youtube.com/results?search_query=razorpay+interview"
+  },
+
+  {
+    name: "Freshworks",
+    tier: "tier-2",
+    role: "Software Engineer",
+    sal: "₹12L - ₹18L",
+    info: `Freshworks builds SaaS products.
+Focus on backend, cloud, and product development.
+Candidates must know Java, Python, or Node.js.
+Interview includes coding and product discussions.
+Freshworks values SaaS and cloud skills.`,
+    link: "https://www.freshworks.com/company/careers/",
+    yt: "https://www.youtube.com/results?search_query=freshworks+interview"
+  },
+
+  // ===================== TIER 3 (SERVICE & IT COMPANIES) =====================
+
+  {
+    name: "Tech Mahindra",
+    tier: "tier-3",
+    role: "Software Engineer",
+    sal: "₹3.5L - ₹8L",
+    info: `Tech Mahindra is an IT services company.
+Focus on Java, networking, and aptitude.
+Candidates must clear online tests and interviews.
+Interview includes technical and HR rounds.
+Tech Mahindra values communication skills.`,
+    link: "https://careers.techmahindra.com/",
+    yt: "https://www.youtube.com/results?search_query=tech+mahindra+interview"
+  },
+
+  {
+    name: "Capgemini",
+    tier: "tier-3",
+    role: "Developer",
+    sal: "₹4L - ₹7.5L",
+    info: `Capgemini provides consulting and IT services.
+Focus on coding basics and logical reasoning.
+Candidates must clear aptitude and technical rounds.
+Interview includes coding and HR discussions.
+Capgemini values adaptability.`,
+    link: "https://www.capgemini.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=capgemini+interview"
+  },
+
+  {
+    name: "Cognizant",
+    tier: "tier-3",
+    role: "Programmer Analyst",
+    sal: "₹4L - ₹9L",
+    info: `Cognizant is a global IT services company.
+Focus on Java, SQL, and technical fundamentals.
+Candidates must clear online tests.
+Interview includes technical and HR rounds.
+Cognizant values technical basics.`,
+    link: "https://careers.cognizant.com/",
+    yt: "https://www.youtube.com/results?search_query=cognizant+interview"
+  },
+
+  {
+    name: "L&T Infotech",
+    tier: "tier-3",
+    role: "Software Engineer",
+    sal: "₹4L - ₹8L",
+    info: `L&T Infotech focuses on enterprise IT solutions.
+Requires knowledge of Java and databases.
+Candidates must clear technical interviews.
+Interview includes aptitude and HR rounds.
+L&T values enterprise system knowledge.`,
+    link: "https://careers.lntinfotech.com/",
+    yt: "https://www.youtube.com/results?search_query=l%26t+infotech+interview"
+  },
+
+  // ===================== STARTUPS & SMALL COMPANIES =====================
+
+  {
+    name: "Zoho",
+    tier: "startup",
+    role: "Software Developer",
+    sal: "₹8L - ₹15L",
+    info: `Zoho is a product-based SaaS company.
+Focus on coding skills and real-world projects.
+Candidates must clear Zoho coding tests.
+Interview includes technical and HR rounds.
+Zoho values product development skills.`,
+    link: "https://www.zoho.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=zoho+interview"
+  },
+
+  {
+    name: "Cred",
+    tier: "startup",
+    role: "Backend Engineer",
+    sal: "₹15L - ₹25L",
+    info: `Cred is a fintech startup in India.
+Focus on backend systems and scalability.
+Candidates must understand APIs and microservices.
+Interview includes coding and system design.
+Cred values innovation and fintech skills.`,
+    link: "https://careers.cred.club/",
+    yt: "https://www.youtube.com/results?search_query=cred+interview"
+  },
+
+  {
+    name: "Meesho",
+    tier: "startup",
+    role: "Software Engineer",
+    sal: "₹10L - ₹18L",
+    info: `Meesho is an e-commerce startup.
+Focus on backend systems and mobile apps.
+Candidates must know Java and React.
+Interview includes coding and product discussions.
+Meesho values growth mindset.`,
+    link: "https://careers.meesho.com/",
+    yt: "https://www.youtube.com/results?search_query=meesho+interview"
+  },
+
+  {
+    name: "Groww",
+    tier: "startup",
+    role: "Full Stack Developer",
+    sal: "₹12L - ₹20L",
+    info: `Groww is a fintech investment platform.
+Focus on frontend, backend, and APIs.
+Candidates must know JavaScript and databases.
+Interview includes coding and design rounds.
+Groww values fintech knowledge.`,
+    link: "https://groww.in/careers",
+    yt: "https://www.youtube.com/results?search_query=groww+interview"
+  },
+
+  {
+    name: "Unacademy",
+    tier: "startup",
+    role: "Software Developer",
+    sal: "₹10L - ₹16L",
+    info: `Unacademy is an ed-tech startup.
+Focus on mobile apps and backend systems.
+Candidates must know Java and Node.js.
+Interview includes coding and technical discussions.
+Unacademy values learning and innovation.`,
+    link: "https://unacademy.com/careers",
+    yt: "https://www.youtube.com/results?search_query=unacademy+interview"
+  },
+ 
+  // ===================== CIVIL ENGINEERING COMPANIES =====================
+
+  {
+    name: "Larsen & Toubro (L&T Construction)",
+    branch: "Civil",
+    tier: "core",
+    sal: "₹6L - ₹15L",
+    info: `L&T is India's largest construction company.
+Focus on infrastructure, highways, metro, and buildings.
+Civil engineers work on project planning and execution.
+Interviews test technical knowledge and site experience.
+L&T values practical knowledge and project management skills.`,
+    link: "https://www.larsentoubro.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=l%26t+civil+engineer+interview"
+  },
+
+  {
+    name: "Tata Projects",
+    branch: "Civil",
+    tier: "core",
+    sal: "₹5L - ₹12L",
+    info: `Tata Projects handles large infrastructure projects.
+Focus on construction, design, and engineering solutions.
+Civil engineers work on bridges, roads, and power plants.
+Interviews test technical and site knowledge.
+Tata values safety and engineering quality.`,
+    link: "https://www.tataprojects.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=tata+projects+interview"
+  },
+
+  {
+    name: "Shapoorji Pallonji",
+    branch: "Civil",
+    tier: "core",
+    sal: "₹5L - ₹10L",
+    info: `Shapoorji Pallonji is a global construction company.
+Focus on real estate and infrastructure projects.
+Civil engineers work on design and execution.
+Interviews focus on structural engineering and site work.
+Company values technical expertise and teamwork.`,
+    link: "https://www.shapoorjipallonji.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=shapoorji+pallonji+interview"
+  },
+
+  {
+    name: "Afcons Infrastructure",
+    branch: "Civil",
+    tier: "core",
+    sal: "₹4.5L - ₹9L",
+    info: `Afcons is a leading infrastructure company.
+Focus on metro, railways, and marine projects.
+Civil engineers work on large-scale construction.
+Interviews test core civil concepts and site knowledge.
+Afcons values practical engineering skills.`,
+    link: "https://www.afcons.com/careers",
+    yt: "https://www.youtube.com/results?search_query=afcons+interview"
+  },
+
+  {
+    name: "Gammon India",
+    branch: "Civil",
+    tier: "core",
+    sal: "₹4L - ₹8L",
+    info: `Gammon India is a major civil engineering company.
+Focus on highways, bridges, and tunnels.
+Civil engineers handle planning and execution.
+Interviews test structural and construction knowledge.
+Gammon values technical and field skills.`,
+    link: "https://www.gammonindia.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=gammon+india+interview"
+  },
+
+  // ===================== MECHANICAL ENGINEERING COMPANIES =====================
+
+  {
+    name: "Tata Motors",
+    branch: "Mechanical",
+    tier: "core",
+    sal: "₹6L - ₹14L",
+    info: `Tata Motors is a leading automobile manufacturer.
+Focus on vehicle design, manufacturing, and testing.
+Mechanical engineers work on engines and production.
+Interviews test core mechanical concepts.
+Tata values innovation and manufacturing skills.`,
+    link: "https://www.tatamotors.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=tata+motors+mechanical+interview"
+  },
+
+  {
+    name: "Mahindra & Mahindra",
+    branch: "Mechanical",
+    tier: "core",
+    sal: "₹5L - ₹12L",
+    info: `Mahindra manufactures automobiles and tractors.
+Focus on design, production, and quality control.
+Mechanical engineers work in R&D and manufacturing.
+Interviews test mechanical fundamentals.
+Mahindra values practical engineering skills.`,
+    link: "https://careers.mahindra.com/",
+    yt: "https://www.youtube.com/results?search_query=mahindra+mechanical+interview"
+  },
+
+  {
+    name: "Ashok Leyland",
+    branch: "Mechanical",
+    tier: "core",
+    sal: "₹5L - ₹10L",
+    info: `Ashok Leyland is a commercial vehicle company.
+Focus on engine design and manufacturing.
+Mechanical engineers work in production and testing.
+Interviews test thermodynamics and mechanics.
+Company values technical expertise.`,
+    link: "https://www.ashokleyland.com/careers",
+    yt: "https://www.youtube.com/results?search_query=ashok+leyland+interview"
+  },
+
+  {
+    name: "BHEL",
+    branch: "Mechanical",
+    tier: "psu",
+    sal: "₹7L - ₹16L",
+    info: `BHEL is a government engineering company.
+Focus on power plant equipment manufacturing.
+Mechanical engineers work on turbines and boilers.
+Selection through GATE and interviews.
+BHEL values core engineering knowledge.`,
+    link: "https://www.bhel.com/careers",
+    yt: "https://www.youtube.com/results?search_query=bhel+mechanical+interview"
+  },
+
+  {
+    name: "ISRO",
+    branch: "Mechanical",
+    tier: "psu",
+    sal: "₹8L - ₹18L",
+    info: `ISRO is India's space research organization.
+Focus on aerospace and mechanical systems.
+Mechanical engineers work on rockets and satellites.
+Selection through exams and interviews.
+ISRO values research and innovation.`,
+    link: "https://www.isro.gov.in/Careers.html",
+    yt: "https://www.youtube.com/results?search_query=isro+mechanical+interview"
+  },
+
+  // ===================== EEE / ELECTRICAL COMPANIES =====================
+
+  {
+    name: "NTPC",
+    branch: "EEE",
+    tier: "psu",
+    sal: "₹8L - ₹18L",
+    info: `NTPC is India's largest power generation company.
+Focus on thermal and renewable energy.
+EEE engineers work on power systems and grids.
+Selection through GATE and interviews.
+NTPC values electrical fundamentals.`,
+    link: "https://careers.ntpc.co.in/",
+    yt: "https://www.youtube.com/results?search_query=ntpc+eee+interview"
+  },
+
+  {
+    name: "Power Grid Corporation",
+    branch: "EEE",
+    tier: "psu",
+    sal: "₹7L - ₹16L",
+    info: `Power Grid manages India's electricity transmission.
+Focus on power systems and high-voltage networks.
+EEE engineers work on substations and grids.
+Selection through GATE and interviews.
+Company values electrical engineering skills.`,
+    link: "https://www.powergrid.in/career-opportunities",
+    yt: "https://www.youtube.com/results?search_query=powergrid+eee+interview"
+  },
+
+  {
+    name: "Siemens",
+    branch: "EEE",
+    tier: "core",
+    sal: "₹6L - ₹14L",
+    info: `Siemens is a global electrical engineering company.
+Focus on automation and power systems.
+EEE engineers work on industrial projects.
+Interviews test electrical and automation knowledge.
+Siemens values innovation and technical expertise.`,
+    link: "https://new.siemens.com/in/en/company/jobs.html",
+    yt: "https://www.youtube.com/results?search_query=siemens+eee+interview"
+  },
+
+  {
+    name: "Schneider Electric",
+    branch: "EEE",
+    tier: "core",
+    sal: "₹6L - ₹12L",
+    info: `Schneider Electric focuses on energy management.
+EEE engineers work on electrical systems and automation.
+Candidates must know power electronics.
+Interviews test electrical concepts and projects.
+Company values sustainable engineering.`,
+    link: "https://www.se.com/in/en/about-us/careers/",
+    yt: "https://www.youtube.com/results?search_query=schneider+electric+interview"
+  },
+
+  {
+    name: "ABB",
+    branch: "EEE",
+    tier: "core",
+    sal: "₹6L - ₹13L",
+    info: `ABB is a global leader in automation and robotics.
+EEE engineers work on power and control systems.
+Candidates must know electrical machines.
+Interviews test core electrical knowledge.
+ABB values innovation and automation skills.`,
+    link: "https://careers.abb/global/en",
+    yt: "https://www.youtube.com/results?search_query=abb+eee+interview"
+  },
+  
+
+  // ===================== AVIATION / FLIGHT JOBS =====================
+
+  {
+    name: "IndiGo Airlines",
+    sector: "Aviation",
+    role: "Pilot / Ground Staff / Engineer",
+    sal: "₹6L - ₹25L",
+    info: `IndiGo is India's largest airline.
+Offers jobs for pilots, cabin crew, and ground staff.
+Engineers work on aircraft maintenance and safety.
+Selection includes interviews and training.
+IndiGo values customer service and technical skills.`,
+    link: "https://www.goindigo.in/careers.html",
+    yt: "https://www.youtube.com/results?search_query=indigo+airlines+interview"
+  },
+
+  {
+    name: "Air India",
+    sector: "Aviation",
+    role: "Cabin Crew / Engineer / Officer",
+    sal: "₹7L - ₹30L",
+    info: `Air India is the national airline of India.
+Offers jobs in aviation, engineering, and management.
+Selection includes exams and interviews.
+Engineers work on aircraft systems.
+Air India values safety and professionalism.`,
+    link: "https://www.airindia.com/careers.htm",
+    yt: "https://www.youtube.com/results?search_query=air+india+interview"
+  },
+
+  {
+    name: "Vistara",
+    sector: "Aviation",
+    role: "Cabin Crew / Ground Staff",
+    sal: "₹5L - ₹20L",
+    info: `Vistara is a premium airline in India.
+Focus on customer service and aviation operations.
+Candidates must have communication skills.
+Selection includes interviews and training.
+Vistara values service quality.`,
+    link: "https://www.airvistara.com/in/en/careers",
+    yt: "https://www.youtube.com/results?search_query=vistara+interview"
+  },
+
+  {
+    name: "SpiceJet",
+    sector: "Aviation",
+    role: "Pilot / Ground Staff",
+    sal: "₹5L - ₹18L",
+    info: `SpiceJet is a low-cost airline.
+Offers jobs in flight operations and ground handling.
+Candidates must pass interviews and training.
+Engineers maintain aircraft systems.
+SpiceJet values efficiency and safety.`,
+    link: "https://corporate.spicejet.com/Careers.aspx",
+    yt: "https://www.youtube.com/results?search_query=spicejet+interview"
+  },
+
+  {
+    name: "Airports Authority of India (AAI)",
+    sector: "Aviation",
+    role: "Engineer / ATC Officer",
+    sal: "₹8L - ₹20L",
+    info: `AAI manages airports across India.
+Offers jobs for engineers and air traffic controllers.
+Selection through exams and interviews.
+EEE and Electronics students are preferred.
+AAI values technical and operational skills.`,
+    link: "https://www.aai.aero/en/careers",
+    yt: "https://www.youtube.com/results?search_query=aai+interview"
+  },
+
+  // ===================== GOVERNMENT JOBS =====================
+
+  {
+    name: "Indian Railways",
+    sector: "Government",
+    role: "Engineer / Technician / Clerk",
+    sal: "₹4L - ₹12L",
+    info: `Indian Railways is the largest government employer.
+Offers jobs through RRB and SSC exams.
+Engineers work in civil, mechanical, and electrical departments.
+Selection through written exams and interviews.
+Railways provide job security and benefits.`,
+    link: "https://indianrailways.gov.in/",
+    yt: "https://www.youtube.com/results?search_query=railway+job+interview"
+  },
+
+  {
+    name: "Indian Army",
+    sector: "Government",
+    role: "Officer / Soldier / Technical",
+    sal: "₹6L - ₹15L",
+    info: `Indian Army offers defense jobs.
+Engineers join through technical entry schemes.
+Selection includes physical tests and interviews.
+Army provides leadership and discipline training.
+It values courage and technical skills.`,
+    link: "https://joinindianarmy.nic.in/",
+    yt: "https://www.youtube.com/results?search_query=indian+army+interview"
+  },
+
+  {
+    name: "Indian Navy",
+    sector: "Government",
+    role: "Engineer / Officer",
+    sal: "₹7L - ₹16L",
+    info: `Indian Navy offers technical and officer roles.
+Engineers work on ships and submarines.
+Selection includes exams and interviews.
+Navy values technical and leadership skills.
+Provides global exposure.`,
+    link: "https://www.joinindiannavy.gov.in/",
+    yt: "https://www.youtube.com/results?search_query=indian+navy+interview"
+  },
+
+  {
+    name: "Indian Police",
+    sector: "Government",
+    role: "Sub Inspector / Constable",
+    sal: "₹3L - ₹8L",
+    info: `Police jobs are offered by state governments.
+Selection includes physical tests and exams.
+Engineers can join as officers.
+Police provide job security and respect.
+They value discipline and service.`,
+    link: "https://www.indiapolicefoundation.org/",
+    yt: "https://www.youtube.com/results?search_query=police+job+interview"
+  },
+
+  // ===================== OTHER PRIVATE SECTOR JOBS =====================
+
+  {
+    name: "Reliance Industries",
+    sector: "Private",
+    role: "Engineer / Manager",
+    sal: "₹6L - ₹18L",
+    info: `Reliance is India's largest conglomerate.
+Offers jobs in telecom, energy, and retail.
+Engineers work in multiple sectors.
+Selection includes interviews and tests.
+Reliance values innovation and leadership.`,
+    link: "https://careers.ril.com/",
+    yt: "https://www.youtube.com/results?search_query=reliance+interview"
+  },
+
+  {
+    name: "Adani Group",
+    sector: "Private",
+    role: "Engineer / Analyst",
+    sal: "₹6L - ₹16L",
+    info: `Adani Group works in infrastructure and energy.
+Offers jobs in ports, airports, and power plants.
+Engineers work in core sectors.
+Selection includes interviews.
+Adani values technical and business skills.`,
+    link: "https://careers.adani.com/",
+    yt: "https://www.youtube.com/results?search_query=adani+group+interview"
+  },
+
+  {
+    name: "Jio Platforms",
+    sector: "Private",
+    role: "Network Engineer / Developer",
+    sal: "₹8L - ₹20L",
+    info: `Jio is India's largest telecom company.
+Offers jobs in networking and software.
+EEE and CSE students are preferred.
+Selection includes interviews and tests.
+Jio values technical expertise.`,
+    link: "https://careers.jio.com/",
+    yt: "https://www.youtube.com/results?search_query=jio+interview"
+  },
+
+  {
+    name: "HUL (Hindustan Unilever)",
+    sector: "Private",
+    role: "Management / Engineer",
+    sal: "₹10L - ₹25L",
+    info: `HUL is a leading FMCG company.
+Offers jobs in production and management.
+Engineers work in manufacturing plants.
+Selection includes interviews and aptitude tests.
+HUL values leadership and business skills.`,
+    link: "https://careers.hul.co.in/",
+    yt: "https://www.youtube.com/results?search_query=hul+interview"
+  },
+
+  {
+    name: "ITC Limited",
+    sector: "Private",
+    role: "Engineer / Manager",
+    sal: "₹8L - ₹22L",
+    info: `ITC operates in FMCG and hospitality.
+Offers jobs in production and management.
+Engineers work in factories and operations.
+Selection includes interviews.
+ITC values technical and business knowledge.`,
+    link: "https://www.itcportal.com/careers/",
+    yt: "https://www.youtube.com/results?search_query=itc+interview"
+  }
+
+
+
 ];
+//--------------------------------------------------------------------------------upto job----------------------
 
 function showSection(type) {
     document.getElementById('dashboard').style.display = 'none';
