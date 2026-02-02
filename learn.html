@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magical Feature UI</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #0f0f1a, #1a1a2d);
+        color: white;
+        text-align: center;
+    }
+
+    /* Title Styling */
+    h1 {
+        margin-top: 30px;
+        font-size: 32px;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    /* Magical Feature Card */
+    .feature-card {
+        width: 80%;
+        max-width: 380px;
+        margin: 25px auto;
+        padding: 25px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        transition: 0.4s;
+        cursor: pointer;
+        animation: float 3s infinite ease-in-out;
+    }
+
+    .feature-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+    }
+
+    .feature-icon {
+        width: 70px;
+        margin-bottom: 10px;
+        filter: drop-shadow(0 0 10px cyan);
+    }
+
+    .feature-title {
+        font-size: 22px;
+        font-weight: bold;
+        text-shadow: 0 0 10px #00eaff;
+    }
+
+    /* Floating animation */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
+</head>
+
+<body>
+
+    <h1>✨ Select Your Feature ✨</h1>
+
+    <!-- Aptitude Magical Card -->
+    <div class="feature-card" onclick="openAptitude()">
+        <img class="feature-icon" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+        <div class="feature-title">Aptitude</div>
+    </div>
+
+    <!-- Reasoning Magical Card -->
+    <div class="feature-card" onclick="openReasoning()">
+        <img class="feature-icon" src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png">
+        <div class="feature-title">Reasoning</div>
+    </div>
+
+<script>
+    function openAptitude() {
+        window.location.href = "aptitude.html"; 
+    }
+
+    function openReasoning() {
+        window.location.href = "reasoning.html";
+    }
+</script>
+
+</body>
+</html>

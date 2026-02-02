@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IIT Aptitude Magic App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{ --glow:#00f7ff; }
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:radial-gradient(circle at top,#0f2027,#000);
+  color:#fff;
+  min-height:100vh;
+}
+
+.page{
+  display:none;
+  padding:20px;
+  animation:fade .4s ease;
+  position:relative;
+}
+.page.active{display:block;}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+h2{
+  text-align:center;
+  margin:40px 0 25px;
+}
+
+/* BACK BUTTON */
+.backTop{
+  position:absolute;
+  top:15px;
+  left:15px;
+  background:rgba(255,255,255,0.15);
+  padding:8px 14px;
+  border-radius:10px;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(0,247,255,.4);
+}
+
+/* HOME CIRCLES */
+.circles{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  margin-top:30px;
+  flex-wrap:wrap;
+}
+
+.circle{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#0d0d0d,#050505);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  cursor:pointer;
+  box-shadow:0 0 18px rgba(0,247,255,.35);
+  transition:.3s;
+}
+.circle span{font-size:13px;margin-top:6px;}
+.circle:hover{transform:scale(1.08);}
+
+/* CARDS */
+.card{
+  background:rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:18px;
+  box-shadow:0 0 18px rgba(0,247,255,.15);
+}
+
+/* BUTTON */
+.btn,.nextNoteBtn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#00f7ff,#0077ff);
+  color:#000;
+  font-weight:bold;
+  font-size:15px;
+  margin-top:15px;
+  cursor:pointer;
+}
+
+/* OPTIONS */
+.option{
+  padding:12px;
+  margin:10px 0;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.2);
+  cursor:pointer;
+}
+.option.correct{background:#064e3b;}
+.option.wrong{background:#7f1d1d;}
+
+/* EXPLANATION */
+.explain-card{
+  background:rgba(0,0,0,.45);
+  border-radius:14px;
+  padding:14px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HOME -->
+<div class="page active" id="home">
+  <h2>✨ IIT Aptitude ✨</h2>
+  <div class="circles">
+    <div class="circle" onclick="openP('videos')">🎥<span>Videos</span></div>
+    <div class="circle" onclick="openP('test')">🧠<span>Test</span></div>
+    <div class="circle" onclick="openP('notes')">📘<span>Notes</span></div>
+  </div>
+</div>
+
+<!-- VIDEOS -->
+<div class="page" id="videos">
+  <div class="backTop" onclick="openP('home')">⬅ Back</div>
+  <h2>📹 Videos</h2>
+
+  <div class="card" onclick="openYT('https://www.youtube.com/watch?v=hlyal4sR0m8')">
+    English – Quant Aptitude
+  </div>
+
+  <div class="card" onclick="openYT('https://www.youtube.com/watch?v=tnc9ojITRg4')">
+    తెలుగు – Aptitude Basics
+  </div>
+</div>
+
+<!-- TEST -->
+<div class="page" id="test">
+  <div class="backTop" onclick="openP('home')">⬅ Back</div>
+  <h2>🧠 Test</h2>
+  <div id="qBox"></div>
+  <div id="expBox"></div>
+  <button class="btn" onclick="nextQ()">Next</button>
+</div>
+
+<!-- RESULT -->
+<div class="page" id="result">
+  <div class="backTop" onclick="openP('home')">⬅ Back</div>
+  <h2>🎉 Result</h2>
+  <div class="card" id="scoreCard"></div>
+  <button class="btn" onclick="restartTest()">Restart</button>
+</div>
+
+<!-- NOTES -->
+<div class="page" id="notes">
+  <div class="backTop" onclick="openP('home')">⬅ Back</div>
+  <h2>📘 Notes</h2>
+  <div class="card" id="noteArea"></div>
+  <button class="nextNoteBtn" onclick="nextNote()">Next ➜</button>
+</div>
+
+<script>
+function openP(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==="notes"){ nIndex=0; loadNote(); }
+}
+
+/* ---------- TEST ---------- */
+let i=0, score=0;
+const qs=[
+ {q:"10 + x = 30",o:["10","15","20","25"],a:2,exp:"x = 30 − 10 = 20"},
+ {q:"Average of 4,6,8",o:["6","7","8","9"],a:0,exp:"(4+6+8)/3 = 6"},
+ {q:"20% of 200",o:["20","30","40","50"],a:2,exp:"0.2 × 200 = 40"}
+];
+
+function loadQ(){
+ let q=qs[i], html=`<div class='card'><b>Q${i+1}. ${q.q}</b>`;
+ q.o.forEach((op,ix)=>{
+  html+=`<div class='option' onclick='chk(${ix},this)'>${op}</div>`;
+ });
+ html+=`</div>`;
+ qBox.innerHTML=html;
+ expBox.innerHTML="";
+}
+
+function chk(s,el){
+ document.querySelectorAll(".option").forEach(o=>o.style.pointerEvents="none");
+ let q=qs[i];
+ if(s===q.a){ el.classList.add("correct"); score++; }
+ else{
+  el.classList.add("wrong");
+  document.querySelectorAll(".option")[q.a].classList.add("correct");
+ }
+ expBox.innerHTML=`<div class='explain-card'>${q.exp}</div>`;
+}
+
+function nextQ(){
+ if(i<qs.length-1){ i++; loadQ(); }
+ else{
+  openP("result");
+  scoreCard.innerHTML=`<h3>Score: ${score}/${qs.length}</h3>`;
+ }
+}
+
+function restartTest(){ i=0; score=0; openP("test"); loadQ(); }
+
+/* ---------- NOTES ---------- */
+const notes=[
+ "Average = Sum of values / Number of values",
+ "Percentage = (Part / Whole) × 100",
+ "Speed = Distance / Time",
+ "Profit = SP − CP"
+];
+let nIndex=0;
+
+function loadNote(){
+ noteArea.innerHTML=`<b>Step ${nIndex+1}</b><br><br>${notes[nIndex]}`;
+}
+function nextNote(){
+ if(nIndex<notes.length-1){ nIndex++; loadNote(); }
+}
+
+/* ---------- UTILS ---------- */
+function openYT(l){ window.open(l,"_blank"); }
+loadQ();
+</script>
+
+</body>
+</html>
