@@ -38,17 +38,18 @@ iframe{width:100%;height:calc(100vh - 60px);border:none;background:#fdfdfd;}
   <h1 style="margin-top:40px;color:cyan;font-size: 2.5em;">EDUMATE PRO</h1>
   <p style="color:#aaa;">Advanced Engineering Learning Library</p>
   <div style="display:flex;justify-content:center;flex-wrap:wrap;margin-top:40px;">
-    <div class="circle" onclick="go('compiler')">💻<br><b>COMPILER</b></div>
     <div class="circle" onclick="go('course')">📘<br><b>COURSES</b></div>
+    <div class="circle" onclick="go('compiler')">💻<br><b>COMPILER</b></div>
+    
   </div>
 </div>
 
 <div id="s2" class="screen">
   <h2 id="menu-title" style="margin-bottom:30px;color:cyan;">Choose Subject</h2>
   <div style="display:flex;justify-content:center;flex-wrap:wrap;max-width:900px;margin:auto;">
-    <div class="circle small" onclick="openLang('html')">HTML5</div>
-    <div class="circle small" onclick="openLang('css')">CSS3</div>
-    <div class="circle small" onclick="openLang('javascript')">JS (ES6+)</div>
+    <div class="circle small" onclick="openLang('html')">HTML</div>
+    <div class="circle small" onclick="openLang('css')">CSS</div>
+    <div class="circle small" onclick="openLang('javascript')">JS </div>
     <div class="circle small" onclick="openLang('python')">Python</div>
     <div class="circle small" onclick="openLang('java')">Java</div>
     <div class="circle small" onclick="openLang('c')">C</div>
@@ -87,10 +88,10 @@ const compilerLinks={
   java:"https://onecompiler.com/java",
   c:"https://onecompiler.com/c",
   cpp:"https://onecompiler.com/cpp",
-  sql:"https://www.w3schools.com/sql/trysql.asp",
+  sql:"https://onecompiler.com/mysql/3x9gj58yp",
   mongodb:"https://onecompiler.com/mongodb",
   oracle:"https://onecompiler.com/postgresql",
-  dbms:"https://www.w3schools.com/sql/trysql.asp"
+  dbms:"https://onecompiler.com/mysql/3x9gj58yp"
 };
 
 /* ADVANCED TEXTBOOK DATA */
@@ -100,11 +101,11 @@ html:`
 <h1>HTML5: Professional Web Textbook</h1>
 <p>HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser. It is the building block of the World Wide Web.</p>
 
-<h3>Core Advanced Modules:</h3>
+<h3>BASIC TAGS AND INFORMATION:</h3>
 <ul>
-  <li><b>Structural Semantics:</b> Designing for SEO and accessibility.</li>
-  <li><b>Canvas & SVG:</b> High-performance vector graphics.</li>
-  <li><b>Web Storage:</b> Using localStorage and sessionStorage.</li>
+  <li><b><!DOCTYPE html>:</b> Declares the document type and version of HTML (HTML5). It helps the browser render the page correctly.</li>
+  <li><b><html>:</b> The root element of an HTML document, enclosing all other elements.</li>
+  <li> <head>: Contains meta-information about the document, such as its title, character set, and links to stylesheets.</li>
   <li><b>Responsive Media:</b> Implementing &lt;picture&gt; and &lt;video&gt; tags.</li>
 </ul>
 <p>To master HTML, you must understand how the browser parses the Document Object Model (DOM). This determines how elements are rendered and how JavaScript interacts with the page.</p>
@@ -200,4 +201,5 @@ function openLang(lang){
 </script>
 
 </body>
+
 </html>
