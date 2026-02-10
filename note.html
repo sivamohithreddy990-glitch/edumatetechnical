@@ -1,477 +1,388 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Multi Page Notepad</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notebook Letter Writer Pro</title>
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #1f2933, #0a192f);
-      color: #fff;
-      min-height: 100vh;
-    }
-    .screen { display: none; min-height: 100vh; padding: 16px; }
-    .screen.active { display: block; }
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{
+    height:100%;
+    overflow:hidden;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:#f2efe6;
+  }
 
-    .header {
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      padding: 10px 0 16px;
-    }
-    .subtitle {
-      text-align: center;
-      font-size: 13px;
-      opacity: 0.85;
-      margin-bottom: 10px;
-    }
+  .screen{
+    height:100vh;
+    overflow-y:auto;
+    padding:16px;
+    display:none;
+  }
+  .active{display:block;}
 
-    .notes-list {
-      margin-top: 10px;
-    }
-    .note-item {
-      background: rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .note-main {
-      flex: 1;
-      cursor: pointer;
-    }
-    .note-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 4px;
-    }
-    .note-meta {
-      font-size: 11px;
-      opacity: 0.8;
-    }
-    .note-empty {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.8;
-    }
+  .header{
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+    color:#3c2f1e;
+    margin-top: 10px;
+  }
+  .subtitle{
+    text-align:center;
+    margin-bottom:20px;
+    opacity:0.7;
+    font-size: 14px;
+  }
 
-    .note-delete-btn {
-      border: none;
-      background: transparent;
-      color: #ff7676;
-      cursor: pointer;
-      font-size: 18px;
-      padding: 4px 6px;
-    }
+  /* -------------------------------- PAGE 1: LIST -------------------------------- */
+  .note-item{
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+    border-left: 5px solid #8A5A2C;
+    cursor: pointer;
+  }
+  .note-info{ flex: 1; }
+  .note-info b { color: #3c2f1e; font-size: 16px; display: block; margin-bottom: 4px; }
+  .note-info small { color: #888; font-size: 12px; }
+  
+  .actions{display:flex;gap:15px; margin-left: 10px;}
+  .btn-icon{
+    font-size:20px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    transition: transform 0.1s;
+  }
+  .btn-icon:active { transform: scale(1.2); }
+  .del{color:#d63031;}
+  .download{color:#2980b9;}
 
-    .fab {
-      position: fixed;
-      right: 16px;
-      bottom: 20px;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: #4caf50;
-      color: #fff;
-      border: none;
-      font-size: 30px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-    }
+  .fab{
+    position:fixed;right:20px;bottom:25px;
+    width:65px;height:65px;border-radius:50%;
+    border:none;cursor:pointer;
+    background:#8A5A2C;color:white;font-size:35px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+  }
 
-    .back-btn {
-      border: none;
-      background: rgba(0,0,0,0.4);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      cursor: pointer;
-      margin-bottom: 10px;
-    }
+  /* -------------------------------- PAGE 2: SELECTION -------------------------------- */
+  #searchBox{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    font-size:16px;
+    border:2px solid #bfae9a;
+    margin-bottom:20px;
+    outline: none;
+    background: white;
+  }
 
-    textarea {
-      width: 100%;
-      min-height: 220px;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      padding: 10px;
-      font-size: 15px;
-      line-height: 1.5;
-      background: #ffffff;
-      color: #000;
-      resize: vertical;
-    }
+  .type-btn{
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid #e0dacc;
+  }
 
-    .editor-label {
-      font-size: 13px;
-      margin: 6px 0 3px;
-      opacity: 0.9;
-    }
+  .group-title{
+    font-weight:bold;
+    margin:20px 0 10px;
+    color:#8A5A2C;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
 
-    select {
-      width: 100%;
-      padding: 8px;
-      border-radius: 10px;
-      border: none;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
+  /* -------------------------------- PAGE 3: EDITOR -------------------------------- */
+  .top-bar{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+    gap: 8px;
+  }
+  .top-btn{
+    flex: 1;
+    padding:12px 5px;
+    border-radius:8px;
+    border:none;
+    font-weight:bold;
+    font-size:13px;
+    cursor:pointer;
+    color: white;
+  }
+  .back{background:#8A5A2C;}
+  .print{background:#34495e;}
+  .save{background:#27ae60;}
 
-    .buttons-row {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-    }
+  textarea{
+    width:100%;
+    height:calc(100vh - 165px);
+    padding:20px;
+    font-size:17px;
+    line-height:31px;
+    color:#2c2c2c;
+    background-color: #fff;
+    background-image: linear-gradient(#d9d2c2 1px, transparent 1px);
+    background-size: 100% 31px;
+    border:1px solid #c7bba8;
+    border-radius:12px;
+    outline:none;
+    resize:none;
+    font-family: 'Georgia', serif;
+  }
 
-    .btn {
-      padding: 8px 14px;
-      border-radius: 10px;
-      border: none;
-      font-size: 14px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .btn-save   { background: #4caf50; color: #fff; }
-    .btn-cancel { background: #9e9e9e; color: #fff; }
-    .btn-delete { background: #f44336; color: #fff; }
+  /* Print specific style */
+  @media print {
+    body * { visibility: hidden; }
+    #editor, #editor * { visibility: visible; }
+    #editor { position: absolute; left: 0; top: 0; border: none; background: none; }
+  }
 
-    .status {
-      margin-top: 8px;
-      font-size: 12px;
-      opacity: 0.9;
-      text-align: center;
-      min-height: 16px;
-    }
-  </style>
+</style>
 </head>
 <body>
 
-<!-- SCREEN 1: LIST OF PAGES / NOTES -->
-<div id="screen-list" class="screen active">
-  <div class="header">📒 My Pages</div>
-  <div class="subtitle">Tap a page to open, or press + to create a new page.</div>
-
-  <div id="notes-list" class="notes-list"></div>
-  <div id="notes-empty" class="note-empty" style="display:none;">
-    No pages yet. Tap the + button to create your first notepad page.
-  </div>
-
-  <!-- + button -->
-  <button class="fab" onclick="openNewNote()">+</button>
+<div id="page1" class="screen active">
+  <div class="header">📒 My Notebook</div>
+  <div class="subtitle">Your saved documents</div>
+  <div id="list"></div>
+  <button class="fab" onclick="openPage2()">+</button>
 </div>
 
-<!-- SCREEN 2: EDITOR -->
-<div id="screen-editor" class="screen">
-  <button class="back-btn" onclick="backToListWithoutSave()">← Back</button>
+<div id="page2" class="screen">
+  <div class="header">Select Template</div>
+  <div class="subtitle">Choose a format to begin</div>
 
-  <div class="header" id="editor-heading">New Page</div>
-  <div class="subtitle">Write your letter / notice / note and save. It will appear on the first page.</div>
+  <input type="text" id="searchBox" onkeyup="filterTypes()" placeholder="🔍 Search letter types...">
 
-  <div class="editor-label">Type:</div>
-  <select id="note-type" onchange="applyTemplateFromType(true)">
-    <option value="custom">✏ Custom Page (empty)</option>
-    <option value="formal">📄 Formal Letter</option>
-    <option value="leave">📝 Leave Application</option>
-    <option value="complaint">⚠ Complaint Letter</option>
-    <option value="simple">🗒 Simple Note</option>
-  </select>
+  <div id="typesList">
+    <div class="group-title">🎓 Academic & School</div>
+    <div class="type-btn" onclick="openEditor('leave')">📝 Leave Application</div>
+    <div class="type-btn" onclick="openEditor('tc')">🏫 Transfer Certificate (TC)</div>
+    <div class="type-btn" onclick="openEditor('bonafide')">📘 Bonafide Certificate</div>
+    <div class="type-btn" onclick="openEditor('fee')">💵 Fee Concession</div>
+    <div class="type-btn" onclick="openEditor('character')">🧾 Character Certificate</div>
+    <div class="type-btn" onclick="openEditor('rejoin')">🔄 Rejoining After Illness</div>
+    <div class="type-btn" onclick="openEditor('absent')">🚫 Excuse for Absence</div>
+    <div class="type-btn" onclick="openEditor('library')">📚 Library Card Request</div>
 
-  <div class="editor-label">Content:</div>
-  <textarea id="note-content" placeholder="Write your page here..."></textarea>
+    <div class="group-title">💼 Professional & Job</div>
+    <div class="type-btn" onclick="openEditor('job')">👔 Job Application</div>
+    <div class="type-btn" onclick="openEditor('resignation')">🚪 Resignation Letter</div>
+    <div class="type-btn" onclick="openEditor('experience')">🛠 Experience Certificate</div>
+    <div class="type-btn" onclick="openEditor('recommendation')">🌟 Recommendation Request</div>
+    <div class="type-btn" onclick="openEditor('internship')">🎓 Internship Request</div>
+    <div class="type-btn" onclick="openEditor('promotion')">📈 Promotion Request</div>
 
-  <div class="buttons-row">
-    <button class="btn btn-delete" id="editor-delete-btn" onclick="deleteCurrentNote()" style="display:none;">Delete</button>
-    <button class="btn btn-cancel" onclick="backToListWithoutSave()">Cancel</button>
-    <button class="btn btn-save" onclick="saveCurrentNote()">Save</button>
+    <div class="group-title">🏛 Formal & Civic</div>
+    <div class="type-btn" onclick="openEditor('complaint')">⚠ Complaint (General)</div>
+    <div class="type-btn" onclick="openEditor('address')">📮 Address Proof</div>
+    <div class="type-btn" onclick="openEditor('bank')">🏦 New Bank Account</div>
+    <div class="type-btn" onclick="openEditor('police')">👮 Police Station (Lost Item)</div>
+    <div class="type-btn" onclick="openEditor('municipality')">🏢 Municipality/Water Dept</div>
+    <div class="type-btn" onclick="openEditor('invitation_formal')">✉ Formal Invitation</div>
+
+    <div class="group-title">🏠 Informal & Personal</div>
+    <div class="type-btn" onclick="openEditor('informal')">👋 Letter to Friend</div>
+    <div class="type-btn" onclick="openEditor('parents')">👨‍👩‍👦 Letter to Parents</div>
+    <div class="type-btn" onclick="openEditor('birthday')">🎂 Birthday Wish</div>
+    <div class="type-btn" onclick="openEditor('condolence')">🕯 Condolence Letter</div>
+    <div class="type-btn" onclick="openEditor('thankyou')">🙏 Thank You Note</div>
+    <div class="type-btn" onclick="openEditor('custom')">✏ Blank Page</div>
   </div>
+</div>
 
-  <div id="editor-status" class="status"></div>
+<div id="page3" class="screen">
+  <div class="top-bar">
+    <button class="top-btn back" onclick="backHome()">← Home</button>
+    <button class="top-btn print" onclick="window.print()">Print/PDF</button>
+    <button class="top-btn save" onclick="saveLetter()">Save Now</button>
+  </div>
+  <textarea id="editor" spellcheck="false"></textarea>
 </div>
 
 <script>
-  // ===== STATE & STORAGE =====
-  const STORAGE_KEY = "multi_page_notepad_notes";
+/* --- DATABASE LOGIC --- */
+let db;
+let currentId = null;
 
-  let notes = [];           // {id, title, content, type, updatedAt}
-  let currentNoteId = null; // null = new note
-
-  const screenList   = document.getElementById("screen-list");
-  const screenEditor = document.getElementById("screen-editor");
-
-  const notesListEl   = document.getElementById("notes-list");
-  const notesEmptyEl  = document.getElementById("notes-empty");
-  const headingEl     = document.getElementById("editor-heading");
-  const noteTypeEl    = document.getElementById("note-type");
-  const noteContentEl = document.getElementById("note-content");
-  const editorStatusEl= document.getElementById("editor-status");
-  const editorDeleteBtn = document.getElementById("editor-delete-btn");
-
-  // ===== UTIL: STORAGE =====
-  function loadFromStorage() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      notes = raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      notes = [];
-    }
+const request = indexedDB.open("NotebookLettersDB", 3);
+request.onupgradeneeded = e => {
+  db = e.target.result;
+  if(!db.objectStoreNames.contains("letters")) {
+    db.createObjectStore("letters", {keyPath: "id"});
   }
+};
+request.onsuccess = e => {
+  db = e.target.result;
+  loadLetters();
+};
 
-  function saveToStorage() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-  }
+/* --- NAVIGATION --- */
+function show(p){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(p).classList.add("active");
+  if(p === 'page1') loadLetters(); // Refresh list every time we go home
+}
 
-  // ===== SCREEN SWITCHING =====
-  function showListScreen() {
-    screenList.classList.add("active");
-    screenEditor.classList.remove("active");
-    renderNotesList();
-  }
+function openPage2(){ 
+  document.getElementById("searchBox").value = "";
+  filterTypes();
+  show("page2"); 
+}
 
-  function showEditorScreen() {
-    screenList.classList.remove("active");
-    screenEditor.classList.add("active");
-  }
+function backHome(){ show("page1"); }
 
-  // ===== LIST RENDERING =====
-  function renderNotesList() {
-    notesListEl.innerHTML = "";
-    if (!notes.length) {
-      notesEmptyEl.style.display = "block";
-      return;
-    }
-    notesEmptyEl.style.display = "none";
+/* --- SEARCH --- */
+function filterTypes(){
+  let q = document.getElementById("searchBox").value.toLowerCase();
+  let items = document.querySelectorAll("#typesList .type-btn");
+  items.forEach(i => {
+    i.style.display = i.textContent.toLowerCase().includes(q) ? "block" : "none";
+  });
+}
 
-    // sort by updatedAt descending
-    notes.sort((a,b) => b.updatedAt - a.updatedAt);
-
-    notes.forEach(note => {
-      const item = document.createElement("div");
-      item.className = "note-item";
-
-      const main = document.createElement("div");
-      main.className = "note-main";
-      main.onclick = () => openExistingNote(note.id);
-
-      const title = document.createElement("div");
-      title.className = "note-title";
-      title.textContent = note.title || "Untitled page";
-
-      const meta = document.createElement("div");
-      meta.className = "note-meta";
-      const dateStr = new Date(note.updatedAt).toLocaleString();
-      meta.textContent = (note.type || "Custom") + " • " + dateStr;
-
-      main.appendChild(title);
-      main.appendChild(meta);
-
-      const delBtn = document.createElement("button");
-      delBtn.className = "note-delete-btn";
-      delBtn.innerHTML = "🗑";
-      delBtn.onclick = (e) => {
-        e.stopPropagation(); // don't open editor
-        deleteNote(note.id);
-      };
-
-      item.appendChild(main);
-      item.appendChild(delBtn);
-
-      notesListEl.appendChild(item);
-    });
-  }
-
-  // ===== NEW NOTE / EXISTING NOTE =====
-  function openNewNote() {
-    currentNoteId = null;
-    headingEl.textContent = "New Page";
-    noteTypeEl.value = "custom";
-    noteContentEl.value = "";
-    editorStatusEl.textContent = "";
-    editorDeleteBtn.style.display = "none"; // no delete button for brand new note
-    showEditorScreen();
-  }
-
-  function openExistingNote(id) {
-    const n = notes.find(n => n.id === id);
-    if (!n) return;
-    currentNoteId = id;
-    headingEl.textContent = "Edit Page";
-    noteTypeEl.value = n.type || "custom";
-    noteContentEl.value = n.content || "";
-    editorStatusEl.textContent = "";
-    editorDeleteBtn.style.display = "inline-block"; // show delete for existing note
-    showEditorScreen();
-  }
-
-  // ===== TITLE HELPER =====
-  function extractTitleFromContent(text) {
-    if (!text) return "Untitled page";
-    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length);
-    if (!lines.length) return "Untitled page";
-    const first = lines[0];
-    return first.length > 40 ? first.slice(0, 37) + "..." : first;
-  }
-
-  // ===== TEMPLATES =====
-  function getTemplateText(type) {
-    if (type === "formal") {
-      return `From,
-Your Name
-Your Address
-
-To,
-The Manager
-Company Name
-
-Subject: Regarding __________
-
-Respected Sir/Madam,
-
-I would like to inform you that _____________________________.
-
-Thanking you.
-
-Yours sincerely,
-Your Name`;
-    }
-    if (type === "leave") {
-      return `To,
-The Principal
-
-Subject: Leave Application
-
-Respected Sir/Madam,
-
-I request you to kindly grant me leave for _____ days due to __________.
-
-Thanking you.
-
-Yours obediently,
-Your Name`;
-    }
-    if (type === "complaint") {
-      return `To,
-The Officer
-
-Subject: Complaint regarding __________
-
-Respected Sir/Madam,
-
-I would like to bring to your attention that ____________________.
-
-Kindly take necessary action.
-
-Thanking you.
-
-Yours faithfully,
-Your Name`;
-    }
-    if (type === "simple") {
-      return `Date:
-
-Title:
-
-Write your note here...`;
-    }
-    return "";
-  }
-
-  // Insert template only if user selected it and content empty
-  function applyTemplateFromType(fromUserSelect) {
-    const type = noteTypeEl.value;
-    if (type === "custom") return;
-
-    if (fromUserSelect) {
-      if (!noteContentEl.value.trim()) {
-        noteContentEl.value = getTemplateText(type);
-        editorStatusEl.textContent = "📄 Template inserted.";
-      }
-    }
-  }
-
-  // ===== SAVE / BACK =====
-  function saveCurrentNote() {
-    const content = noteContentEl.value;
-    const type = noteTypeEl.value || "custom";
-    const title = extractTitleFromContent(content);
-    const now = Date.now();
-
-    if (!content.trim()) {
-      editorStatusEl.textContent = "⚠ Please write something before saving.";
-      return;
-    }
-
-    if (currentNoteId === null) {
-      // New note
-      const newNote = {
-        id: Date.now().toString() + Math.random().toString(16).slice(2),
-        title,
-        content,
-        type,
-        updatedAt: now
-      };
-      notes.push(newNote);
-      editorStatusEl.textContent = "✅ Page saved.";
-    } else {
-      // Update existing note
-      const idx = notes.findIndex(n => n.id === currentNoteId);
-      if (idx !== -1) {
-        notes[idx].title = title;
-        notes[idx].content = content;
-        notes[idx].type = type;
-        notes[idx].updatedAt = now;
-        editorStatusEl.textContent = "✅ Changes saved.";
-      }
-    }
-
-    saveToStorage();
-    setTimeout(() => {
-      showListScreen();
-    }, 400);
-  }
-
-  function backToListWithoutSave() {
-    showListScreen();
-  }
-
-  // ===== DELETE =====
-  function deleteNote(id) {
-    const note = notes.find(n => n.id === id);
-    if (!note) return;
-
-    const ok = confirm("Delete this page?\n\n" + (note.title || "Untitled page"));
-    if (!ok) return;
-
-    notes = notes.filter(n => n.id !== id);
-    saveToStorage();
-    renderNotesList();
-  }
-
-  function deleteCurrentNote() {
-    if (!currentNoteId) return;
-    deleteNote(currentNoteId);
-    currentNoteId = null;
-    showListScreen();
-  }
-
-  // ===== INIT =====
-  window.onload = function() {
-    loadFromStorage();
-    renderNotesList();
+/* --- TEMPLATES --- */
+function getTemplate(type){
+  const today = new Date().toLocaleDateString('en-GB');
+  const t = {
+    leave: `To,\nThe Principal,\n[School Name]\n\nDate: ${today}\n\nSubject: Leave Application\n\nRespected Sir/Madam,\n\nI am [Your Name], student of Class [Class]. I request leave from [Start] to [End] due to [Reason].\n\nKindly grant me leave.\n\nYours obediently,\n[Your Name]`,
+    tc: `Subject: Request for Transfer Certificate\n\nRespected Sir/Madam,\n\nI have completed Class [Class]. My family is moving to [City], so I require my TC. All dues are cleared.\n\nThanking you,\n[Your Name]`,
+    bonafide: `Subject: Request for Bonafide Certificate\n\nRespected Sir/Madam,\n\nI am [Your Name] of Class [Class]. I need a Bonafide Certificate for [Reason]. Please issue it.\n\nYours faithfully,\n[Your Name]`,
+    fee: `Subject: Application for Fee Concession\n\nRespected Sir/Madam,\n\nDue to financial difficulties at home, I request a fee concession for this term.\n\nYours faithfully,\n[Your Name]`,
+    character: `Subject: Character Certificate Request\n\nRespected Sir/Madam,\n\nI was a student here from [Year] to [Year]. I need my character certificate for college admission.\n\nThanking you,\n[Your Name]`,
+    rejoin: `Subject: Rejoining Letter\n\nRespected Sir/Madam,\n\nI am returning to school today after being sick since [Date]. Medical certificate is attached.\n\nSincerely,\n[Your Name]`,
+    absent: `Subject: Absence Excuse\n\nSir/Madam,\n\nI couldn't attend on [Date] due to [Reason]. Please excuse my absence.\n\nSincerely,\n[Your Name]`,
+    library: `Subject: Library Card Application\n\nTo the Librarian,\n\nI am a student of [Class]. Please issue a library card in my name.\n\nThanks,\n[Your Name]`,
+    job: `To,\nHR Manager,\n[Company]\n\nSubject: Application for [Position]\n\nDear Sir/Madam,\n\nI am applying for the [Position] role. I have experience in [Skill]. Attached is my resume.\n\nSincerely,\n[Your Name]`,
+    resignation: `Subject: Resignation - [Your Name]\n\nDear [Manager],\n\nI am resigning from my post as [Job Title]. My last day will be [Date].\n\nBest regards,\n[Your Name]`,
+    experience: `Subject: Experience Certificate Request\n\nDear HR,\n\nPlease issue an experience certificate for my tenure from [Start] to [End].\n\nRegards,\n[Your Name]`,
+    recommendation: `Dear [Name],\n\nI am applying for [Purpose] and request a recommendation letter based on my work with you.\n\nBest,\n[Your Name]`,
+    internship: `Subject: Internship Application\n\nDear Sir/Madam,\n\nI am a student at [University] and wish to apply for an internship in [Department].\n\nSincerely,\n[Your Name]`,
+    promotion: `Subject: Promotion Discussion\n\nDear [Manager],\n\nI'd like to discuss my performance and the possibility of moving to [New Role].\n\nBest,\n[Your Name]`,
+    complaint: `Subject: Formal Complaint regarding [Issue]\n\nSir/Madam,\n\nI am writing to report [Problem]. Please take action immediately.\n\nRegards,\n[Your Name]`,
+    address: `Subject: Address Proof Request\n\nSir/Madam,\n\nI need a residence certificate for [Purpose]. My address is [Address].\n\nSincerely,\n[Your Name]`,
+    bank: `To,\nManager, [Bank Name]\n\nSubject: New Account Opening\n\nDear Sir,\n\nI want to open a savings account. Documents are attached.\n\nYours faithfully,\n[Your Name]`,
+    police: `To,\nSHO, [Station]\n\nSubject: Lost [Item]\n\nSir,\n\nI lost my [Item] at [Location] on [Date]. Please record this report.\n\nSincerely,\n[Your Name]`,
+    municipality: `Subject: Municipality Issue\n\nSir,\n\nWe are facing [Problem] in [Area]. Please resolve this.\n\nRegards,\n[Your Name]`,
+    invitation_formal: `Dear [Name],\n\nYou are invited to [Event] on [Date] at [Venue]. We hope to see you there.\n\nBest,\n[Your Name]`,
+    informal: `Dear [Friend's Name],\n\nHow are you? I wanted to catch up and tell you about [Topic]. Let's meet soon!\n\nBest,\n[Your Name]`,
+    parents: `Dear Mom and Dad,\n\nI am doing well here. Hope you are both healthy. Miss you both!\n\nLove,\n[Your Name]`,
+    birthday: `Happy Birthday [Name]!\n\nHope you have a great day and a wonderful year ahead!\n\nCheers,\n[Your Name]`,
+    condolence: `Dear [Name],\n\nSo sorry for your loss. Thinking of you and your family.\n\nWith sympathy,\n[Your Name]`,
+    thankyou: `Dear [Name],\n\nThank you for [Reason]. It really meant a lot to me!\n\nBest,\n[Your Name]`,
+    custom: `Date: ${today}\n\n`
   };
-</script>
+  return t[type] || "";
+}
 
+/* --- SAVE & LOAD LOGIC --- */
+function openEditor(type){
+  currentId = null;
+  document.getElementById("editor").value = getTemplate(type);
+  show("page3");
+}
+
+function saveLetter(){
+  let content = document.getElementById("editor").value.trim();
+  if(!content){ alert("Write something first!"); return; }
+
+  let lines = content.split("\n").filter(l => l.trim() !== "");
+  let title = lines[0] ? lines[0].substring(0, 35) : "Untitled Letter";
+  let now = Date.now();
+
+  let data = { id: currentId ?? now, title, content, time: now };
+
+  let tx = db.transaction("letters", "readwrite");
+  tx.objectStore("letters").put(data);
+  
+  // IMMEDIATELY go home and display the new item
+  tx.oncomplete = () => {
+    backHome(); 
+  };
+}
+
+function loadLetters(){
+  if(!db) return;
+  const tx = db.transaction("letters", "readonly");
+  const req = tx.objectStore("letters").getAll();
+
+  req.onsuccess = () => {
+    let box = document.getElementById("list");
+    box.innerHTML = "";
+    // SORT: Newest items at the top
+    let letters = req.result.sort((a,b) => b.time - a.time);
+
+    if(letters.length === 0) {
+      box.innerHTML = "<p style='text-align:center; margin-top:50px; opacity:0.5;'>No saved letters yet.</p>";
+      return;
+    }
+
+    letters.forEach(l => {
+      let div = document.createElement("div");
+      div.className = "note-item";
+      div.onclick = () => openSaved(l.id);
+      div.innerHTML = `
+        <div class="note-info">
+          <b>${l.title}</b>
+          <small>${new Date(l.time).toLocaleDateString()} at ${new Date(l.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</small>
+        </div>
+        <div class="actions">
+          <button class="btn-icon download" onclick="downloadLetter(event,${l.id})">📩</button>
+          <button class="btn-icon del" onclick="deleteLetter(event,${l.id})">🗑</button>
+        </div>
+      `;
+      box.appendChild(div);
+    });
+  };
+}
+
+function openSaved(id){
+  currentId = id;
+  let tx = db.transaction("letters", "readonly");
+  let req = tx.objectStore("letters").get(id);
+  req.onsuccess = () => {
+    document.getElementById("editor").value = req.result.content;
+    show("page3");
+  };
+}
+
+function downloadLetter(e, id){
+  e.stopPropagation();
+  let tx = db.transaction("letters", "readonly");
+  let req = tx.objectStore("letters").get(id);
+  req.onsuccess = () => {
+    let d = req.result;
+    let blob = new Blob([d.content], {type: "text/plain"});
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = d.title.replace(/\s+/g, '_') + ".txt";
+    a.click();
+  };
+}
+
+function deleteLetter(e, id){
+  e.stopPropagation();
+  if(!confirm("Delete this letter?")) return;
+  let tx = db.transaction("letters", "readwrite");
+  tx.objectStore("letters").delete(id);
+  tx.oncomplete = () => loadLetters();
+}
+</script>
 </body>
 </html>

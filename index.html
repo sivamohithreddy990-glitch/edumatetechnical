@@ -7,11 +7,16 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
 body {
-    min-height:100vh;
-    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,50,0.6)),
-                url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
-    color:#fff; display:flex; flex-direction:column; align-items:center; position:relative; overflow-x:hidden;
+    min-height: 100vh;
+    background: #000;   /* pure black background */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
 }
+
         
 body::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index:0; }
 
@@ -23,7 +28,7 @@ body::after { content:''; position:absolute; top:0; left:0; width:100%; height:1
 }
 #welcomePage h1 {
     font-size:3rem; font-weight:bold; margin-bottom:18px;
-    text-shadow: 0 0 10px #e4dfdf,0 0 20px #4a00e0;
+    text-shadow: 0 0 10px #c67070,0 0 20px #4a00e0;
 }
 #welcomePage p {
     margin-bottom:24px; font-size:1.1rem; opacity:0.95;
@@ -131,7 +136,7 @@ body::after { content:''; position:absolute; top:0; left:0; width:100%; height:1
 
 <!-- Welcome Page (restored) -->
 <div id="welcomePage">
-    <h1>Welcome to Edumate</h1>
+    <h1>Welcome to Edumate Technical</h1>
     <button class="primary-btn" onclick="startLearning()">Start Learning</button>
     
     
@@ -178,13 +183,13 @@ body::after { content:''; position:absolute; top:0; left:0; width:100%; height:1
         </div>
         <div class="status">
             <div>Streaks<span id="streaks">🔥 50</span></div>
-            <div>Score<span id="score">💯 100</span></div>
+            <div>Score<span id="score"> 100</span></div>
         </div>
     </div>
 
     <!-- Features -->
     <div class="features">
-        <div class="feature-card" onclick="window.location.href='coding2.html'"><div class="circle">💻</div><div class="feature-name">Coding</div></div>
+        <div class="feature-card" onclick="window.location.href='coding.html'"><div class="circle">💻</div><div class="feature-name">Coding</div></div>
         <div class="feature-card" onclick="window.location.href='libary.html'"><div class="circle">📚</div><div class="feature-name">Library</div></div>
          <div class="feature-card" onclick="window.location.href='information.html'"><div class="circle">ℹ️</div><div class="feature-name">JOBS & STUDY HUB</div></div>
         <div class="feature-card" onclick="window.location.href='doudt.html'"><div class="circle">❓</div><div class="feature-name">Doubt</div></div>
@@ -210,6 +215,27 @@ body::after { content:''; position:absolute; top:0; left:0; width:100%; height:1
     <button onclick="metaAI()">Meta AI</button>
     <button onclick="logout()">Logout</button>
 </div>
+<!-- 🔥 FIREBASE SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuKiIO5uoaLPz8tzDcjeSy-uhT8Y29PBM",
+    authDomain: "edumate-technical.firebaseapp.com",
+    projectId: "edumate-technical",
+    storageBucket: "edumate-technical.appspot.com",
+    messagingSenderId: "856347096269",
+    appId: "1:856347096269:web:af2d3e4874e3f330652584"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const db   = firebase.firestore();
+</script>
+
 
 <script>
 /* --- Welcome + Auth flow --- */
@@ -258,41 +284,70 @@ function signup(){
     alert('Signup successful! Please login now.');
     switchToLogin();
 }
-
+/* ================= LOGIN ================= */
 function login(){
     const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPassword').value.trim();
+    const pass  = document.getElementById('loginPassword').value.trim();
+
     const raw = localStorage.getItem('edumateUser');
-    if(!raw){ alert('No account found. Please sign up.'); return; }
+    if(!raw){
+        alert('No account found. Please sign up.');
+        return;
+    }
+
     const user = JSON.parse(raw);
+
     if(user.email === email && user.pass === pass){
-        // success -> show dashboard
-        closeAllAuth();
-        document.getElementById('dashboard').style.display = 'flex';
-        document.getElementById('welcomePage').style.display = 'none';
-        document.getElementById('username').innerText = user.name || 'Your Name';
+        localStorage.setItem('edumateLoggedIn', 'true');
+        showDashboard(user);
     } else {
         alert('Invalid email or password!');
     }
 }
 
+/* ================= LOGOUT ================= */
 function logout(){
-    // hide dashboard and auth, show welcome hero again
+    localStorage.removeItem('edumateLoggedIn');
     document.getElementById('dashboard').style.display = 'none';
-    closeAllAuth();
     document.getElementById('welcomePage').style.display = 'flex';
 }
 
-/* --- UI helpers (unchanged) --- */
+/* ================= SHOW DASHBOARD ================= */
+function showDashboard(user){
+    closeAllAuth();
+    document.getElementById('dashboard').style.display = 'flex';
+    document.getElementById('welcomePage').style.display = 'none';
+
+    document.getElementById('username').innerText = user.name || 'Your Name';
+
+    if(user.photo){
+        document.getElementById('profile-photo').src = user.photo;
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('welcomePage').style.display = 'flex';
+});
+
+
+/* ================= SIDEBAR ================= */
 function toggleSidebar(){
     document.getElementById('sidebar').classList.toggle('open');
 }
+
+/* ================= EDIT NAME (PERMANENT) ================= */
 function editProfile(e){
     e.stopPropagation();
-    let name = prompt("Enter your name:", document.getElementById('username').innerText);
-    if(name) {
+
+    const name = prompt(
+        "Enter your name:",
+        document.getElementById('username').innerText
+    );
+
+    if(name){
         document.getElementById('username').innerText = name;
-        // also update in demo storage if present
+
         const raw = localStorage.getItem('edumateUser');
         if(raw){
             const u = JSON.parse(raw);
@@ -301,16 +356,28 @@ function editProfile(e){
         }
     }
 }
+
+/* ================= UPLOAD PHOTO (PERMANENT) ================= */
 function uploadProfilePhoto(e){
     const file = e.target.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(ev){
-            document.getElementById('profile-photo').src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(ev){
+        const imgData = ev.target.result;
+        document.getElementById('profile-photo').src = imgData;
+
+        const raw = localStorage.getItem('edumateUser');
+        if(raw){
+            const u = JSON.parse(raw);
+            u.photo = imgData;   // 🔥 saved permanently
+            localStorage.setItem('edumateUser', JSON.stringify(u));
+        }
+    };
+    reader.readAsDataURL(file);
 }
+
+
 function personalDetails(){ alert("Here you can edit personal details."); }
 function metaAI(){ window.location.href='meta.html'; }
 function openCalculator(){ alert("Calculator will open here."); }
@@ -325,53 +392,6 @@ function openCalculator(){ alert("Calculator will open here."); }
 })();
 </script>
 
-<script type="module">
-  // Firebase modular SDK (CDN) initialization
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAuKiIO5uoaLPz8tzDcjeSy-uhT8Y29PBM",
-    authDomain: "edumate-technical.firebaseapp.com",
-    projectId: "edumate-technical",
-    storageBucket: "edumate-technical.firebasestorage.app",
-    messagingSenderId: "856347096269",
-    appId: "1:856347096269:web:af2d3e4874e3f330652584",
-    measurementId: "G-7BZKYQ4H2D"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  try {
-    const analytics = getAnalytics(app);
-    console.log('Firebase initialized');
-  } catch (err) {
-    // analytics may fail in some environments (e.g. file://), ignore
-    console.warn('Firebase analytics not available', err);
-  }
-</script>
-<script>
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAuKiIO5uoaLPz8tzDcjeSy-uhT8Y29PBM",
-  authDomain: "edumate-technical.firebaseapp.com",
-  projectId: "edumate-technical",
-  storageBucket: "edumate-technical.firebasestorage.app",
-  messagingSenderId: "856347096269",
-  appId: "1:856347096269:web:af2d3e4874e3f330652584",
-  measurementId: "G-7BZKYQ4H2D"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-</script>
 </body>
 </html>

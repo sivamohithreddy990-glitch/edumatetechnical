@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDUMATE PRO – Advanced Coding Library</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#0b0f19;color:#fff;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;padding:20px;text-align:center;}
+
+.circle{
+  width:160px;height:160px;border-radius:50%;
+  background:#111;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  margin:20px;cursor:pointer;
+  box-shadow:0 0 20px #00f2ff;
+  transition:.3s;border:2px solid transparent;
+}
+.circle:hover{
+  transform:translateY(-6px);
+  box-shadow:0 0 35px #00f2ff;
+  border-color:#00f2ff;
+}
+.circle:active{transform:scale(0.95);}
+
+.small{
+  width:110px;height:110px;
+  font-size:14px;margin:10px;
+  box-shadow:0 0 10px cyan;
+}
+
+button{
+  color:cyan;border:1px solid cyan;
+  background:none;padding:10px 20px;
+  border-radius:20px;cursor:pointer;
+  font-weight:bold;
+}
+
+.header{
+  height:60px;background:#000;
+  display:flex;align-items:center;
+  padding:0 20px;border-bottom:2px solid #00f2ff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HOME -->
+<div id="home" class="screen" style="display:block;">
+  <h1 style="margin-top:40px;color:cyan;font-size:2.5em;">EDUMATE PRO</h1>
+  <p style="color:#aaa;">Advanced Engineering Learning Library</p>
+
+  <div style="display:flex;justify-content:center;flex-wrap:wrap;margin-top:40px;">
+    <div class="circle" onclick="openMenu('course')">📘<br><b>COURSES</b></div>
+    <div class="circle" onclick="openMenu('compiler')">💻<br><b>COMPILER</b></div>
+  </div>
+</div>
+
+<!-- SUBJECT MENU -->
+<div id="menu" class="screen">
+  <h2 id="menuTitle" style="margin-bottom:30px;color:cyan;"></h2>
+
+  <div style="display:flex;justify-content:center;flex-wrap:wrap;max-width:900px;margin:auto;">
+    <div class="circle small" onclick="openSubject('html')">HTML</div>
+    <div class="circle small" onclick="openSubject('css')">CSS</div>
+    <div class="circle small" onclick="openSubject('javascript')">JS</div>
+    <div class="circle small" onclick="openSubject('python')">Python</div>
+    <div class="circle small" onclick="openSubject('java')">Java</div>
+    <div class="circle small" onclick="openSubject('c')">C</div>
+    <div class="circle small" onclick="openSubject('cpp')">C++</div>
+    <div class="circle small" onclick="openSubject('sql')">SQL</div>
+    <div class="circle small" onclick="openSubject('mongodb')">MongoDB</div>
+    <div class="circle small" onclick="openSubject('oracle')">Oracle</div>
+    <div class="circle small" onclick="openSubject('dbms')">DBMS</div>
+  </div>
+
+  <br>
+  <button onclick="goHome()">⬅ Back Home</button>
+</div>
+
+<!-- COURSE VIEW -->
+<div id="viewer" class="screen">
+  <div class="header">
+    <button onclick="backMenu()">⬅ BACK</button>
+    <b id="title" style="margin-left:20px;color:cyan;"></b>
+  </div>
+
+  <div id="content" style="padding:40px;text-align:left;color:#ddd;max-width:900px;margin:auto;"></div>
+</div>
+
+<script>
+let mode="";
+
+/* COMPILER LINKS */
+const compilers={
+  html:"https://onecompiler.com/html",
+  css:"https://onecompiler.com/css",
+  javascript:"https://onecompiler.com/javascript",
+  python:"https://onecompiler.com/python",
+  java:"https://onecompiler.com/java",
+  c:"https://onecompiler.com/c",
+  cpp:"https://onecompiler.com/cpp",
+  sql:"https://onecompiler.com/mysql",
+  mongodb:"https://onecompiler.com/mongodb",
+  oracle:"https://onecompiler.com/postgresql",
+  dbms:"https://onecompiler.com/mysql"
+};
+
+/* COURSE CONTENT */
+const courses = {
+
+html: `
+<h2 style="color:#008CBA;">HTML Tutorial (Complete Guide)</h2>
+
+<p style="font-size:16px;line-height:1.8;">
+HTML (HyperText Markup Language) is used to create the structure of web pages.
+It works using <b>tags</b> that tell the browser how content should be displayed.
+</p>
+
+<hr>
+
+<h3 style="color:#333;">1️⃣ Document Structure Tags</h3>
+<ul>
+  <li><b>&lt;!DOCTYPE html&gt;</b> – Defines HTML5 document type</li>
+  <li><b>&lt;html&gt;</b> – Root element of HTML page</li>
+  <li><b>&lt;head&gt;</b> – Contains metadata</li>
+  <li><b>&lt;title&gt;</b> – Page title</li>
+  <li><b>&lt;meta&gt;</b> – Metadata (charset, viewport)</li>
+  <li><b>&lt;link&gt;</b> – External CSS file</li>
+  <li><b>&lt;style&gt;</b> – Internal CSS</li>
+  <li><b>&lt;script&gt;</b> – JavaScript code</li>
+  <li><b>&lt;base&gt;</b> – Base URL for links</li>
+</ul>
+
+<h3 style="color:#333;">2️⃣ Text Formatting Tags</h3>
+<ul>
+  <li><b>&lt;h1&gt; to &lt;h6&gt;</b> – Headings</li>
+  <li><b>&lt;p&gt;</b> – Paragraph</li>
+  <li><b>&lt;br&gt;</b> – Line break</li>
+  <li><b>&lt;hr&gt;</b> – Horizontal line</li>
+  <li><b>&lt;b&gt;</b> – Bold text</li>
+  <li><b>&lt;strong&gt;</b> – Important text</li>
+  <li><b>&lt;i&gt;</b> – Italic</li>
+  <li><b>&lt;em&gt;</b> – Emphasized text</li>
+  <li><b>&lt;mark&gt;</b> – Highlighted text</li>
+  <li><b>&lt;small&gt;</b> – Smaller text</li>
+  <li><b>&lt;sub&gt;</b> – Subscript</li>
+  <li><b>&lt;sup&gt;</b> – Superscript</li>
+  <li><b>&lt;code&gt;</b> – Code text</li>
+  <li><b>&lt;pre&gt;</b> – Preformatted text</li>
+  <li><b>&lt;blockquote&gt;</b> – Quotation</li>
+</ul>
+
+<h3 style="color:#333;">3️⃣ Links & Media Tags</h3>
+<ul>
+  <li><b>&lt;a&gt;</b> – Hyperlink</li>
+  <li><b>&lt;img&gt;</b> – Image</li>
+  <li><b>&lt;audio&gt;</b> – Audio file</li>
+  <li><b>&lt;video&gt;</b> – Video file</li>
+  <li><b>&lt;source&gt;</b> – Media source</li>
+  <li><b>&lt;track&gt;</b> – Video subtitles</li>
+  <li><b>&lt;iframe&gt;</b> – Embedded page</li>
+</ul>
+
+<h3 style="color:#333;">4️⃣ List Tags</h3>
+<ul>
+  <li><b>&lt;ul&gt;</b> – Unordered list</li>
+  <li><b>&lt;ol&gt;</b> – Ordered list</li>
+  <li><b>&lt;li&gt;</b> – List item</li>
+  <li><b>&lt;dl&gt;</b> – Description list</li>
+  <li><b>&lt;dt&gt;</b> – Term</li>
+  <li><b>&lt;dd&gt;</b> – Description</li>
+</ul>
+
+<h3 style="color:#333;">5️⃣ Table Tags</h3>
+<ul>
+  <li><b>&lt;table&gt;</b> – Table</li>
+  <li><b>&lt;tr&gt;</b> – Table row</li>
+  <li><b>&lt;th&gt;</b> – Table heading</li>
+  <li><b>&lt;td&gt;</b> – Table data</li>
+  <li><b>&lt;thead&gt;</b> – Table head</li>
+  <li><b>&lt;tbody&gt;</b> – Table body</li>
+  <li><b>&lt;tfoot&gt;</b> – Table footer</li>
+  <li><b>&lt;caption&gt;</b> – Table caption</li>
+</ul>
+
+<h3 style="color:#333;">6️⃣ Form & Input Tags</h3>
+<ul>
+  <li><b>&lt;form&gt;</b> – Form container</li>
+  <li><b>&lt;input&gt;</b> – Input field</li>
+  <li><b>&lt;textarea&gt;</b> – Multi-line input</li>
+  <li><b>&lt;button&gt;</b> – Button</li>
+  <li><b>&lt;select&gt;</b> – Dropdown</li>
+  <li><b>&lt;option&gt;</b> – Dropdown option</li>
+  <li><b>&lt;label&gt;</b> – Input label</li>
+  <li><b>&lt;fieldset&gt;</b> – Group inputs</li>
+  <li><b>&lt;legend&gt;</b> – Fieldset title</li>
+</ul>
+
+<h3 style="color:#333;">7️⃣ Semantic HTML5 Tags</h3>
+<ul>
+  <li><b>&lt;header&gt;</b></li>
+  <li><b>&lt;nav&gt;</b></li>
+  <li><b>&lt;section&gt;</b></li>
+  <li><b>&lt;article&gt;</b></li>
+  <li><b>&lt;aside&gt;</b></li>
+  <li><b>&lt;footer&gt;</b></li>
+  <li><b>&lt;main&gt;</b></li>
+  <li><b>&lt;figure&gt;</b></li>
+  <li><b>&lt;figcaption&gt;</b></li>
+</ul>
+
+<hr>
+
+<h3 style="color:#008CBA;">Example HTML Program</h3>
+
+<pre style="background:#743737;padding:15px;border-radius:8px;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;My First HTML Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Welcome to HTML&lt;/h1&gt;
+  &lt;p&gt;This page is created using HTML.&lt;/p&gt;
+  &lt;a href="https://www.w3schools.com"&gt;Learn More&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<a href="https://www.w3schools.com/html/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#5EC8A2;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools HTML Tutorial
+</a>
+`
+,
+
+css:` 
+<h2 style="color:#008CBA;">CSS Tutorial (Complete Guide)</h2>
+
+<p style="font-size:16px;line-height:1.8;">
+CSS (Cascading Style Sheets) is used to style HTML elements, control layouts, colors, fonts, and animations.
+CSS works using <b>selectors</b> and <b>properties</b> to apply styles to HTML elements.
+</p>
+
+<hr>
+
+<h3 style="color:#333;">1️⃣ CSS Selectors</h3>
+<ul>
+  <li><b>Element Selector</b> – targets HTML tags (e.g., <code>p { color: red; }</code>)</li>
+  <li><b>ID Selector</b> – targets element by ID (e.g., <code>#header { font-size: 20px; }</code>)</li>
+  <li><b>Class Selector</b> – targets class (e.g., <code>.menu { background: blue; }</code>)</li>
+  <li><b>Group Selector</b> – multiple elements (e.g., <code>h1, h2 { margin: 0; }</code>)</li>
+  <li><b>Universal Selector</b> – <code>*</code> selects all elements</li>
+  <li><b>Attribute Selector</b> – select elements with specific attributes (e.g., <code>[type="text"]</code>)</li>
+  <li><b>Pseudo-classes</b> – <code>:hover, :first-child, :nth-child()</code></li>
+  <li><b>Pseudo-elements</b> – <code>::before, ::after</code></li>
+  <li><b>Descendant Selector</b> – selects nested elements (e.g., <code>div p</code>)</li>
+  <li><b>Child Selector</b> – selects direct children (e.g., <code>div > p</code>)</li>
+</ul>
+
+<h3 style="color:#333;">2️⃣ CSS Properties</h3>
+<ul>
+  <li><b>color</b> – text color</li>
+  <li><b>background-color</b> – background</li>
+  <li><b>font-family</b> – text font</li>
+  <li><b>font-size</b> – text size</li>
+  <li><b>font-weight</b> – boldness</li>
+  <li><b>text-align</b> – left, right, center</li>
+  <li><b>line-height</b> – spacing between lines</li>
+  <li><b>letter-spacing</b> – space between letters</li>
+  <li><b>text-decoration</b> – underline, overline, none</li>
+  <li><b>text-transform</b> – uppercase, lowercase, capitalize</li>
+  <li><b>margin</b> – outer spacing</li>
+  <li><b>padding</b> – inner spacing</li>
+  <li><b>border</b> – border width, style, color</li>
+  <li><b>width</b> – element width</li>
+  <li><b>height</b> – element height</li>
+  <li><b>max-width / min-width</b></li>
+  <li><b>max-height / min-height</b></li>
+  <li><b>display</b> – block, inline, inline-block, flex, grid</li>
+  <li><b>position</b> – static, relative, absolute, fixed, sticky</li>
+  <li><b>top / right / bottom / left</b> – position offsets</li>
+  <li><b>float</b> – left, right</li>
+  <li><b>clear</b> – clear floats</li>
+  <li><b>overflow</b> – hidden, scroll, auto</li>
+  <li><b>z-index</b> – stacking order</li>
+  <li><b>flex / flex-direction / justify-content / align-items</b> – flexbox layout</li>
+  <li><b>grid / grid-template-columns / grid-gap</b> – CSS grid</li>
+  <li><b>box-shadow</b> – shadow effect</li>
+  <li><b>text-shadow</b> – shadow on text</li>
+  <li><b>opacity</b> – transparency</li>
+  <li><b>transition</b> – animation timing</li>
+  <li><b>transform</b> – rotate, scale, translate</li>
+  <li><b>animation / keyframes</b> – create animations</li>
+  <li><b>cursor</b> – pointer, default, crosshair</li>
+  <li><b>visibility</b> – visible, hidden</li>
+  <li><b>clip-path</b> – shape clipping</li>
+  <li><b>overflow-x / overflow-y</b></li>
+  <li><b>background-image / gradient</b></li>
+  <li><b>background-repeat / background-position</b></li>
+  <li><b>list-style / list-style-type</b></li>
+  <li><b>outline</b> – outline around elements</li>
+  <li><b>object-fit / object-position</b> – for images/videos</li>
+  <li><b>visibility</b> – visible / hidden</li>
+  <li><b>clip</b> – clip region</li>
+  <li><b>overflow-wrap / word-break</b></li>
+  <li><b>white-space</b> – nowrap, pre, normal</li>
+  <li><b>float / clear</b></li>
+  <li><b>min/max-width/height</b></li>
+  <li><b>scroll-behavior</b> – smooth scrolling</li>
+</ul>
+
+<hr>
+
+<h3 style="color:#008CBA;">Example CSS Program</h3>
+
+<pre style="background:#4F5FA3;padding:15px;border-radius:8px;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+body {
+  background-color: #78A5B5;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+h1 {
+  color: #008CBA;
+  text-align: center;
+  text-shadow: 1px 1px 2px #aaa;
+}
+
+p {
+  color: #333;
+  margin: 10px 20px;
+  font-size: 16px;
+}
+
+.button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #037a50;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h1&gt;Welcome to CSS&lt;/h1&gt;
+&lt;p&gt;This is an example of CSS styling.&lt;/p&gt;
+&lt;button class="button"&gt;Click Me&lt;/button&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<a href="https://www.w3schools.com/css/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#04AA6D;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools CSS Tutorial
+</a>
+`,
+
+
+javascript: `
+<h2 style="color:#f0a500;">JavaScript Tutorial (Complete Guide)</h2>
+
+<p style="font-size:16px;line-height:1.8;">
+JavaScript (JS) is a programming language that allows you to make web pages interactive.
+It can manipulate HTML, handle events, perform calculations, and interact with APIs.
+</p>
+
+<hr>
+
+<h3 style="color:#333;">1️⃣ JavaScript Basics</h3>
+<ul>
+  <li><b>Variables:</b> <code>var</code>, <code>let</code>, <code>const</code></li>
+  <li><b>Data Types:</b> string, number, boolean, array, object, null, undefined</li>
+  <li><b>Operators:</b> +, -, *, /, %, ++, --, ==, ===, !=, !==, &lt;, &gt;</li>
+  <li><b>Comments:</b> <code>// single line</code>, <code>/* multi-line */</code></li>
+  <li><b>Statements:</b> if, else if, else, switch</li>
+  <li><b>Loops:</b> for, while, do...while, for...in, for...of</li>
+  <li><b>Functions:</b> declaration, expression, arrow functions</li>
+</ul>
+
+<h3 style="color:#333;">2️⃣ DOM (Document Object Model)</h3>
+<ul>
+  <li><b>getElementById()</b> – select element by ID</li>
+  <li><b>getElementsByClassName()</b> – select elements by class</li>
+  <li><b>querySelector()</b> – select first matching element</li>
+  <li><b>querySelectorAll()</b> – select all matching elements</li>
+  <li><b>innerHTML</b> – get or set HTML content</li>
+  <li><b>style</b> – modify CSS styles</li>
+  <li><b>addEventListener()</b> – handle events</li>
+</ul>
+
+<h3 style="color:#333;">3️⃣ JavaScript Events</h3>
+<ul>
+  <li>click, mouseover, mouseout</li>
+  <li>keydown, keyup</li>
+  <li>load, unload</li>
+  <li>focus, blur</li>
+  <li>submit, change, input</li>
+</ul>
+
+<h3 style="color:#333;">4️⃣ Arrays & Objects</h3>
+<ul>
+  <li>Arrays: <code>let arr = [1,2,3]</code></li>
+  <li>Objects: <code>let obj = {name: "John", age: 25}</code></li>
+  <li>Array Methods: push, pop, shift, unshift, map, filter, reduce</li>
+  <li>Object Methods: keys, values, entries</li>
+</ul>
+
+<h3 style="color:#333;">5️⃣ Advanced JavaScript</h3>
+<ul>
+  <li>ES6+ Features: let, const, arrow functions, template literals</li>
+  <li>Destructuring: arrays and objects</li>
+  <li>Spread & Rest operator</li>
+  <li>Modules (export / import)</li>
+  <li>Promises and async/await</li>
+  <li>Classes and inheritance</li>
+  <li>JSON: parse & stringify</li>
+  <li>Error handling: try, catch, finally</li>
+  <li>LocalStorage / SessionStorage</li>
+</ul>
+
+<hr>
+
+<h3 style="color:#f0a500;">Example JavaScript Program</h3>
+
+<pre style="background:#CE8A8A;padding:15px;border-radius:8px;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;JavaScript Example&lt;/title&gt;
+&lt;script&gt;
+function greetUser() {
+  let name = prompt("Enter your name:");
+  if(name) {
+    document.getElementById("demo").innerHTML = "Hello, " + name + "!";
+  } else {
+    document.getElementById("demo").innerHTML = "Hello, Guest!";
+  }
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h1&gt;Welcome to JavaScript&lt;/h1&gt;
+&lt;button onclick="greetUser()" 
+style="padding:10px 20px;background:#f0a500;color:white;border:none;border-radius:5px;cursor:pointer;"&gt;
+Click Me
+&lt;/button&gt;
+&lt;p id="demo" style="margin-top:15px;font-size:16px;color:#333;"&gt;&lt;/p&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<a href="https://www.w3schools.com/js/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#f0a500;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools JavaScript Tutorial
+</a>
+`
+,
+python: `
+<h2 style="color:#306998;">Python Tutorial (Complete Guide)</h2>
+
+<p style="font-size:16px;line-height:1.8;">
+Python is a high-level, interpreted programming language designed for readability and simplicity.
+It supports object-oriented, functional, and procedural programming styles.
+Python is widely used for web development, data analysis, AI, automation, and more.
+</p>
+
+<hr>
+
+<h3 style="color:#333;">1️⃣ Python Basics</h3>
+<ul>
+  <li><b>Variables:</b> <code>x = 10</code>, <code>name = "John"</code></li>
+  <li><b>Data Types:</b> int, float, str, bool, list, tuple, dict, set, None</li>
+  <li><b>Comments:</b> <code># single line</code>, <code>""" multi-line """</code></li>
+  <li><b>Operators:</b> +, -, *, /, %, //, **, ==, !=, &gt;, &lt;, &gt;=, &lt;=</li>
+  <li><b>Printing:</b> <code>print("Hello World")</code></li>
+</ul>
+
+<h3 style="color:#333;">2️⃣ Control Flow</h3>
+<ul>
+  <li><b>If Statements:</b> <code>if, elif, else</code></li>
+  <li><b>Loops:</b> <code>for</code>, <code>while</code>, <code>break</code>, <code>continue</code></li>
+  <li><b>Range:</b> <code>range(start, end, step)</code></li>
+</ul>
+
+<h3 style="color:#333;">3️⃣ Functions & Modules</h3>
+<ul>
+  <li><b>Function:</b> <code>def greet(name): return "Hello " + name</code></li>
+  <li><b>Lambda:</b> <code>lambda x: x * 2</code></li>
+  <li><b>Import Modules:</b> <code>import math</code>, <code>from datetime import date</code></li>
+  <li><b>Built-in Functions:</b> len(), type(), str(), int(), float()</li>
+</ul>
+
+<h3 style="color:#333;">4️⃣ Data Structures</h3>
+<ul>
+  <li><b>List:</b> ordered, mutable <code>[1,2,3]</code></li>
+  <li><b>Tuple:</b> ordered, immutable <code>(1,2,3)</code></li>
+  <li><b>Dictionary:</b> key-value <code>{"name":"John", "age":25}</code></li>
+  <li><b>Set:</b> unordered, unique elements <code>{1,2,3}</code></li>
+  <li>List/Dict methods: append, remove, pop, keys, values, items</li>
+</ul>
+
+<h3 style="color:#333;">5️⃣ Strings & File I/O</h3>
+<ul>
+  <li>String methods: upper(), lower(), strip(), split(), join(), replace()</li>
+  <li>f-strings: <code>f"Hello {name}"</code></li>
+  <li>File handling: <code>open("file.txt","r")</code>, read(), write(), close()</li>
+</ul>
+
+<h3 style="color:#333;">6️⃣ OOP (Object-Oriented Python)</h3>
+<ul>
+  <li>Classes & Objects: <code>class Person: def __init__(self,name)</code></li>
+  <li>Inheritance, Encapsulation, Polymorphism</li>
+  <li>Magic Methods: <code>__init__(), __str__(), __repr__()</code></li>
+</ul>
+
+<h3 style="color:#333;">7️⃣ Advanced Python Concepts</h3>
+<ul>
+  <li>Decorators, Generators, Iterators</li>
+  <li>List Comprehensions</li>
+  <li>Error Handling: try, except, finally</li>
+  <li>Modules & Packages</li>
+  <li>Virtual Environments (venv)</li>
+  <li>JSON parsing: json.load(), json.dump()</li>
+  <li>Regular Expressions (re module)</li>
+</ul>
+
+<hr>
+
+<h3 style="color:#306998;">Example Python Program</h3>
+
+<pre style="background:#A9588F;padding:15px;border-radius:8px;">
+# Greet User
+name = input("Enter your name: ")
+if name:
+    print(f"Hello, {name}!")
+else:
+    print("Hello, Guest!")
+
+# List example
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit.upper())
+
+# Dictionary example
+person = {"name":"John","age":25}
+print(f"{person['name']} is {person['age']} years old")
+</pre>
+
+<a href="https://www.w3schools.com/python/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#306998;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools Python Tutorial
+</a>
+`
+,
+
+java: `
+<h2 style="color:#f89820;">Java Tutorial (Complete Guide)</h2>
+
+<p style="font-size:16px;line-height:1.8;">
+Java is a **class-based, object-oriented programming language** used for building cross-platform applications. 
+It is widely used for web, mobile (Android), desktop, and enterprise applications. Java follows the principle: <b>Write Once, Run Anywhere (WORA)</b>.
+</p>
+
+<hr>
+
+<h3 style="color:#333;">1️⃣ Java Basics</h3>
+<ul>
+  <li><b>Variables:</b> int, double, float, char, boolean, String</li>
+  <li><b>Data Types:</b> primitive & reference types</li>
+  <li><b>Operators:</b> +, -, *, /, %, ++, --, ==, !=, &lt;, &gt;, &lt;=, &gt;=</li>
+  <li><b>Comments:</b> <code>// single line</code>, <code>/* multi-line */</code></li>
+  <li><b>Printing:</b> <code>System.out.println("Hello World");</code></li>
+</ul>
+
+<h3 style="color:#333;">2️⃣ Control Flow</h3>
+<ul>
+  <li><b>If-Else:</b> <code>if, else if, else</code></li>
+  <li><b>Switch:</b> <code>switch(expression){ case: ... }</code></li>
+  <li><b>Loops:</b> for, while, do...while, enhanced for loop</li>
+  <li><b>Break & Continue</b> – control loop flow</li>
+</ul>
+
+<h3 style="color:#333;">3️⃣ Functions / Methods</h3>
+<ul>
+  <li>Defining methods: <code>public static int sum(int a,int b){ return a+b; }</code></li>
+  <li>Method overloading & overriding</li>
+  <li>Return types, parameters</li>
+</ul>
+
+<h3 style="color:#333;">4️⃣ Object-Oriented Java</h3>
+<ul>
+  <li>Classes & Objects: <code>class Car { }</code></li>
+  <li>Constructors & Destructors</li>
+  <li>Inheritance: <code>extends</code></li>
+  <li>Polymorphism: compile-time & runtime</li>
+  <li>Encapsulation: private variables & public getters/setters</li>
+  <li>Abstraction: abstract classes & interfaces</li>
+</ul>
+
+<h3 style="color:#333;">5️⃣ Arrays & Collections</h3>
+<ul>
+  <li>Arrays: <code>int[] arr = {1,2,3}</code></li>
+  <li>ArrayList: dynamic arrays</li>
+  <li>LinkedList, HashMap, HashSet, TreeMap</li>
+  <li>Iteration: for-loop, enhanced for-loop, Iterator</li>
+</ul>
+
+<h3 style="color:#333;">6️⃣ Exception Handling</h3>
+<ul>
+  <li>try, catch, finally</li>
+  <li>Throw & throws</li>
+  <li>Custom exceptions</li>
+</ul>
+
+<h3 style="color:#333;">7️⃣ Java Advanced Topics</h3>
+<ul>
+  <li>Packages & Imports</li>
+  <li>File I/O: FileReader, FileWriter, BufferedReader</li>
+  <li>Java Streams & Lambda Expressions</li>
+  <li>Multithreading: Thread, Runnable</li>
+  <li>Generics & Collections framework</li>
+  <li>Serialization & Deserialization</li>
+  <li>Java 8+ Features: Stream API, Optional, Date-Time API</li>
+</ul>
+
+<hr>
+
+<h3 style="color:#f89820;">Example Java Program</h3>
+
+<pre style="background:#918913;padding:15px;border-radius:8px;">
+// Hello World Program
+public class Main {
+    public static void main(String[] args) {
+        String name = "John";
+        System.out.println("Hello, " + name + "!");
+
+        // Array example
+        int[] numbers = {1,2,3,4,5};
+        for(int num : numbers){
+            System.out.println("Number: " + num);
+        }
+
+        // Object example
+        Car car = new Car("Toyota", "Red");
+        car.showDetails();
+    }
+}
+
+// Class example
+class Car {
+    String brand;
+    String color;
+
+    Car(String brand, String color){
+        this.brand = brand;
+        this.color = color;
+    }
+
+    void showDetails(){
+        System.out.println("Car: " + brand + ", Color: " + color);
+    }
+}
+</pre>
+
+<a href="https://www.w3schools.com/java/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#f89820;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools Java Tutorial
+</a>
+`
+,
+
+c: `
+<h2 style="color:#00599C;">C Programming Tutorial (Complete Guide)</h2>
+
+<p style="font-size:16px;line-height:1.8;">
+C is a powerful, procedural programming language developed by Dennis Ritchie.
+It is the foundation of modern programming languages and is widely used in
+operating systems, embedded systems, and system-level programming.
+</p>
+
+<hr>
+
+<h3>1️⃣ Basics of C</h3>
+<ul>
+  <li><b>Keywords:</b> int, float, char, double, void, return</li>
+  <li><b>Variables:</b> Store data values</li>
+  <li><b>Constants:</b> const keyword</li>
+  <li><b>Comments:</b> // single line, /* multi-line */</li>
+  <li><b>Header Files:</b> stdio.h, stdlib.h, math.h</li>
+</ul>
+
+<h3>2️⃣ Data Types</h3>
+<ul>
+  <li>int – integers</li>
+  <li>float – decimal values</li>
+  <li>double – high precision</li>
+  <li>char – characters</li>
+  <li>void – no value</li>
+  <li>Derived types: arrays, pointers, structures, unions</li>
+</ul>
+
+<h3>3️⃣ Operators</h3>
+<ul>
+  <li>Arithmetic: +, -, *, /, %</li>
+  <li>Relational: ==, !=, &gt;, &lt;, &gt;=, &lt;=</li>
+  <li>Logical: &&, ||, !</li>
+  <li>Assignment: =, +=, -=</li>
+  <li>Bitwise: &, |, ^, ~, &lt;&lt;, &gt;&gt;</li>
+</ul>
+
+<h3>4️⃣ Control Statements</h3>
+<ul>
+  <li>if, if-else, nested if</li>
+  <li>switch-case</li>
+  <li>Loops: for, while, do-while</li>
+  <li>break and continue</li>
+  <li>goto (rarely used)</li>
+</ul>
+
+<h3>5️⃣ Functions</h3>
+<ul>
+  <li>Function declaration & definition</li>
+  <li>Call by value</li>
+  <li>Recursion</li>
+  <li>User-defined functions</li>
+  <li>Standard library functions</li>
+</ul>
+
+<h3>6️⃣ Arrays & Strings</h3>
+<ul>
+  <li>One-dimensional arrays</li>
+  <li>Two-dimensional arrays</li>
+  <li>String handling using char arrays</li>
+  <li>String functions: strlen, strcpy, strcat, strcmp</li>
+</ul>
+
+<h3>7️⃣ Pointers</h3>
+<ul>
+  <li>Pointer declaration & initialization</li>
+  <li>Pointer arithmetic</li>
+  <li>Pointers and arrays</li>
+  <li>Pointers to functions</li>
+  <li>Null pointers</li>
+</ul>
+
+<h3>8️⃣ Structures & Unions</h3>
+<ul>
+  <li>Structure declaration</li>
+  <li>Accessing structure members</li>
+  <li>Array of structures</li>
+  <li>Union vs Structure</li>
+</ul>
+
+<h3>9️⃣ File Handling</h3>
+<ul>
+  <li>File pointer (FILE *)</li>
+  <li>fopen(), fclose()</li>
+  <li>fprintf(), fscanf()</li>
+  <li>fgets(), fputs()</li>
+</ul>
+
+<h3>🔟 Memory Management</h3>
+<ul>
+  <li>malloc()</li>
+  <li>calloc()</li>
+  <li>realloc()</li>
+  <li>free()</li>
+</ul>
+
+<hr>
+
+<h3 style="color:#00599C;">Example C Program</h3>
+
+<pre style="background:#f4f4f4;padding:15px;border-radius:8px;">
+#include &lt;stdio.h&gt;
+
+// Function declaration
+int add(int a, int b);
+
+int main() {
+    int x = 10, y = 20;
+
+    printf("Hello C Programming!\\n");
+
+    int sum = add(x, y);
+    printf("Sum = %d\\n", sum);
+
+    // Array example
+    int arr[3] = {1, 2, 3};
+    for(int i = 0; i &lt; 3; i++) {
+        printf("Array element: %d\\n", arr[i]);
+    }
+
+    return 0;
+}
+
+// Function definition
+int add(int a, int b) {
+    return a + b;
+}
+</pre>
+
+<a href="https://www.w3schools.com/c/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#00599C;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools C Tutorial
+</a>
+`
+,
+
+cpp: `
+<h2 style="color:#00599C;">C++ Programming Tutorial (Complete Guide)</h2>
+
+<p style="font-size:16px;line-height:1.8;">
+C++ is a powerful, high-performance programming language developed by Bjarne Stroustrup.
+It supports <b>procedural, object-oriented, and generic programming</b>.
+C++ is widely used in system software, game development, competitive programming,
+and high-performance applications.
+</p>
+
+<hr>
+
+<h3>1️⃣ C++ Basics</h3>
+<ul>
+  <li><b>Keywords:</b> int, float, double, char, bool, void</li>
+  <li><b>Variables & Constants</b></li>
+  <li><b>Namespaces:</b> std</li>
+  <li><b>Comments:</b> // single line, /* multi-line */</li>
+  <li><b>Input / Output:</b> cin, cout</li>
+</ul>
+
+<h3>2️⃣ Data Types</h3>
+<ul>
+  <li>Primitive: int, float, double, char, bool</li>
+  <li>Derived: array, pointer, reference</li>
+  <li>User-defined: struct, union, enum, typedef</li>
+</ul>
+
+<h3>3️⃣ Operators</h3>
+<ul>
+  <li>Arithmetic: +, -, *, /, %</li>
+  <li>Relational: ==, !=, &gt;, &lt;, &gt;=, &lt;=</li>
+  <li>Logical: &&, ||, !</li>
+  <li>Assignment: =, +=, -=</li>
+  <li>Bitwise: &, |, ^, &lt;&lt;, &gt;&gt;</li>
+</ul>
+
+<h3>4️⃣ Control Statements</h3>
+<ul>
+  <li>if, if-else, nested if</li>
+  <li>switch-case</li>
+  <li>Loops: for, while, do-while</li>
+  <li>break and continue</li>
+</ul>
+
+<h3>5️⃣ Functions</h3>
+<ul>
+  <li>Function declaration & definition</li>
+  <li>Call by value & call by reference</li>
+  <li>Inline functions</li>
+  <li>Function overloading</li>
+  <li>Recursion</li>
+</ul>
+
+<h3>6️⃣ Object-Oriented Programming (OOP)</h3>
+<ul>
+  <li>Classes & Objects</li>
+  <li>Constructors & Destructors</li>
+  <li>Encapsulation</li>
+  <li>Inheritance</li>
+  <li>Polymorphism</li>
+  <li>Virtual functions</li>
+  <li>Abstraction</li>
+</ul>
+
+<h3>7️⃣ Arrays, Strings & Pointers</h3>
+<ul>
+  <li>1D & 2D arrays</li>
+  <li>Strings using string class</li>
+  <li>Pointers & pointer arithmetic</li>
+  <li>Pointers with objects</li>
+</ul>
+
+<h3>8️⃣ STL (Standard Template Library)</h3>
+<ul>
+  <li>Containers: vector, list, deque</li>
+  <li>Associative: map, set, unordered_map</li>
+  <li>Algorithms: sort(), find(), count()</li>
+  <li>Iterators</li>
+</ul>
+
+<h3>9️⃣ Exception Handling</h3>
+<ul>
+  <li>try, catch, throw</li>
+  <li>Multiple catch blocks</li>
+  <li>User-defined exceptions</li>
+</ul>
+
+<h3>🔟 File Handling</h3>
+<ul>
+  <li>ifstream</li>
+  <li>ofstream</li>
+  <li>fstream</li>
+  <li>Reading & writing files</li>
+</ul>
+
+<h3>1️⃣1️⃣ Advanced C++ Concepts</h3>
+<ul>
+  <li>Templates</li>
+  <li>Smart pointers</li>
+  <li>Dynamic memory: new, delete</li>
+  <li>Namespaces</li>
+  <li>Lambda expressions</li>
+  <li>Multithreading (basic)</li>
+</ul>
+
+<hr>
+
+<h3 style="color:#00599C;">Example C++ Program</h3>
+
+<pre style="background:#f4f4f4;padding:15px;border-radius:8px;">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// Class example
+class Car {
+    string brand;
+    int year;
+
+public:
+    Car(string b, int y) {
+        brand = b;
+        year = y;
+    }
+
+    void show() {
+        cout &lt;&lt; "Car Brand: " &lt;&lt; brand &lt;&lt; endl;
+        cout &lt;&lt; "Year: " &lt;&lt; year &lt;&lt; endl;
+    }
+};
+
+int main() {
+    cout &lt;&lt; "Hello C++ Programming!" &lt;&lt; endl;
+
+    // Object example
+    Car c1("Toyota", 2024);
+    c1.show();
+
+    // STL vector example
+    vector&lt;int&gt; nums = {1, 2, 3, 4};
+    for(int n : nums) {
+        cout &lt;&lt; n &lt;&lt; " ";
+    }
+
+    return 0;
+}
+</pre>
+
+<a href="https://www.w3schools.com/cpp/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#00599C;color:white;padding:12px 20px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools C++ Tutorial
+</a>
+`
+,
+
+sql: `
+<h2 style="color:#2c7be5;">SQL Tutorial (Complete & Advanced Guide)</h2>
+
+<p style="font-size:16px;line-height:1.9;">
+SQL (Structured Query Language) is used to store, retrieve, manipulate, and manage
+data in relational database systems such as MySQL, Oracle, SQL Server, and PostgreSQL.
+SQL is essential for backend development, data analysis, and database administration.
+</p>
+
+<hr>
+
+<h3>1️⃣ SQL Basics</h3>
+<ul>
+  <li><b>SQL</b> stands for Structured Query Language</li>
+  <li>Used to communicate with relational databases</li>
+  <li>SQL is <b>not case-sensitive</b></li>
+  <li>Common DBMS: MySQL, Oracle, SQL Server, PostgreSQL</li>
+</ul>
+
+<h3>2️⃣ Database & Table Commands</h3>
+<ul>
+  <li><b>CREATE DATABASE</b> – create new database</li>
+  <li><b>DROP DATABASE</b> – delete database</li>
+  <li><b>USE</b> – select database</li>
+  <li><b>CREATE TABLE</b> – create table</li>
+  <li><b>DROP TABLE</b> – delete table</li>
+  <li><b>TRUNCATE</b> – remove all rows</li>
+</ul>
+
+<pre>
+CREATE DATABASE school;
+USE school;
+
+CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  age INT,
+  city VARCHAR(50)
+);
+</pre>
+
+<h3>3️⃣ Data Types</h3>
+<ul>
+  <li>INT – integer values</li>
+  <li>FLOAT / DOUBLE – decimal numbers</li>
+  <li>VARCHAR – text data</li>
+  <li>CHAR – fixed length string</li>
+  <li>DATE / TIME / DATETIME</li>
+  <li>BOOLEAN</li>
+</ul>
+
+<h3>4️⃣ INSERT, SELECT, UPDATE, DELETE (DML)</h3>
+
+<pre>
+INSERT INTO students VALUES (1, 'John', 21, 'Delhi');
+INSERT INTO students VALUES (2, 'Sara', 22, 'Mumbai');
+
+SELECT * FROM students;
+
+UPDATE students
+SET age = 23
+WHERE name = 'Sara';
+
+DELETE FROM students
+WHERE id = 1;
+</pre>
+
+<h3>5️⃣ SELECT Query Clauses</h3>
+<ul>
+  <li>WHERE – filter records</li>
+  <li>ORDER BY – sort data</li>
+  <li>DISTINCT – remove duplicates</li>
+  <li>LIMIT – restrict rows</li>
+  <li>AS – alias</li>
+</ul>
+
+<pre>
+SELECT DISTINCT city FROM students;
+SELECT * FROM students WHERE age > 20;
+SELECT * FROM students ORDER BY age DESC;
+SELECT name AS student_name FROM students;
+</pre>
+
+<h3>6️⃣ Operators</h3>
+<ul>
+  <li>Arithmetic: +, -, *, /</li>
+  <li>Comparison: =, !=, &gt;, &lt;, &gt;=, &lt;=</li>
+  <li>Logical: AND, OR, NOT</li>
+  <li>BETWEEN, IN, LIKE</li>
+</ul>
+
+<pre>
+SELECT * FROM students WHERE age BETWEEN 20 AND 25;
+SELECT * FROM students WHERE city IN ('Delhi','Mumbai');
+SELECT * FROM students WHERE name LIKE 'S%';
+</pre>
+
+<h3>7️⃣ Aggregate Functions</h3>
+<ul>
+  <li>COUNT()</li>
+  <li>SUM()</li>
+  <li>AVG()</li>
+  <li>MIN()</li>
+  <li>MAX()</li>
+</ul>
+
+<pre>
+SELECT COUNT(*) FROM students;
+SELECT AVG(age) FROM students;
+SELECT MAX(age) FROM students;
+</pre>
+
+<h3>8️⃣ GROUP BY & HAVING</h3>
+
+<pre>
+SELECT city, COUNT(*) 
+FROM students
+GROUP BY city;
+
+SELECT city, COUNT(*) 
+FROM students
+GROUP BY city
+HAVING COUNT(*) > 1;
+</pre>
+
+<h3>9️⃣ SQL Joins</h3>
+<ul>
+  <li>INNER JOIN</li>
+  <li>LEFT JOIN</li>
+  <li>RIGHT JOIN</li>
+  <li>FULL JOIN</li>
+</ul>
+
+<pre>
+SELECT students.name, orders.amount
+FROM students
+INNER JOIN orders
+ON students.id = orders.student_id;
+</pre>
+
+<h3>🔟 Subqueries</h3>
+
+<pre>
+SELECT name FROM students
+WHERE age > (SELECT AVG(age) FROM students);
+</pre>
+
+<h3>1️⃣1️⃣ Constraints</h3>
+<ul>
+  <li>PRIMARY KEY</li>
+  <li>FOREIGN KEY</li>
+  <li>UNIQUE</li>
+  <li>NOT NULL</li>
+  <li>CHECK</li>
+  <li>DEFAULT</li>
+</ul>
+
+<h3>1️⃣2️⃣ Indexes & Views</h3>
+
+<pre>
+CREATE INDEX idx_name ON students(name);
+
+CREATE VIEW student_view AS
+SELECT name, city FROM students;
+</pre>
+
+<h3>1️⃣3️⃣ Transactions</h3>
+<ul>
+  <li>COMMIT</li>
+  <li>ROLLBACK</li>
+  <li>SAVEPOINT</li>
+</ul>
+
+<pre>
+START TRANSACTION;
+UPDATE students SET age = 25 WHERE id = 2;
+ROLLBACK;
+</pre>
+
+<h3>1️⃣4️⃣ SQL Functions</h3>
+<ul>
+  <li>UPPER(), LOWER()</li>
+  <li>LENGTH()</li>
+  <li>NOW()</li>
+  <li>COALESCE()</li>
+</ul>
+
+<h3>1️⃣5️⃣ SQL Use Cases</h3>
+<ul>
+  <li>Backend development</li>
+  <li>Data analysis</li>
+  <li>Reports & dashboards</li>
+  <li>Banking & finance systems</li>
+  <li>Enterprise applications</li>
+</ul>
+<h3>1️⃣ Create Table Program</h3>
+
+<pre>
+CREATE TABLE students (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  age INT,
+  city VARCHAR(50)
+);
+</pre>
+
+<b>Table Created:</b> students
+
+<hr>
+
+<h3>2️⃣ Insert Data Program</h3>
+
+<pre>
+INSERT INTO students VALUES (1, 'John', 21, 'Delhi');
+INSERT INTO students VALUES (2, 'Sara', 22, 'Mumbai');
+INSERT INTO students VALUES (3, 'Amit', 21, 'Delhi');
+</pre>
+
+<b>Output:</b>  
+3 rows inserted successfully.
+
+<hr>
+
+<h3>3️⃣ Select All Records</h3>
+
+<pre>
+SELECT * FROM students;
+</pre>
+
+<b>Output:</b>
+
+<pre>
++----+-------+-----+---------+
+| id | name  | age | city    |
++----+-------+-----+---------+
+| 1  | John  | 21  | Delhi   |
+| 2  | Sara  | 22  | Mumbai  |
+| 3  | Amit  | 21  | Delhi   |
++----+-------+-----+---------+
+</pre>
+
+<hr>
+
+<h3>4️⃣ WHERE Clause Program</h3>
+
+<pre>
+SELECT name, city FROM students WHERE age = 21;
+</pre>
+
+<b>Output:</b>
+
+<pre>
++------+-------+
+| name | city  |
++------+-------+
+| John | Delhi |
+| Amit | Delhi |
++------+-------+
+</pre>
+
+<hr>
+
+<h3>5️⃣ ORDER BY Program</h3>
+
+<pre>
+SELECT * FROM students ORDER BY age DESC;
+</pre>
+
+<b>Output:</b>
+
+<pre>
++----+-------+-----+---------+
+| id | name  | age | city    |
++----+-------+-----+---------+
+| 2  | Sara  | 22  | Mumbai  |
+| 1  | John  | 21  | Delhi   |
+| 3  | Amit  | 21  | Delhi   |
++----+-------+-----+---------+
+</pre>
+
+<hr>
+
+<h3>6️⃣ Aggregate Function Program</h3>
+
+<pre>
+SELECT COUNT(*) AS total_students FROM students;
+</pre>
+
+<b>Output:</b>
+
+<pre>
++----------------+
+| total_students |
++----------------+
+| 3              |
++----------------+
+</pre>
+
+<hr>
+
+<h3>7️⃣ GROUP BY Program</h3>
+
+<pre>
+SELECT city, COUNT(*) AS count
+FROM students
+GROUP BY city;
+</pre>
+
+<b>Output:</b>
+
+<pre>
++---------+-------+
+| city    | count |
++---------+-------+
+| Delhi   | 2     |
+| Mumbai | 1     |
++---------+-------+
+</pre>
+
+<hr>
+
+<h3>8️⃣ HAVING Clause Program</h3>
+
+<pre>
+SELECT city, COUNT(*) AS count
+FROM students
+GROUP BY city
+HAVING COUNT(*) > 1;
+</pre>
+
+<b>Output:</b>
+
+<pre>
++-------+-------+
+| city  | count |
++-------+-------+
+| Delhi | 2     |
++-------+-------+
+</pre>
+
+<hr>
+
+<h3>9️⃣ UPDATE Program</h3>
+
+<pre>
+UPDATE students SET age = 23 WHERE name = 'Sara';
+</pre>
+
+<b>Output:</b>  
+1 row updated.
+
+<hr>
+
+<h3>🔟 DELETE Program</h3>
+
+<pre>
+DELETE FROM students WHERE id = 3;
+</pre>
+
+<b>Output:</b>  
+1 row deleted.
+
+<hr>
+
+<h3>1️⃣1️⃣ JOIN Program</h3>
+
+<pre>
+CREATE TABLE orders (
+  order_id INT,
+  student_id INT,
+  amount INT
+);
+
+INSERT INTO orders VALUES (101, 1, 500);
+INSERT INTO orders VALUES (102, 2, 700);
+
+SELECT students.name, orders.amount
+FROM students
+INNER JOIN orders
+ON students.id = orders.student_id;
+</pre>
+
+<b>Output:</b>
+
+<pre>
++------+--------+
+| name | amount |
++------+--------+
+| John | 500    |
+| Sara | 700    |
++------+--------+
+</pre>
+
+<hr>
+
+<h3>1️⃣2️⃣ Subquery Program</h3>
+
+<pre>
+SELECT name FROM students
+WHERE age > (SELECT AVG(age) FROM students);
+</pre>
+
+<b>Output:</b>
+
+<pre>
++------+
+| name |
++------+
+| Sara |
++------+
+</pre>
+
+<hr>
+
+<h3>1️⃣3️⃣ Transaction Program</h3>
+
+<pre>
+START TRANSACTION;
+UPDATE students SET age = 30 WHERE id = 1;
+ROLLBACK;
+</pre>
+
+<b>Output:</b>  
+Changes reverted successfully.
+
+<hr>
+
+<h3>1️⃣4️⃣ Real-Life SQL Uses</h3>
+<ul>
+  <li>Login systems</li>
+  <li>Banking applications</li>
+  <li>Student management systems</li>
+  <li>Reports & analytics</li>
+  <li>Backend APIs</li>
+</ul>
+
+
+<hr>
+
+<a href="https://www.w3schools.com/sql/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#2c7be5;color:white;padding:14px 24px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools SQL Tutorial
+</a>
+`
+,
+
+mongodb: `
+<h2 style="color:#13AA52;">MongoDB Tutorial – Complete Guide with Programs</h2>
+
+<p style="font-size:16px;line-height:1.9;">
+MongoDB is a <b>NoSQL, document-oriented database</b> that stores data in flexible,
+JSON-like documents called BSON. It is widely used in modern web applications
+because of its scalability, performance, and flexibility.
+</p>
+
+<hr>
+
+<h3>1️⃣ MongoDB Basics</h3>
+<ul>
+  <li>NoSQL database (Not Only SQL)</li>
+  <li>Data stored as <b>documents</b></li>
+  <li>Collections instead of tables</li>
+  <li>Schema-less structure</li>
+  <li>Uses BSON format</li>
+</ul>
+
+<h3>2️⃣ Database & Collection</h3>
+
+<pre>
+// Create / switch database
+use school
+</pre>
+
+<b>Output:</b>
+<pre>
+switched to db school
+</pre>
+
+<pre>
+// Create collection
+db.createCollection("students")
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "ok" : 1 }
+</pre>
+
+<hr>
+
+<h3>3️⃣ Insert Documents</h3>
+
+<pre>
+db.students.insertOne({
+  name: "John",
+  age: 21,
+  city: "Delhi"
+})
+
+db.students.insertMany([
+  { name: "Sara", age: 22, city: "Mumbai" },
+  { name: "Amit", age: 21, city: "Delhi" }
+])
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "acknowledged" : true, "insertedId" : ObjectId("...") }
+</pre>
+
+<hr>
+
+<h3>4️⃣ Find (Read Data)</h3>
+
+<pre>
+db.students.find()
+</pre>
+
+<b>Output:</b>
+
+<pre>
+{ "_id": ObjectId("1"), "name": "John", "age": 21, "city": "Delhi" }
+{ "_id": ObjectId("2"), "name": "Sara", "age": 22, "city": "Mumbai" }
+{ "_id": ObjectId("3"), "name": "Amit", "age": 21, "city": "Delhi" }
+</pre>
+
+<pre>
+// Filter
+db.students.find({ age: 21 })
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "name": "John", "age": 21, "city": "Delhi" }
+{ "name": "Amit", "age": 21, "city": "Delhi" }
+</pre>
+
+<hr>
+
+<h3>5️⃣ Projection (Select Fields)</h3>
+
+<pre>
+db.students.find({}, { name: 1, city: 1, _id: 0 })
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "name": "John", "city": "Delhi" }
+{ "name": "Sara", "city": "Mumbai" }
+{ "name": "Amit", "city": "Delhi" }
+</pre>
+
+<hr>
+
+<h3>6️⃣ Update Documents</h3>
+
+<pre>
+db.students.updateOne(
+  { name: "Sara" },
+  { $set: { age: 23 } }
+)
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "acknowledged": true, "matchedCount": 1, "modifiedCount": 1 }
+</pre>
+
+<hr>
+
+<h3>7️⃣ Delete Documents</h3>
+
+<pre>
+db.students.deleteOne({ name: "Amit" })
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "acknowledged": true, "deletedCount": 1 }
+</pre>
+
+<hr>
+
+<h3>8️⃣ Query Operators</h3>
+
+<pre>
+// Greater than
+db.students.find({ age: { $gt: 21 } })
+
+// IN operator
+db.students.find({ city: { $in: ["Delhi", "Mumbai"] } })
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "name": "Sara", "age": 23, "city": "Mumbai" }
+</pre>
+
+<hr>
+
+<h3>9️⃣ Sorting & Limiting</h3>
+
+<pre>
+// Sort by age descending
+db.students.find().sort({ age: -1 })
+
+// Limit results
+db.students.find().limit(2)
+</pre>
+
+<hr>
+
+<h3>🔟 Aggregation Framework</h3>
+
+<pre>
+db.students.aggregate([
+  { $group: { _id: "$city", total: { $sum: 1 } } }
+])
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "_id": "Delhi", "total": 1 }
+{ "_id": "Mumbai", "total": 1 }
+</pre>
+
+<hr>
+
+<h3>1️⃣1️⃣ Indexes</h3>
+
+<pre>
+db.students.createIndex({ name: 1 })
+</pre>
+
+<b>Output:</b>
+<pre>
+{ "createdCollectionAutomatically" : false, "numIndexesBefore" : 1 }
+</pre>
+
+<hr>
+
+<h3>1️⃣2️⃣ MongoDB vs SQL</h3>
+<ul>
+  <li>Table → Collection</li>
+  <li>Row → Document</li>
+  <li>Column → Field</li>
+  <li>JOIN → Embedded documents / Lookup</li>
+</ul>
+
+<hr>
+
+<h3>1️⃣3️⃣ Real-Time Uses</h3>
+<ul>
+  <li>Web & mobile apps</li>
+  <li>Big data applications</li>
+  <li>IoT systems</li>
+  <li>Content management systems</li>
+  <li>Real-time analytics</li>
+</ul>
+
+<hr>
+
+<a href="https://www.w3schools.com/mongodb/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#13AA52;color:white;padding:14px 24px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools MongoDB Tutorial
+</a>
+`
+,
+
+oracle: `
+<h2 style="color:#C74634;">Oracle Database & PL/SQL Tutorial – Complete Guide</h2>
+
+<p style="font-size:16px;line-height:1.9;">
+Oracle Database is a powerful <b>enterprise-level relational database management system (RDBMS)</b>.
+PL/SQL (Procedural Language / SQL) is Oracle’s procedural extension to SQL,
+used to write complex logic, stored procedures, functions, and triggers.
+</p>
+
+<hr>
+
+<h3>1️⃣ Oracle Basics</h3>
+<ul>
+  <li>Oracle is an enterprise RDBMS</li>
+  <li>Uses SQL for data manipulation</li>
+  <li>Uses PL/SQL for procedural programming</li>
+  <li>Highly secure, scalable, and reliable</li>
+  <li>Used in banking, finance, ERP systems</li>
+</ul>
+
+<h3>2️⃣ Data Types in Oracle</h3>
+<ul>
+  <li>NUMBER – numeric values</li>
+  <li>VARCHAR2 – variable length string</li>
+  <li>CHAR – fixed length string</li>
+  <li>DATE – date & time</li>
+  <li>CLOB / BLOB – large objects</li>
+</ul>
+
+<hr>
+
+<h3>3️⃣ Create Table Program</h3>
+
+<pre>
+CREATE TABLE employees (
+  emp_id NUMBER PRIMARY KEY,
+  name VARCHAR2(50),
+  salary NUMBER,
+  department VARCHAR2(30)
+);
+</pre>
+
+<b>Output:</b>  
+Table created.
+
+<hr>
+
+<h3>4️⃣ Insert Data Program</h3>
+
+<pre>
+INSERT INTO employees VALUES (101, 'John', 30000, 'IT');
+INSERT INTO employees VALUES (102, 'Sara', 40000, 'HR');
+INSERT INTO employees VALUES (103, 'Amit', 35000, 'IT');
+</pre>
+
+<b>Output:</b>  
+3 rows inserted.
+
+<hr>
+
+<h3>5️⃣ Select Program</h3>
+
+<pre>
+SELECT * FROM employees;
+</pre>
+
+<b>Output:</b>
+
+<pre>
+EMP_ID | NAME | SALARY | DEPARTMENT
+----------------------------------
+101    | John | 30000  | IT
+102    | Sara | 40000  | HR
+103    | Amit | 35000  | IT
+</pre>
+
+<hr>
+
+<h3>6️⃣ WHERE Clause Program</h3>
+
+<pre>
+SELECT name, salary FROM employees WHERE department = 'IT';
+</pre>
+
+<b>Output:</b>
+
+<pre>
+NAME | SALARY
+------------
+John | 30000
+Amit | 35000
+</pre>
+
+<hr>
+
+<h3>7️⃣ ORDER BY Program</h3>
+
+<pre>
+SELECT * FROM employees ORDER BY salary DESC;
+</pre>
+
+<b>Output:</b>
+
+<pre>
+102 | Sara | 40000 | HR
+103 | Amit | 35000 | IT
+101 | John | 30000 | IT
+</pre>
+
+<hr>
+
+<h3>8️⃣ Aggregate Functions</h3>
+
+<pre>
+SELECT COUNT(*) FROM employees;
+SELECT AVG(salary) FROM employees;
+SELECT MAX(salary) FROM employees;
+</pre>
+
+<b>Output:</b>
+
+<pre>
+COUNT(*) = 3
+AVG(SALARY) = 35000
+MAX(SALARY) = 40000
+</pre>
+
+<hr>
+
+<h3>9️⃣ GROUP BY & HAVING</h3>
+
+<pre>
+SELECT department, COUNT(*) 
+FROM employees
+GROUP BY department;
+</pre>
+
+<b>Output:</b>
+
+<pre>
+IT | 2
+HR | 1
+</pre>
+
+<hr>
+
+<h3>🔟 PL/SQL Block (Basic Program)</h3>
+
+<pre>
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Welcome to Oracle PL/SQL');
+END;
+/
+</pre>
+
+<b>Output:</b>
+
+<pre>
+Welcome to Oracle PL/SQL
+</pre>
+
+<hr>
+
+<h3>1️⃣1️⃣ PL/SQL Variables Program</h3>
+
+<pre>
+DECLARE
+  v_name VARCHAR2(30) := 'John';
+  v_salary NUMBER := 30000;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Name: ' || v_name);
+  DBMS_OUTPUT.PUT_LINE('Salary: ' || v_salary);
+END;
+/
+</pre>
+
+<b>Output:</b>
+
+<pre>
+Name: John
+Salary: 30000
+</pre>
+
+<hr>
+
+<h3>1️⃣2️⃣ IF-ELSE Program</h3>
+
+<pre>
+DECLARE
+  salary NUMBER := 40000;
+BEGIN
+  IF salary > 35000 THEN
+    DBMS_OUTPUT.PUT_LINE('High Salary');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Low Salary');
+  END IF;
+END;
+/
+</pre>
+
+<b>Output:</b>
+
+<pre>
+High Salary
+</pre>
+
+<hr>
+
+<h3>1️⃣3️⃣ Loop Program</h3>
+
+<pre>
+DECLARE
+  i NUMBER := 1;
+BEGIN
+  LOOP
+    DBMS_OUTPUT.PUT_LINE(i);
+    i := i + 1;
+    EXIT WHEN i > 5;
+  END LOOP;
+END;
+/
+</pre>
+
+<b>Output:</b>
+
+<pre>
+1
+2
+3
+4
+5
+</pre>
+
+<hr>
+
+<h3>1️⃣4️⃣ Stored Procedure</h3>
+
+<pre>
+CREATE OR REPLACE PROCEDURE show_message AS
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Hello from Procedure');
+END;
+/
+</pre>
+
+<pre>
+EXEC show_message;
+</pre>
+
+<b>Output:</b>
+
+<pre>
+Hello from Procedure
+</pre>
+
+<hr>
+
+<h3>1️⃣5️⃣ Trigger Example</h3>
+
+<pre>
+CREATE OR REPLACE TRIGGER emp_trigger
+BEFORE INSERT ON employees
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('New employee added');
+END;
+/
+</pre>
+
+<b>Output:</b>  
+Trigger created.
+
+<hr>
+
+<h3>1️⃣6️⃣ Oracle Real-Time Uses</h3>
+<ul>
+  <li>Banking systems</li>
+  <li>ERP & CRM applications</li>
+  <li>Government databases</li>
+  <li>Large enterprise systems</li>
+  <li>Secure financial transactions</li>
+</ul>
+
+<hr>
+
+<a href="https://www.w3schools.com/sql/" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#C74634;color:white;padding:14px 24px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools Oracle / SQL Tutorial
+</a>
+`
+,
+
+dbms: `
+<h2 style="color:#0a7cff;">DBMS (Database Management System) – Complete Guide</h2>
+
+<p style="font-size:16px;line-height:1.9;">
+A <b>DBMS</b> is software that allows users to <b>store, retrieve, update, and manage data</b> efficiently.
+It acts as an interface between users and databases.
+</p>
+
+<hr>
+
+<h3>1️⃣ What is DBMS?</h3>
+<ul>
+  <li>Stores data in structured format</li>
+  <li>Reduces data redundancy</li>
+  <li>Provides data security</li>
+  <li>Supports multiple users</li>
+  <li>Ensures data consistency</li>
+</ul>
+
+<hr>
+
+<h3>2️⃣ DBMS Examples</h3>
+<ul>
+  <li>MySQL</li>
+  <li>Oracle</li>
+  <li>SQL Server</li>
+  <li>PostgreSQL</li>
+  <li>MongoDB</li>
+</ul>
+
+<hr>
+
+<h3>3️⃣ Types of Databases</h3>
+<ul>
+  <li><b>Hierarchical DB</b> – Tree structure</li>
+  <li><b>Network DB</b> – Graph structure</li>
+  <li><b>Relational DB</b> – Tables (Rows & Columns)</li>
+  <li><b>Object-Oriented DB</b> – Objects & Classes</li>
+  <li><b>NoSQL DB</b> – Document / Key-value</li>
+</ul>
+
+<hr>
+
+<h3>4️⃣ DBMS Architecture</h3>
+<ul>
+  <li><b>1-Tier:</b> Database directly used by user</li>
+  <li><b>2-Tier:</b> Client ↔ Database</li>
+  <li><b>3-Tier:</b> Client ↔ Server ↔ Database</li>
+</ul>
+
+<hr>
+
+<h3>5️⃣ Keys in DBMS</h3>
+<ul>
+  <li><b>Primary Key</b> – Unique identifier</li>
+  <li><b>Foreign Key</b> – Links two tables</li>
+  <li><b>Candidate Key</b> – Possible primary key</li>
+  <li><b>Composite Key</b> – Multiple columns</li>
+  <li><b>Super Key</b> – Unique attribute set</li>
+</ul>
+
+<hr>
+
+<h3>6️⃣ Constraints (DBMS Rules)</h3>
+<ul>
+  <li>NOT NULL</li>
+  <li>UNIQUE</li>
+  <li>PRIMARY KEY</li>
+  <li>FOREIGN KEY</li>
+  <li>CHECK</li>
+  <li>DEFAULT</li>
+</ul>
+
+<hr>
+
+<h3>7️⃣ Create Table Program</h3>
+
+<pre>
+CREATE TABLE student (
+  id INT PRIMARY KEY,
+  name VARCHAR(50),
+  age INT,
+  course VARCHAR(30)
+);
+</pre>
+
+<b>Output:</b>  
+Table created.
+
+<hr>
+
+<h3>8️⃣ Insert Data Program</h3>
+
+<pre>
+INSERT INTO student VALUES (1, 'Ravi', 20, 'B.Tech');
+INSERT INTO student VALUES (2, 'Anita', 21, 'BCA');
+INSERT INTO student VALUES (3, 'Suresh', 22, 'B.Sc');
+</pre>
+
+<b>Output:</b>  
+3 rows inserted.
+
+<hr>
+
+<h3>9️⃣ Select Program</h3>
+
+<pre>
+SELECT * FROM student;
+</pre>
+
+<b>Output:</b>
+
+<pre>
+ID | NAME   | AGE | COURSE
+--------------------------
+1  | Ravi   | 20  | B.Tech
+2  | Anita  | 21  | BCA
+3  | Suresh | 22  | B.Sc
+</pre>
+
+<hr>
+
+<h3>🔟 WHERE Clause Program</h3>
+
+<pre>
+SELECT name, course FROM student WHERE age > 20;
+</pre>
+
+<b>Output:</b>
+
+<pre>
+Anita  | BCA
+Suresh | B.Sc
+</pre>
+
+<hr>
+
+<h3>1️⃣1️⃣ Update Program</h3>
+
+<pre>
+UPDATE student SET course = 'MCA' WHERE id = 2;
+</pre>
+
+<b>Output:</b>  
+1 row updated.
+
+<hr>
+
+<h3>1️⃣2️⃣ Delete Program</h3>
+
+<pre>
+DELETE FROM student WHERE id = 3;
+</pre>
+
+<b>Output:</b>  
+1 row deleted.
+
+<hr>
+
+<h3>1️⃣3️⃣ Joins in DBMS</h3>
+
+<ul>
+  <li>INNER JOIN</li>
+  <li>LEFT JOIN</li>
+  <li>RIGHT JOIN</li>
+  <li>FULL JOIN</li>
+</ul>
+
+<h4>JOIN Program</h4>
+
+<pre>
+SELECT student.name, course.course_name
+FROM student
+INNER JOIN course
+ON student.id = course.sid;
+</pre>
+
+<b>Output:</b>  
+Combined records from both tables.
+
+<hr>
+
+<h3>1️⃣4️⃣ Normalization</h3>
+<ul>
+  <li><b>1NF:</b> Atomic values</li>
+  <li><b>2NF:</b> No partial dependency</li>
+  <li><b>3NF:</b> No transitive dependency</li>
+</ul>
+
+<hr>
+
+<h3>1️⃣5️⃣ ACID Properties</h3>
+<ul>
+  <li><b>Atomicity:</b> All or nothing</li>
+  <li><b>Consistency:</b> Valid state</li>
+  <li><b>Isolation:</b> Transactions independent</li>
+  <li><b>Durability:</b> Permanent changes</li>
+</ul>
+
+<hr>
+
+<h3>1️⃣6️⃣ Advantages of DBMS</h3>
+<ul>
+  <li>Data security</li>
+  <li>Data sharing</li>
+  <li>Backup & recovery</li>
+  <li>Reduced redundancy</li>
+  <li>Integrity & consistency</li>
+</ul>
+
+<hr>
+
+<h3>1️⃣7️⃣ Real-Time Applications</h3>
+<ul>
+  <li>Banking systems</li>
+  <li>College management</li>
+  <li>Railway reservation</li>
+  <li>Hospital systems</li>
+  <li>E-commerce websites</li>
+</ul>
+
+<hr>
+
+<a href="https://www.w3schools.com/sql/sql_intro.asp" target="_blank"
+style="display:inline-block;margin-top:20px;
+background:#0a7cff;color:white;padding:14px 24px;
+text-decoration:none;border-radius:6px;font-weight:bold;">
+📖 Visit W3Schools DBMS / SQL Tutorial
+</a>
+`
+
+};
+
+
+/* NAVIGATION */
+function openMenu(type){
+  mode=type;
+  home.style.display="none";
+  menu.style.display="block";
+  menuTitle.innerText = type==="compiler" ? "Select Compiler" : "Select Course";
+}
+
+function goHome(){
+  menu.style.display="none";
+  viewer.style.display="none";
+  home.style.display="block";
+}
+
+function backMenu(){
+  viewer.style.display="none";
+  menu.style.display="block";
+}
+
+function openSubject(sub){
+  if(mode==="compiler"){
+    window.open(compilers[sub],"_blank");
+  }else{
+    menu.style.display="none";
+    viewer.style.display="block";
+    title.innerText = sub.toUpperCase()+" COURSE";
+    content.innerHTML = courses[sub];
+  }
+}
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IIT-GATE Vertical Master Library</title>
+<title>B.Tech Universal Academic Library</title>
 <style>
 :root {
   --primary: #a855f7;
@@ -13,80 +13,70 @@
   --gold: #fbbf24;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
 body { background: var(--bg); color: #f8fafc; min-height: 100vh; padding: 15px; }
 
-/* SEARCH AREA */
+/* STICKY SEARCH BAR */
 .search-container { position: sticky; top: 0; z-index: 1000; background: var(--bg); padding: 10px 0; }
 #searchBox {
   width: 100%; padding: 15px 25px; border-radius: 50px;
   border: 2px solid #334155; background: #0f172a;
-  color: white; font-size: 16px; outline: none;
+  color: white; font-size: 16px; outline: none; transition: 0.3s;
 }
+#searchBox:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
 
-h1 { text-align: center; margin: 15px 0; font-size: 1rem; color: #94a3b8; text-transform: uppercase; }
+h1 { text-align: center; margin: 15px 0; font-size: 1rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
 
-.page { display: none; max-width: 1100px; margin: auto; }
+.page { display: none; max-width: 1100px; margin: auto; animation: fadeIn 0.3s ease-in; }
 .page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* BACK BUTTON AT TOP */
+.back-btn-top {
+  background: var(--primary); color: white; border: none; padding: 14px;
+  width: 100%; border-radius: 12px; margin-bottom: 15px; font-weight: bold; 
+  cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+}
 
 /* MAIN BRANCH GRID */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
 .card {
   background: var(--card); border-radius: 12px; padding: 25px 5px;
   text-align: center; cursor: pointer; border-bottom: 4px solid var(--primary);
-  transition: 0.3s; font-weight: bold; font-size: 12px;
+  transition: 0.3s; font-weight: bold; font-size: 13px;
 }
 .card:hover { background: var(--primary); transform: translateY(-3px); }
 
-.vertical-shelf{
-  display:flex;
-  flex-direction:row;        /* 👈 HORIZONTAL */
-  flex-wrap:wrap;            /* next row if overflow */
-  gap:14px;
-  padding:18px;
-  background:#111827;
-  border-radius:16px;
-  border:8px solid #451a03;
+/* SHELF SYSTEM */
+.vertical-shelf {
+  display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;
+  gap: 12px; padding: 20px; background: #0f172a; border-radius: 16px;
+  border: 8px solid var(--shelf-wood); margin-bottom: 30px;
 }
 
-.book{
-  width:160px;               /* fixed width */
-  height:60px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  cursor:pointer;
-  transition:.3s;
-  box-shadow:0 4px 10px rgba(0,0,0,.4);
+.book {
+  width: 155px; height: 65px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; cursor: pointer; transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4); border-left: 4px solid rgba(255,255,255,0.3);
 }
-.book:hover{
-  transform:translateY(-5px); /* natural horizontal hover */
-  filter:brightness(1.2);
-}
-.book-spine {
-  writing-mode: horizontal-tb;   /* 👈 NORMAL TEXT */
-  transform: none;
-  font-size: 14px;
-  font-weight: bold;
-  color: white;
-  text-transform: uppercase;
-}
-/* MODAL / POPUP */
+.book:hover { transform: translateY(-5px); filter: brightness(1.2); }
+.book-spine { font-size: 11px; font-weight: bold; color: white; text-align: center; padding: 5px; text-transform: uppercase; }
+
+/* MODAL */
 .modal {
   display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,0.95); justify-content:center; align-items:center; z-index:2000;
+  background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000;
 }
 .modal-content {
-  background: #1e293b; padding: 25px; border-radius: 20px;
+  background: #1e293b; padding: 20px; border-radius: 20px;
   text-align: center; width: 92%; max-width: 400px; border: 2px solid var(--primary);
 }
 .modal-btn {
-  width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 10px;
-  font-weight: bold; cursor: pointer; font-size: 13px;
+  width: 100%; padding: 12px; margin: 6px 0; border: none; border-radius: 10px;
+  font-weight: bold; cursor: pointer; font-size: 14px;
 }
 .btn-exam { background: var(--gold); color: #000; } 
-.btn-test { background: #f8fafc; color: #000; border: 2px solid var(--primary); }
+.btn-test { background: #f8fafc; color: #000; } 
 .btn-book { background: #10b981; color: white; } 
 .btn-notes { background: #3b82f6; color: white; } 
 .btn-video { background: #ef4444; color: white; }
@@ -96,46 +86,42 @@ h1 { text-align: center; margin: 15px 0; font-size: 1rem; color: #94a3b8; text-t
   width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px;
   background: #0f172a; color: white; border: 1px solid var(--primary);
 }
-.back-btn {
-  background: var(--primary); color: white; border: none; padding: 16px;
-  width: 100%; border-radius: 12px; margin-top: 20px; font-weight: bold;
-}
 </style>
 </head>
 <body>
 
 <div class="search-container">
-  <input id="searchBox" placeholder="Search branch or subject..." onkeyup="globalSearch()">
+  <input id="searchBox" placeholder="🔍 Search branch or subject..." onkeyup="globalSearch()">
 </div>
 
 <div class="page active" id="page-main">
-  <h1>🏛️ IIT-GATE ACADEMIC HUB</h1>
+  <h1>🏛️ B.TECH UNIVERSAL ACADEMIC HUB</h1>
   <div class="grid" id="branchGrid"></div>
 </div>
 
 <div class="page" id="page-shelf">
+  <button class="back-btn-top" onclick="goHome()">⬅ BACK TO BRANCHES</button>
   <h1 id="shelfTitle"></h1>
   <div class="vertical-shelf" id="bookShelf"></div>
-  <button class="back-btn" onclick="goHome()">⬅ Back to All Branches</button>
 </div>
 
 <div class="modal" id="learningModal">
   <div class="modal-content">
-    <h2 id="selectedBookTitle" style="color:var(--gold); margin-bottom:15px; font-size:18px;"></h2>
+    <h2 id="selectedBookTitle" style="color:var(--gold); margin-bottom:15px; font-size:1.1rem;"></h2>
     
-    <button class="modal-btn btn-exam" onclick="openResource('papers')">📝 Update Question Papers (PYQ)</button>
-    <button class="modal-btn btn-test" onclick="openResource('test')">🎯 Practice Test (NPTEL/GATE)</button>
-    <button class="modal-btn btn-book" onclick="openResource('book')">📚 IIT Standard Textbook</button>
-    <button class="modal-btn btn-notes" onclick="openResource('notes')">📄 Handwritten Study Notes</button>
+    <button class="modal-btn btn-exam" onclick="openResource('papers')">📝 Semester & GATE Solved Papers</button>
+    <button class="modal-btn btn-test" onclick="openResource('test')">🎯 Practice Quiz / MCQ / Viva</button>
+    <button class="modal-btn btn-book" onclick="openResource('book')">📚 Reference Textbook (PDF)</button>
+    <button class="modal-btn btn-notes" onclick="openResource('notes')">📄 Clear Handwritten Study Notes</button>
     
-    <div style="border-top:1px solid #475569; margin:10px 0; padding-top:10px;">
-      <p style="font-size:11px; opacity:0.8; margin-bottom:5px;">Video Lecture Language:</p>
+    <div style="border-top:1px solid #475569; margin:15px 0; padding-top:10px;">
+      <p style="font-size:11px; opacity:0.8; margin-bottom:5px;">Video Language:</p>
       <select id="langChoice" class="lang-select">
-        <option value="English">English (IIT/NPTEL)</option>
-        <option value="Hindi">Hindi (Gate Academy)</option>
-        <option value="Telugu">Telugu (Explanation)</option>
+        <option value="English">English (University/NPTEL)</option>
+        <option value="Hindi">Hindi (Simplified/Exam Prep)</option>
+        <option value="Telugu">Telugu (Detailed Explanation)</option>
       </select>
-      <button class="modal-btn btn-video" onclick="openResource('video')">🎬 Watch IIT Video</button>
+      <button class="modal-btn btn-video" onclick="openResource('video')">🎬 Watch Video Lectures</button>
     </div>
     
     <button class="modal-btn btn-close" onclick="closeModal()">Close</button>
@@ -146,19 +132,20 @@ h1 { text-align: center; margin: 15px 0; font-size: 1rem; color: #94a3b8; text-t
 let activeBranch="", activeBook="";
 
 const data = {
-  "FIRST YEAR (IIT)": {c:"#6366f1", b:["Calculus M1","Matrices M2","Differential M3","Numerical M4","Physics","Chemistry","Basic Electrical","Electronics","Mechanics","C Programming"]},
-  "COMPUTER SCIENCE": {c:"#2563eb", b:["Data Structures","Algorithms","OS","DBMS","Discrete Maths","TOC","Networks","Compiler Design","Software Eng","AI","Cyber Security"]},
-  "IT (INFO TECH)": {c:"#0ea5e9", b:["Web Tech","Cryptography","Cloud Computing","Mobile Computing","Java Web","Information Security","Software Testing","Python"]},
-  "ELECTRONICS (ECE)": {c:"#ef4444", b:["Network Theory","Electronic Devices","Signals","Analog Comm","Digital Comm","DSP","VLSI","Embedded Systems","Microprocessors"]},
-  "ELECTRICAL (EEE)": {c:"#eab308", b:["Circuit Analysis","Machines","Power Systems","Control Systems","Power Electronics","Renewable Energy","Measurements"]},
-  "MECHANICAL": {c:"#64748b", b:["Thermodynamics","SOM","Fluid Mechanics","Kinematics","Dynamics","Heat Transfer","Machine Design","Manufacturing"]},
-  "CIVIL": {c:"#10b981", b:["Surveying","Structure Analysis","Building Materials","Geotech","Transportation","RCC Design","Steel Design","Estimation"]},
-  "AUTOMOBILE": {c:"#dc2626", b:["IC Engines","Chassis","Transmission","Auto Electricals","EV Tech","Vehicle Dynamics"]},
-  "AERONAUTICAL": {c:"#06b6d4", b:["Aerodynamics","Propulsion","Aircraft Structures","Flight Mechanics","Avionics","Rocket Science"]},
-  "CHEMICAL": {c:"#f97316", b:["Mass Transfer","Reaction Eng","Process Control","Chemical Thermo","Fluid Flow","Plant Design"]},
-  "MINING": {c:"#78350f", b:["Surface Mining","Rock Mechanics","Mine Ventilation","Mine Surveying","Blasting Tech"]},
-  "METALLURGY": {c:"#94a3b8", b:["Physical Metallurgy","Material Science","Iron Making","Steel Making"]},
-  "BIOTECH": {c:"#ec4899", b:["Microbiology","Biochemistry","Genetic Eng","Bio-Process","Cell Biology"]}
+  "MATHS (ALL B.TECH)": {c:"#8b5cf6", b:["LA & Calculus","DMGT (Discrete Maths)","Optimization Techniques","Probability & Stats","Transform Calculus","Numerical Methods","Complex Variables","Vector Calculus","Differential Equations"]},
+  "FIRST YEAR (GEN)": {c:"#6366f1", b:["Engineering Physics","Engineering Chemistry","Basic Electrical","Basic Electronics","Engineering Mechanics","C Programming","Engineering Drawing","Environmental Science","Communicative English"]},
+  "COMPUTER SCIENCE": {c:"#2563eb", b:["Data Structures","Algorithms","Operating Systems","DBMS","Theory of Computation","Computer Networks","Compiler Design","Software Eng","Artificial Intelligence","Machine Learning","Cyber Security"]},
+  "IT (INFO TECH)": {c:"#0ea5e9", b:["Web Technologies","Cryptography","Cloud Computing","Mobile Computing","Java Programming","Information Security","Software Testing","Python Programming","Data Warehousing"]},
+  "ELECTRONICS (ECE)": {c:"#ef4444", b:["Network Theory","Electronic Devices","Signals & Systems","Analog Comm","Digital Comm","DSP","VLSI Design","Embedded Systems","Microprocessors","Microwave Eng"]},
+  "ELECTRICAL (EEE)": {c:"#eab308", b:["Circuit Analysis","Electrical Machines","Power Systems","Power Electronics","Control Systems","Renewable Energy","Electrical Measurements","High Voltage Eng","Switchgear & Protection"]},
+  "MECHANICAL": {c:"#64748b", b:["Thermodynamics","Strength of Materials","Fluid Mechanics","Kinematics","Heat Transfer","Machine Design","Manufacturing Technology","Metrology","Industrial Eng","CAD CAM"]},
+  "CIVIL": {c:"#10b981", b:["Surveying","Structural Analysis","Building Materials","Geotech Eng","Transportation Eng","RCC Design","Steel Structures","Environmental Eng","Hydrology & Water Resources"]},
+  "AUTOMOBILE": {c:"#dc2626", b:["IC Engines","Vehicle Chassis","Transmission Systems","Auto Electricals","EV Technology","Vehicle Dynamics","Auto Components Design","Alternative Energy Sources"]},
+  "AERONAUTICAL": {c:"#06b6d4", b:["Aerodynamics","Propulsion","Aircraft Structures","Flight Mechanics","Avionics","Rocket Science","Space Dynamics","Aircraft Design & Systems"]},
+  "CHEMICAL": {c:"#f97316", b:["Mass Transfer","Reaction Engineering","Process Control","Chemical Thermodynamics","Fluid Flow Operations","Plant Design","Heat Transfer Operations","Process Calculations"]},
+  "MINING": {c:"#78350f", b:["Surface Mining","Rock Mechanics","Mine Ventilation","Mine Surveying","Blasting Tech","Underground Mining","Mineral Processing","Mine Safety Eng"]},
+  "METALLURGY": {c:"#94a3b8", b:["Physical Metallurgy","Material Science","Iron Making","Steel Making","Extractive Metallurgy","Mechanical Metallurgy","Corrosion Engineering","Non-Ferrous Extraction"]},
+  "BIOTECH": {c:"#ec4899", b:["Microbiology","Biochemistry","Genetic Engineering","Bio-Process Eng","Cell Biology","Immunology","Bioinformatics","Plant Biotechnology","Animal Biotechnology"]}
 };
 
 const grid = document.getElementById("branchGrid");
@@ -209,11 +196,18 @@ function closeModal() { document.getElementById("learningModal").style.display =
 function openResource(type) {
   const lang = document.getElementById("langChoice").value;
   let q = "";
-  if (type === "book") q = `"${activeBook}" IIT NPTEL standard textbook university edition complete book filetype:pdf`;
-  else if (type === "notes") q = `"${activeBook}" IIT topper handwritten lecture notes GATE study material filetype:pdf`;
-  else if (type === "papers") q = `"${activeBook}" GATE NPTEL previous year question papers solved university exam papers filetype:pdf`;
-  else if (type === "test") q = `"${activeBook}" GATE NPTEL online mock test practice mcq quiz`;
-  else q = `${activeBook} complete course IIT NPTEL ${lang} playlist`;
+  
+  // Logic: Targets normal university studies AND competitive exams
+  if (type === "book") q = `${activeBook} B.Tech engineering reference textbook filetype:pdf`;
+  else if (type === "notes") q = `${activeBook} engineering lecture notes PDF simplified`;
+  else if (type === "papers") q = `${activeBook} university exam solved question papers and GATE`;
+  else if (type === "test") q = `${activeBook} MCQs and viva questions with answers`;
+  else {
+    // Broad Video Search
+    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(activeBook + " " + lang + " full course tutorial engineering")}`, "_blank");
+    closeModal();
+    return;
+  }
 
   window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, "_blank");
   closeModal();
@@ -223,7 +217,11 @@ function show(id) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
-function goHome() { show("page-main"); }
+function goHome() { 
+  show("page-main"); 
+  document.getElementById("searchBox").value = ""; 
+  globalSearch(); 
+}
 </script>
 </body>
 </html>
