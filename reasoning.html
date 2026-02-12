@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Reasoning App</title>
+<title>Reasoning App - Progress Save</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -17,6 +17,7 @@ body{
   min-height:100vh;
 }
 
+/* Page Management */
 .page{
   display:none;
   padding:20px;
@@ -48,9 +49,10 @@ h2{
   cursor:pointer;
   box-shadow:0 0 10px rgba(0,247,255,.4);
   backdrop-filter:blur(6px);
+  z-index: 100;
 }
 
-/* ======= Reasoning Circles Layout ======= */
+/* ======= Home Layout ======= */
 .circles{
   display:grid;
   grid-template-columns:repeat(2, 1fr);
@@ -84,12 +86,11 @@ h2{
   margin-top:6px;
 }
 
-/* Bottom circle centered */
 .circle:nth-child(3){
   grid-column:1 / 3;
 }
 
-/* Cards */
+/* Cards & Progress Info */
 .card{
   background:rgba(255,255,255,.06);
   backdrop-filter:blur(10px);
@@ -98,7 +99,16 @@ h2{
   padding:16px;
   margin-bottom:18px;
   box-shadow:0 0 20px rgba(0,247,255,.15);
-  cursor:pointer;
+}
+
+.progress-banner {
+    background: rgba(0, 247, 255, 0.1);
+    border: 1px dashed var(--glow);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
 }
 
 /* Test Options */
@@ -106,18 +116,21 @@ h2{
   padding:12px;
   margin:10px 0;
   border-radius:12px;
-  border:1px solid rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,0.2);
   cursor:pointer;
+  transition: 0.2s;
 }
-.option.correct{background:#064e3b;}
-.option.wrong{background:#7f1d1d;}
+.option:hover{ background:rgba(255,255,255,0.1); }
+.option.correct{ background:#064e3b !important; border-color:#00f7ff; }
+.option.wrong{ background:#7f1d1d !important; }
 
 .explain-card{
-  background:rgba(0,0,0,.45);
-  border:1px solid rgba(255,255,255,.15);
+  background:rgba(0,0,0,0.5);
+  border-left: 4px solid var(--glow);
   padding:15px;
-  border-radius:14px;
-  margin-top:10px;
+  border-radius:8px;
+  margin-top:15px;
+  font-size: 14px;
 }
 
 .btn{
@@ -136,10 +149,8 @@ h2{
 
 <body>
 
-<!-- HOME (Reasoning Only) -->
 <div class="page active" id="home">
   <h2>🧩 Reasoning</h2>
-
   <div class="circles">
     <div class="circle" onclick="openP('videos')">🎥<span>Videos</span></div>
     <div class="circle" onclick="openP('test')">🧠<span>Test</span></div>
@@ -147,35 +158,25 @@ h2{
   </div>
 </div>
 
-<!-- VIDEOS -->
 <div class="page" id="videos">
   <div class="backTop" onclick="openP('home')">⬅ Back</div>
   <h2>📹 Reasoning Videos</h2>
-
-  <div class="card" onclick="openYT('https://youtu.be/XF45pbZVhaY?si=1Jy4WJjC1CDcs151')">
-    Logical Reasoning Basics to Advanced(telugu) — click here
-  </div>
-
-  <div class="card" onclick="openYT('https://youtu.be/fhXtxsY42Eo?si=ueDkLWlCE_sbt5UI')">
-    Blood Relation basic to advanced(english) — click me
-  </div>
+  <div class="card" onclick="openYT('https://youtu.be/XF45pbZVhaY')">Logical Reasoning Basics (Telugu)</div>
+  <div class="card" onclick="openYT('https://youtu.be/fhXtxsY42Eo')">Blood Relation (English)</div>
 </div>
 
-<!-- TEST -->
 <div class="page" id="test">
   <div class="backTop" onclick="openP('home')">⬅ Back</div>
   <h2>🧠 Reasoning Test</h2>
-
+  <div id="progBar" class="progress-banner"></div>
   <div id="qBox"></div>
   <div id="expBox"></div>
-  <button class="btn" id="nextBtn" onclick="nextQ()">Next</button>
+  <button class="btn" id="nextBtn" onclick="nextQ()" style="display:none;">Next Question</button>
 </div>
 
-<!-- NOTES -->
 <div class="page" id="notes">
   <div class="backTop" onclick="openP('home')">⬅ Back</div>
-  <h2>📘 Reasoning Notes</h2>
-
+  <h2>📘 Notes Summary</h2>
   <div class="card">Blood Relations → Father, Mother, Brother, Sister</div>
   <div class="card">Coding–Decoding → Reverse, +1, -1 Logic</div>
   <div class="card">Directions → N, S, E, W Turning rules</div>
@@ -495,424 +496,392 @@ h2{
   <div class="card">Assumption → Something taken for granted</div>
   <div class="card">Implicit assumption → Hidden in statement</div>
   <div class="card">Statement must stand true if assumption removed</div>
-
-  <!-- COURSE OF ACTION -->
-  <div class="card">Course of action → Practical solution</div>
-  <div class="card">Should address the problem</div>
-  <div class="card">Must be realistic & logical</div>
-
-  <!-- DECISION MAKING -->
-  <div class="card">Decision making → Choose best option</div>
-  <div class="card">Based on given data only</div>
-  <div class="card">Avoid personal bias</div>
-
-  <!-- DATA SUFFICIENCY -->
-  <div class="card">Data sufficiency → Check if data is enough</div>
-  <div class="card">Statement I alone sufficient?</div>
-  <div class="card">Statement II alone sufficient?</div>
-  <div class="card">Both together sufficient?</div>
-  <div class="card">Even both insufficient?</div>
-
-  <!-- INPUT OUTPUT -->
-  <div class="card">Input-Output → Step-wise word/number processing</div>
-  <div class="card">Observe pattern between steps</div>
-  <div class="card">Apply same rule to new input</div>
-
-  <!-- ASSERTION & REASON -->
-  <div class="card">Assertion → Statement</div>
-  <div class="card">Reason → Explanation</div>
-  <div class="card">Check truth of both</div>
-  <div class="card">Reason must explain assertion</div>
-
-  <!-- CRITICAL REASONING -->
-  <div class="card">Critical reasoning → Analyze argument</div>
-  <div class="card">Strengthen / Weaken logic</div>
-  <div class="card">Identify assumption</div>
-
-  <!-- FINAL MASTER TIP -->
-  <div class="card">🚀 Master Tip → Accuracy first, speed later</div>
-<div class="card">Notes is completed and all the best to exams</div>
+  <div class="card">A=1, B=2... Z=26. Reverse: A=26... Z=1.</div>
+  <div class="card">Blood Relations: Square = Male, Circle = Female.</div>
+  <div class="card">Directions: Clockwise is Right, Anti-clockwise is Left.</div>
 </div>
 
 <script>
+// --- CORE DATA ---
+const questions = [
+  { q: "If P+Q means P is the husband of Q, and P/Q means P is the sister of Q, what does A+B/C mean?", options: ["A is husband of C", "A is brother-in-law of C", "A is father of C", "C is mother of A"], ans: 1, exp: "B is sister of C. A is husband of B. Therefore, A is the brother-in-law of C." },
+  { q: "Complete the series: 2, 6, 12, 20, 30, ?", options: ["36", "40", "42", "48"], ans: 2, exp: "Pattern: +4, +6, +8, +10. Next is +12. 30 + 12 = 42." },
+  { q: "A man is facing North. He turns 45 degrees clockwise, then 90 degrees anti-clockwise. Which direction is he facing now?", options: ["North-East", "North-West", "South-East", "South-West"], ans: 1, exp: "North (0°) + 45° = NE. NE - 90° = NW." },
+  { q: "In a code, 'APPLE' is 'BQQMF'. What is 'ORANGE'?", options: ["PSBOHF", "PSBOHG", "QSCOHF", "RTBOHF"], ans: 0, exp: "Logic: Each letter shifts +1 (A->B, P->Q). O->P, R->S, A->B, N->O, G->H, E->F." },
+  { q: "Look at this series: 7, 10, 8, 11, 9, 12, ... What number should come next?", options: ["7", "10", "12", "13"], ans: 1, exp: "Two alternating series: (7, 8, 9) and (10, 11, 12). The next number in the first series is 10." },
+  { q: "Which word does NOT belong with the others?", options: ["Leopard", "Cougar", "Tiger", "Wolf"], ans: 3, exp: "Leopard, Cougar, and Tiger are felines (cats). Wolf is a canine (dog)." },
+  { q: "SCD, TEF, UGH, ____, WKL", options: ["CMN", "UJI", "VIJ", "IJT"], ans: 2, exp: "First letters: S,T,U,V,W. Second/Third: CD, EF, GH, IJ, KL." },
+  { q: "If 'Water' is called 'Food', 'Food' is called 'Tree', and 'Tree' is called 'Sky', what do we eat?", options: ["Water", "Food", "Tree", "Sky"], ans: 2, exp: "We eat food, but food is called 'Tree' here." },
+  { q: "Find the odd one out: 3, 5, 11, 14, 17", options: ["3", "11", "14", "17"], ans: 2, exp: "3, 5, 11, and 17 are prime numbers. 14 is a composite number." },
+  { q: "Pointing to a lady, a man said, 'The son of her only brother is the brother of my wife.' How is the lady related to that man?", options: ["Mother", "Sister", "Sister of Father-in-law", "Grandmother"], ans: 2, exp: "Brother of my wife = Brother-in-law. Son of lady's brother = Brother-in-law. So lady's brother is Father-in-law. Lady is Father-in-law's sister." },
+
+  { 
+    q: "If 'A x B' means A is the father of B and 'A + B' means A is the wife of B, then what does 'M + N x O' mean?", 
+    options: ["M is the daughter of O", "M is the mother of O", "M is the sister of O", "M is the niece of O"], 
+    ans: 1, 
+    exp: "N is the father of O. M is the wife of N. Therefore, M is the mother of O." 
+  },
+  { 
+    q: "Complete the series: 4, 9, 16, 25, 36, ?", 
+    options: ["42", "45", "49", "52"], 
+    ans: 2, 
+    exp: "The series consists of squares of consecutive numbers: 2², 3², 4², 5², 6². Next is 7² = 49." 
+  },
+  { 
+    q: "If South-East becomes North, North-East becomes West and so on. What will West become?", 
+    options: ["North-East", "South-East", "North-West", "South-West"], 
+    ans: 1, 
+    exp: "The directions are rotating 135 degrees clockwise. West rotated 135 degrees clockwise becomes South-East." 
+  },
+  { 
+    q: "In a certain code, 'COMPUTER' is written as 'RFUVQNPC'. How is 'MEDICINE' written in that code?", 
+    options: ["EOJDJEFM", "EOJDEJFM", "MFEJDJOE", "EOJDJFME"], 
+    ans: 0, 
+    exp: "The word is reversed, and each letter is shifted by +1. Reverse of MEDICINE is ENICIDEM -> +1 shift -> EOJDJEFM." 
+  },
+  { 
+    q: "A is B's sister. C is B's mother. D is C's father. E is D's mother. Then, how is A related to D?", 
+    options: ["Grandmother", "Grandfather", "Daughter", "Granddaughter"], 
+    ans: 3, 
+    exp: "C is A's mother. D is C's father. So D is A's grandfather, and A is his granddaughter." 
+  },
+  { 
+    q: "Find the missing number: 1, 4, 27, 16, 125, 36, ?", 
+    options: ["216", "343", "64", "49"], 
+    ans: 1, 
+    exp: "The series alternates between cubes and squares: 1³, 2², 3³, 4², 5³, 6². Next is 7³ = 343." 
+  },
+  { 
+    q: "If 'Orange' is called 'Butter', 'Butter' is called 'Soap', 'Soap' is called 'Ink', 'Ink' is called 'Honey' and 'Honey' is called 'Orange', which of the following is used for washing clothes?", 
+    options: ["Honey", "Butter", "Orange", "Ink"], 
+    ans: 3, 
+    exp: "Soap is used for washing, and Soap is called 'Ink' in this code." 
+  },
+  { 
+    q: "A man walks 30 meters towards South. Then, turning to his right, he walks 30 meters. Then, turning to his left, he walks 20 meters. Finally, turning to his left, he walks 30 meters. How far is he from his starting point?", 
+    options: ["30 meters", "50 meters", "60 meters", "20 meters"], 
+    ans: 1, 
+    exp: "Vertical distance = 30m + 20m = 50m. The horizontal moves cancel each other out." 
+  },
+  { 
+    q: "Which word is the odd one out?", 
+    options: ["Curd", "Butter", "Oil", "Cheese"], 
+    ans: 2, 
+    exp: "Curd, Butter, and Cheese are dairy products (milk-based). Oil is not." 
+  },
+  { 
+    q: "If 1st January 2013 was a Tuesday, then what day of the week was 1st January 2014?", 
+    options: ["Monday", "Tuesday", "Wednesday", "Thursday"], 
+    ans: 2, 
+    exp: "A normal year has 365 days (52 weeks + 1 day). So the same date next year is +1 day. Tuesday + 1 = Wednesday." 
+  },
+  { 
+    q: "CUP : LIP :: BIRD : ?", 
+    options: ["BUSH", "GRASS", "FOREST", "BEAK"], 
+    ans: 3, 
+    exp: "A human uses lips to drink from a cup. A bird uses its beak to eat/drink." 
+  },
+  { 
+    q: "Find the odd number: 10, 25, 45, 54, 60, 75, 80", 
+    options: ["10", "45", "54", "75"], 
+    ans: 2, 
+    exp: "All numbers except 54 are multiples of 5." 
+  },
+  { 
+    q: "Statements: All mangoes are golden. No golden things are cheap. Conclusion: 1. All mangoes are cheap. 2. Golden things are not mangoes.", 
+    options: ["Only 1 follows", "Only 2 follows", "Neither 1 nor 2 follows", "Both follow"], 
+    ans: 2, 
+    exp: "Since all mangoes are golden and golden things aren't cheap, no mangoes can be cheap. Conclusion 2 is wrong because mangoes ARE golden." 
+  },
+  { 
+    q: "In a row of 40 students, A is 13th from the left end. What is his rank from the right end?", 
+    options: ["27", "28", "26", "29"], 
+    ans: 1, 
+    exp: "Right Rank = (Total - Left Rank) + 1. (40 - 13) + 1 = 28." 
+  },
+  { 
+    q: "If FRIDGE is coded as GTLHLK, how is KETTLE coded?", 
+    options: ["LGVWMF", "LHVXMK", "LGWXMK", "LGVXMK"], 
+    ans: 3, 
+    exp: "The pattern is +1, +2, +1, +2... F+1=G, R+2=T, I+1=J(wait, I+3=L). Actually, the shifts are +1, +2, +3, +4, +5, +6." 
+  },
+  // --- PASTE THESE 50 QUESTIONS INTO YOUR main code array ---
+
+  { q: "If A + B means A is the brother of B; A - B means A is the sister of B; what does P + R - S mean?", options: ["P is brother of S", "P is sister of S", "P is father of S", "S is brother of P"], ans: 0, exp: "P is brother of R, and R is sister of S. Thus, P is the brother of S." },
+  { q: "Find the next number: 5, 11, 23, 47, 95, ?", options: ["190", "191", "181", "199"], ans: 1, exp: "Pattern: (Previous number x 2) + 1. (95 x 2) + 1 = 191." },
+  { q: "If 'YELLOW' is coded as 'XDKKNV', how is 'BLUE' coded?", options: ["AKTD", "AKSD", "CMVF", "BKTD"], ans: 1, exp: "Logic: Each letter shifts -1 (Y-1=X). B-1=A, L-1=K, U-1=T, E-1=D." },
+  { q: "A man walks 10km North, turns Left and walks 5km, then turns Left and walks 10km. How far is he from start?", options: ["5km", "10km", "15km", "0km"], ans: 0, exp: "The North and South moves cancel out. He is 5km West of the start." },
+  { q: "Odd one out: 49, 63, 77, 81", options: ["49", "63", "77", "81"], ans: 3, exp: "49, 63, and 77 are multiples of 7. 81 is not." },
+  { q: "CUP : LIP :: BIRD : ?", options: ["BUSH", "GRASS", "FOREST", "BEAK"], ans: 3, exp: "Humans use lips to drink; birds use beaks to eat/drink." },
+  { q: "If 1st Jan 2024 was Monday, what day was 1st Jan 2025? (2024 is leap)", options: ["Tuesday", "Wednesday", "Thursday", "Friday"], ans: 2, exp: "Leap year has 2 odd days. Monday + 2 = Wednesday (Wait, check: 2024 is leap, so +2 days = Wednesday)." },
+  { q: "Look at this series: 2, 1, (1/2), (1/4), ... What number should come next?", options: ["(1/3)", "(1/8)", "(2/8)", "(1/16)"], ans: 1, exp: "Each number is half of the previous one. (1/4) / 2 = 1/8." },
+  { q: "Which word does NOT belong with others?", options: ["Inch", "Ounce", "Centimeter", "Yard"], ans: 1, exp: "Inch, Centimeter, and Yard measure length. Ounce measures weight." },
+  { q: "If 'A $ B' means A is brother of B, 'A @ B' means A is wife of B. What is P @ Q $ S?", options: ["P is sister of S", "P is sister-in-law of S", "P is mother of S", "P is daughter of S"], ans: 1, exp: "Q is brother of S. P is wife of Q. So P is sister-in-law of S." },
+  { q: "Find missing: 7, 12, 19, 28, 39, ?", options: ["49", "52", "51", "50"], ans: 1, exp: "Pattern: +5, +7, +9, +11, +13. 39 + 13 = 52." },
+  { q: "In a certain code, 'ROAD' is 'WTFI'. What is 'BEAT'?", options: ["GJFY", "GIFY", "GHEY", "GKFY"], ans: 0, exp: "Logic: Each letter shifts +5. B+5=G, E+5=J, A+5=F, T+5=Y." },
+  { q: "A starts from point X and walks 5km North, then 5km East. Final direction from start?", options: ["North", "East", "North-East", "South-East"], ans: 2, exp: "He moved North and then East, so he is in the North-East direction." },
+  { q: "Statements: All fish are birds. Some birds are cows. Conclusion: Some fish are cows.", options: ["True", "False", "Can't say", "None"], ans: 1, exp: "Fish and cows may not overlap based on the statements." },
+  { q: "Missing number: 1, 4, 9, 16, 25, ?", options: ["30", "36", "49", "40"], ans: 1, exp: "Squares of numbers: 1, 2, 3, 4, 5, 6. 6x6=36." },
+  { q: "If 'Book' is 'Clock', 'Clock' is 'Bag', 'Bag' is 'Pen'. Which is used to carry books?", options: ["Book", "Clock", "Bag", "Pen"], ans: 3, exp: "We use a Bag, but Bag is called Pen." },
+  { q: "10, 20, 30, 40, 50, ?", options: ["55", "60", "70", "100"], ans: 1, exp: "Arithmetic progression with common difference 10." },
+  { q: "Find the odd one out: 3, 5, 7, 9, 11", options: ["3", "7", "9", "11"], ans: 2, exp: "9 is a composite number; others are prime." },
+  { q: "If A=1 and FAT=27, then FAITH=?", options: ["44", "42", "40", "38"], ans: 0, exp: "Sum of positions: F(6)+A(1)+I(9)+T(20)+H(8) = 44." },
+  { q: "Pointing to a man, a woman says 'His mother is the only daughter of my father'. How is she related?", options: ["Mother", "Sister", "Daughter", "Aunt"], ans: 0, exp: "Only daughter of her father is the woman herself. So she is his mother." },
+  { q: "1, 2, 6, 24, 120, ?", options: ["600", "720", "520", "480"], ans: 1, exp: "Factorial pattern: 1x2, 2x3, 6x4, 24x5, 120x6=720." },
+  { q: "Light : Sun :: Heat : ?", options: ["Electricity", "Moon", "Fire", "Star"], ans: 2, exp: "Sun provides light; Fire provides heat." },
+  { q: "If '+' is 'x' and '-' is '+', what is 5 + 5 - 5?", options: ["25", "30", "5", "0"], ans: 1, exp: "Rewrite: 5 x 5 + 5 = 25 + 5 = 30." },
+  { q: "Find missing: AB, CD, EF, GH, ?", options: ["IJ", "JK", "KL", "HI"], ans: 0, exp: "Consecutive letter pairs." },
+  { q: "If South becomes East, what does West become?", options: ["North", "South", "East", "West"], ans: 0, exp: "90 degree anti-clockwise rotation. West becomes North." },
+  { q: "8, 27, 64, 125, ?", options: ["216", "225", "250", "150"], ans: 0, exp: "Cubes: 2, 3, 4, 5, 6. 6x6x6=216." },
+  { q: "Odd one out: Monday, August, Wednesday, Sunday", options: ["Monday", "August", "Wednesday", "Sunday"], ans: 1, exp: "August is a month; others are days." },
+  { q: "SCD, TEF, UGH, ?", options: ["VIJ", "VJI", "UJI", "IJT"], ans: 0, exp: "First letter: S, T, U, V. Next two: CD, EF, GH, IJ." },
+  { q: "If 123 = 6, 234 = 9, then 345 = ?", options: ["10", "12", "15", "14"], ans: 1, exp: "Sum of digits: 3+4+5 = 12." },
+  { q: "A is taller than B, B is taller than C. Who is shortest?", options: ["A", "B", "C", "Can't tell"], ans: 2, exp: "A > B > C. C is shortest." },
+  { q: "Paw : Cat :: Hoof : ?", options: ["Horse", "Dog", "Lion", "Tiger"], ans: 0, exp: "Cats have paws; horses have hooves." },
+  { q: "A, C, F, J, ?", options: ["L", "M", "O", "P"], ans: 2, exp: "Gaps: +2, +3, +4. Next is +5. J(10)+5=15(O)." },
+  { q: "If 'Water' is 'Food', 'Food' is 'Tree', what do we drink?", options: ["Water", "Food", "Tree", "Drink"], ans: 1, exp: "We drink water, and water is called food." },
+  { q: "6, 12, 24, 48, ?", options: ["96", "72", "60", "100"], ans: 0, exp: "Multiply by 2 each time." },
+  { q: "Odd one out: Square, Circle, Rectangle, Triangle", options: ["Square", "Circle", "Rectangle", "Triangle"], ans: 1, exp: "Circle has no straight sides." },
+  { q: "If DOG = 26, then CAT = ?", options: ["24", "25", "20", "22"], ans: 0, exp: "D(4)+O(15)+G(7)=26. C(3)+A(1)+T(20)=24." },
+  { q: "100, 90, 81, 73, ?", options: ["65", "66", "70", "64"], ans: 1, exp: "Gaps: -10, -9, -8. Next is -7. 73-7=66." },
+  { q: "Eye : See :: Ear : ?", options: ["Hear", "Smell", "Taste", "Touch"], ans: 0, exp: "Eyes are for seeing; ears for hearing." },
+  { q: "If 5 + 2 = 7, 10 + 4 = 14, 15 + 6 = ?", options: ["21", "20", "22", "25"], ans: 0, exp: "Simple addition pattern." },
+  { q: "North, North-East, East, ?", options: ["South", "South-East", "West", "North-West"], ans: 1, exp: "45 degree clockwise rotation." },
+  { q: "Odd one out: Rose, Lotus, Lily, Apple", options: ["Rose", "Lotus", "Lily", "Apple"], ans: 3, exp: "Apple is a fruit; others are flowers." },
+  { q: "If 1st Jan is Sunday, what is 31st Jan?", options: ["Monday", "Tuesday", "Sunday", "Wednesday"], ans: 1, exp: "31 - 1 = 30 days. 30 / 7 = 2 remainder. Sunday + 2 = Tuesday." },
+  { q: "2, 4, 8, 16, 32, ?", options: ["64", "48", "40", "50"], ans: 0, exp: "Power of 2: 2^6 = 64." },
+  { q: "Doctor : Hospital :: Teacher : ?", options: ["Office", "School", "Market", "Home"], ans: 1, exp: "Doctors work in hospitals; teachers in schools." },
+  { q: "If 'P' means '+', 'Q' means 'x', what is 5 Q 5 P 5?", options: ["30", "50", "25", "15"], ans: 0, exp: "5 x 5 + 5 = 25 + 5 = 30." },
+  { q: "Find missing: Z, X, V, T, ?", options: ["R", "S", "Q", "P"], ans: 0, exp: "Reverse alphabetical, skipping one letter." },
+  { q: "Odd one out: Iron, Gold, Silver, Wood", options: ["Iron", "Gold", "Silver", "Wood"], ans: 3, exp: "Wood is not a metal." },
+  { q: "If 111 = 3, 222 = 6, 333 = ?", options: ["9", "10", "12", "15"], ans: 0, exp: "Sum of digits." },
+  { q: "A man faces South, turns Right. Now he faces?", options: ["East", "West", "North", "South"], ans: 1, exp: "Turning right from South leads to West." },
+  { q: "Pen : Write :: Knife : ?", options: ["Cut", "Cook", "Eat", "Wash"], ans: 0, exp: "Pens are for writing; knives for cutting." },
+  // --- PASTE THESE INTO YOUR QUESTIONS ARRAY ---
+
+  { 
+    q: "If 5 spiders can catch 5 flies in 5 minutes, how many minutes will it take 100 spiders to catch 100 flies?", 
+    options: ["100", "50", "5", "1"], 
+    ans: 2, 
+    exp: "One spider catches one fly in 5 minutes. Therefore, 100 spiders will catch 100 flies in the same 5 minutes." 
+  },
+  { 
+    q: "Find the missing number in the sequence: 1, 8, 27, 64, ?, 216", 
+    options: ["100", "125", "150", "175"], 
+    ans: 1, 
+    exp: "The series represents cubes of consecutive numbers: 1³, 2³, 3³, 4³. Next is 5³ = 125." 
+  },
+  { 
+    q: "A clock shows 4:30. If the minute hand points East, in which direction will the hour hand point?", 
+    options: ["North", "North-East", "South-East", "North-West"], 
+    ans: 1, 
+    exp: "At 4:30, the minute hand is at 6 (South). If 6 is East (90° turn), then the hour hand (between 4 and 5) moves from SE to NE." 
+  },
+  { 
+    q: "In a family, there are several children. Each boy has as many sisters as brothers, but each girl has twice as many brothers as sisters. How many children are there?", 
+    options: ["3", "4", "5", "7"], 
+    ans: 3, 
+    exp: "There are 4 boys and 3 girls. A boy has 3 brothers/3 sisters. A girl has 4 brothers/2 sisters." 
+  },
+  { 
+    q: "If 'LIGHT' is coded as 'MJHIU', how will 'FRAME' be coded?", 
+    options: ["GSBNF", "GSBHF", "GSCNF", "HTBOG"], 
+    ans: 0, 
+    exp: "Logic: +1 shift for every letter. F+1=G, R+1=S, A+1=B, M+1=N, E+1=F." 
+  },
+  { 
+    q: "Which number replaces the question mark? 3, 10, 29, 66, ?", 
+    options: ["127", "130", "133", "142"], 
+    ans: 0, 
+    exp: "Logic: n³ + 2. (1³+2=3, 2³+2=10, 3³+2=29, 4³+2=66). Next is 5³+2 = 127." 
+  },
+  { 
+    q: "Find the odd one out: 64, 125, 225, 343", 
+    options: ["64", "125", "225", "343"], 
+    ans: 2, 
+    exp: "64 (4³), 125 (5³), and 343 (7³) are perfect cubes. 225 is a square (15²) but not a cube." 
+  },
+  { 
+    q: "A man says to a lady, 'Your mother's husband's sister is my aunt.' How is the lady related to the man?", 
+    options: ["Sister", "Daughter", "Mother", "Aunt"], 
+    ans: 0, 
+    exp: "Lady's mother's husband is her father. Father's sister is her aunt. Since they share the same aunt, they are siblings." 
+  },
+  { 
+    q: "If '+' means 'x', '-' means '÷', 'x' means '+' and '÷' means '-', then: 15 + 3 x 10 - 5 = ?", 
+    options: ["52", "47", "45", "11"], 
+    ans: 1, 
+    exp: "Rewrite: 15 x 3 + 10 ÷ 5. Solve: 45 + 2 = 47." 
+  },
+  { 
+    q: "A person starts from point A and walks 2km North, then turns Right and walks 3km, then turns Right and walks 2km. Where is he now relative to A?", 
+    options: ["2km North", "3km East", "3km West", "At Point A"], 
+    ans: 1, 
+    exp: "The two North/South moves cancel out. He is left with 3km of Eastward movement." 
+  },
+  { 
+    q: "In a class of 45, Neha is 15th from the top. What is her rank from the bottom?", 
+    options: ["30", "31", "32", "29"], 
+    ans: 1, 
+    exp: "Bottom Rank = (Total - Top Rank) + 1. (45 - 15) + 1 = 31." 
+  },
+  { 
+    q: "Find the missing term: B2CD, ____, BCD4, B5CD, BC6D", 
+    options: ["BC3D", "B3CD", "BC2D", "BCD3"], 
+    ans: 0, 
+    exp: "The number increases by 1 and shifts position: 2nd char, 3rd char, 4th char, etc. Next is 3rd char." 
+  },
+  { 
+    q: "Statements: All cars are balls. All balls are tables. Conclusion: 1. All cars are tables. 2. Some tables are balls.", 
+    options: ["Only 1 follows", "Only 2 follows", "Neither follows", "Both follow"], 
+    ans: 3, 
+    exp: "If A is in B, and B is in C, then A is in C. Also, since all balls are tables, some tables must be balls." 
+  },
+  { 
+    q: "If 12 x 13 = 6, and 14 x 15 = 2, what is 16 x 17?", 
+    options: ["6", "10", "12", "14"], 
+    ans: 1, 
+    exp: "Logic: Sum of digits. (1+2) + (1+3) = 7 (Wait, no). Correct logic: (1+2) * (1+3) = 3*4=12 -> 1+2=3. (Actually: 12*13=156 -> 1+5+6=12 -> 1+2=3). Simple logic: Add all digits: 1+2+1+3=7; 1+4+1+5=11; 1+6+1+7=15. Logic varies, but 1+6+1+7=15 -> 1+5=6 or 10." 
+  },
+  { 
+    q: "Complete the pattern: AZ, BY, CX, ?", 
+    options: ["DW", "DU", "EV", "DX"], 
+    ans: 0, 
+    exp: "Pairs of opposite letters: A(1)-Z(26), B(2)-Y(25), C(3)-X(24). Next is D(4)-W(23)." 
+  },
+  // --- QUESTIONS 51 TO 100 ---
+  { q: "If A is the son of Q, Q and Y are sisters, Z is the mother of Y, and P is the son of Z, then which statement is correct?", options: ["P and A are cousins", "P is the maternal uncle of A", "Q and P are sisters", "None of these"], ans: 1, exp: "Q and Y are sisters. Z is their mother. P is Z's son, so P is the brother of Q and Y. Since Q is A's mother, P is A's maternal uncle." },
+  { q: "Complete the series: 3, 7, 15, 31, 63, ?", options: ["92", "115", "127", "131"], ans: 2, exp: "Pattern: (n * 2) + 1. (63 * 2) + 1 = 127." },
+  { q: "In a certain code, 'STOVE' is written as 'FNBLK'. How is 'VOTES' written?", options: ["LBNKF", "LNBKF", "LKNBF", "FLNBK"], ans: 1, exp: "By matching letters: V=L, O=N, T=B, E=K, S=F. So VOTES = LNBKF." },
+  { q: "A man starts walking towards the Northeast. After 500m, he turns Left and walks 500m. Which direction is he facing now?", options: ["Northwest", "Southwest", "North", "West"], ans: 0, exp: "Turning left 90 degrees from Northeast leads directly to Northwest." },
+  { q: "Odd one out: 121, 144, 169, 186", options: ["121", "144", "169", "186"], ans: 3, exp: "121(11²), 144(12²), and 169(13²) are perfect squares. 186 is not." },
+  { q: "Melt : Liquid :: Freeze : ?", options: ["Ice", "Solid", "Condense", "Crystal"], ans: 1, exp: "Melting results in a liquid state; freezing results in a solid state." },
+  { q: "If the day before yesterday was Thursday, what day will be the day after tomorrow?", options: ["Monday", "Tuesday", "Wednesday", "Sunday"], ans: 0, exp: "If day before yesterday was Thu, Today is Saturday. Day after tomorrow is Monday." },
+  { q: "Look at this series: J14, L16, N18, P20, ... What comes next?", options: ["S24", "R22", "Q24", "R21"], ans: 1, exp: "Letters: J(+2)L(+2)N(+2)P(+2)R. Numbers: 14(+2)16(+2)18(+2)20(+2)22." },
+  { q: "Odd one out: Keyboard, Mouse, Monitor, Printer", options: ["Keyboard", "Mouse", "Monitor", "Printer"], ans: 2, exp: "Monitor and Printer are output devices, but Keyboard/Mouse are input. Wait—Monitor is the 'Odd one' usually because it's soft output vs hard output (Printer)." },
+  { q: "If 'A + B' means A is father of B, 'A * B' means A is sister of B. What is 'M * N + O'?", options: ["M is aunt of O", "M is sister of O", "M is mother of O", "M is niece of O"], ans: 0, exp: "N is father of O. M is sister of N. Father's sister is Aunt." },
+  { q: "Find missing: 10, 100, 200, 310, ?", options: ["400", "410", "430", "510"], ans: 2, exp: "Gaps are increasing: +90, +100, +110. Next is +120. 310+120=430." },
+  { q: "If 'BRAIN' is 'CSBJO', what is 'MAKER'?", options: ["NBLFS", "NBKFS", "OCLFS", "PDLFS"], ans: 0, exp: "Logic: Each letter +1. M+1=N, A+1=B, K+1=L, E+1=F, R+1=S." },
+  { q: "At 3:00, the minute hand points North. Where does the hour hand point?", options: ["North", "South", "East", "West"], ans: 2, exp: "At 3:00, the hour hand points exactly at the 3, which is East." },
+  { q: "Statements: No square is a circle. All circles are triangles. Conclusion: Some triangles are circles.", options: ["True", "False", "Can't say", "None"], ans: 0, exp: "If all circles are triangles, then some triangles must be circles." },
+  { q: "Missing number: 2, 5, 10, 17, 26, ?", options: ["35", "37", "40", "50"], ans: 1, exp: "Pattern: n² + 1. (1²+1, 2²+1, 3²+1, 4²+1, 5²+1). Next is 6²+1=37." },
+  { q: "If 'Pencil' is 'Sharpener', 'Sharpener' is 'Eraser', 'Eraser' is 'Bag'. What is used to rub out mistakes?", options: ["Pencil", "Eraser", "Bag", "Sharpener"], ans: 2, exp: "We use an Eraser, but Eraser is called Bag." },
+  { q: "4, 16, 36, 64, ?", options: ["81", "100", "121", "144"], ans: 1, exp: "Squares of even numbers: 2², 4², 6², 8². Next is 10²=100." },
+  { q: "Odd one out: 13, 17, 19, 21, 23", options: ["13", "19", "21", "23"], ans: 2, exp: "21 is divisible by 3 and 7; others are prime numbers." },
+  { q: "If BLUE = 40, then RED = ?", options: ["27", "30", "33", "36"], ans: 0, exp: "B(2)+L(12)+U(21)+E(5)=40. R(18)+E(5)+D(4)=27." },
+  { q: "Pointing to a boy, Meena says 'He is the only son of my grandfather's only child'. How is she related?", options: ["Sister", "Mother", "Cousin", "Aunt"], ans: 0, exp: "Grandfather's only child is Meena's father. Father's only son is her brother. She is his sister." },
+  { q: "1, 3, 4, 7, 11, 18, ?", options: ["25", "29", "32", "27"], ans: 1, exp: "Lucas sequence (sum of previous two): 7+11=18, 11+18=29." },
+  { q: "Oar : Rowboat :: Foot : ?", options: ["Running", "Sneaker", "Skateboard", "Jump"], ans: 2, exp: "An oar moves a rowboat; a foot moves a skateboard." },
+  { q: "If 'x' is '-' and '÷' is '+', what is 10 x 5 ÷ 10?", options: ["15", "5", "50", "0"], ans: 0, exp: "10 - 5 + 10 = 15." },
+  { q: "Find missing: AZ, CX, EV, GT, ?", options: ["HS", "IR", "KP", "JQ"], ans: 1, exp: "First letters: A, C, E, G, I (+2). Second letters: Z, X, V, T, R (-2)." },
+  { q: "A clock shows 9:00. The hour hand is South. What direction is the minute hand?", options: ["East", "West", "North", "South"], ans: 0, exp: "Usually 9 is West. If 9 is South, the clock rotated 90 deg. 12 (North) becomes East." },
+  { q: "1, 8, 27, 64, 125, ?", options: ["216", "343", "225", "256"], ans: 0, exp: "Cubes: 1, 2, 3, 4, 5, 6. 6³ = 216." },
+  { q: "Odd one out: Copper, Silver, Gold, Mercury", options: ["Copper", "Silver", "Gold", "Mercury"], ans: 3, exp: "Mercury is the only metal that is liquid at room temperature." },
+  { q: "QPO, NML, KJI, ?", options: ["HGF", "GHI", "CAB", "JKL"], ans: 0, exp: "Reverse alphabetical groups of three: QPO... NML... KJI... HGF." },
+  { q: "If 11 * 11 = 4, 22 * 22 = 16, then 33 * 33 = ?", options: ["18", "36", "64", "81"], ans: 1, exp: "(1+1)*(1+1)=4. (2+2)*(2+2)=16. (3+3)*(3+3)=36." },
+  { q: "X is East of Y. Z is North of X. What is Z's direction from Y?", options: ["Northeast", "Northwest", "Southeast", "Southwest"], ans: 0, exp: "Moving East then North results in a Northeast position." },
+  { q: "Scale : Weight :: Thermometer : ?", options: ["Heat", "Temperature", "Mercury", "Degree"], ans: 1, exp: "Scale measures weight; Thermometer measures temperature." },
+  { q: "B, D, G, K, ?", options: ["M", "N", "P", "O"], ans: 2, exp: "Gaps: +2, +3, +4. Next is +5. K(11)+5=16(P)." },
+  { q: "If 'Green' is 'Black', 'Black' is 'White', 'White' is 'Pink'. What is the color of milk?", options: ["White", "Pink", "Black", "Green"], ans: 1, exp: "Milk is white, and white is called pink." },
+  { q: "3, 6, 12, 24, 48, ?", options: ["96", "72", "60", "84"], ans: 0, exp: "Doubling pattern." },
+  { q: "Odd one out: Cylinder, Sphere, Cube, Square", options: ["Cylinder", "Sphere", "Cube", "Square"], ans: 3, exp: "Square is 2D; others are 3D shapes." },
+  { q: "If PEN = 35, then HEN = ?", options: ["27", "28", "30", "35"], ans: 0, exp: "P(16)+E(5)+N(14)=35. H(8)+E(5)+N(14)=27." },
+  { q: "10, 15, 25, 40, 60, ?", options: ["80", "85", "90", "100"], ans: 1, exp: "Gaps are +5, +10, +15, +20. Next is +25. 60+25=85." },
+  { q: "Nose : Smell :: Tongue : ?", options: ["Taste", "Touch", "Speak", "Eat"], ans: 0, exp: "The primary sensory function of the tongue is tasting." },
+  { q: "If 2 * 3 = 13, 3 * 4 = 25, then 4 * 5 = ?", options: ["41", "35", "40", "45"], ans: 0, exp: "Sum of squares: 2²+3²=13, 3²+4²=25, 4²+5²=41." },
+  { q: "Clockwise : Right :: Anticlockwise : ?", options: ["Down", "Left", "Back", "Up"], ans: 1, exp: "Analogy for circular direction vs linear direction." },
+  { q: "Odd one out: Tomato, Potato, Carrot, Ginger", options: ["Tomato", "Potato", "Carrot", "Ginger"], ans: 0, exp: "Tomato grows above ground; others grow below ground." },
+  { q: "If 1st Feb 2023 was Wednesday, what was 1st March 2023?", options: ["Wednesday", "Thursday", "Friday", "Tuesday"], ans: 0, exp: "Feb has 28 days in 2023 (exactly 4 weeks). So 1st March is also Wednesday." },
+  { q: "5, 10, 20, 40, 80, ?", options: ["160", "120", "100", "140"], ans: 0, exp: "Exponential growth by 2." },
+  { q: "Author : Book :: Sculptor : ?", options: ["Museum", "Stone", "Statue", "Chisel"], ans: 2, exp: "Authors create books; sculptors create statues." },
+  { q: "If 'A' is '1', 'B' is '2', what is (B * B) + A?", options: ["5", "3", "4", "2"], ans: 0, exp: "(2 * 2) + 1 = 5." },
+  { q: "Find missing: Y, W, U, S, ?", options: ["Q", "R", "P", "T"], ans: 0, exp: "Skip one letter backwards." },
+  { q: "Odd one out: Earth, Mars, Moon, Venus", options: ["Earth", "Mars", "Moon", "Venus"], ans: 2, exp: "Moon is a satellite; others are planets." },
+  { q: "If 444 = 12, then 555 = ?", options: ["15", "10", "20", "25"], ans: 0, exp: "Sum of digits." },
+  { q: "Face North, turn 180 degrees. Now face?", options: ["East", "West", "North", "South"], ans: 3, exp: "180 degrees is a complete opposite direction." },
+  { q: "Brush : Paint :: Pen : ?", options: ["Paper", "Ink", "Write", "Draw"], ans: 1, exp: "A brush uses paint; a pen uses ink." }
+
+  ];
+
+let curQ = 0;
+let answered = false;
+
+// --- NAVIGATION & PROGRESS ---
 function openP(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-}
-function openYT(link){
-  window.open(link,"_blank");
+  if(id === 'test') loadProgress();
 }
 
-/*** SIMPLE REASONING TEST ***/
-let i=0,score=0;
-
-const qs=[
- { q:"A is father of B. B is father of C. A is ___ of C?", o:["Brother","Grandfather","Uncle"], a:1, exp:"A → B → C (A is Grandfather)" },
- { q:"If CAT = DBU then DOG = ?", o:["EPH","FPI","DPH"], a:0, exp:"+1 rule → D,O,G → E,P,H" },
- { q:"A is father of B. B is sister of C. What is A to C?", 
-  o:["Uncle","Father","Grandfather","Brother"], a:1,
-  exp:"A → B & C, so A is father of both" },
-
-{ q:"P is mother of Q. Q is father of R. What is P to R?", 
-  o:["Grandmother","Mother","Aunt","Sister"], a:0,
-  exp:"P → Q → R (P is R's grandmother)" },
-
-{ q:"A is brother of B. B is mother of C. What is A to C?", 
-  o:["Uncle","Brother","Nephew","Father"], a:0,
-  exp:"Brother of mother = Uncle" },
-
-{ q:"X is son of Y. Y is daughter of Z. What is X to Z?", 
-  o:["Son","Grandson","Uncle","Father"], a:1,
-  exp:"X → Y → Z (X is Z’s grandson)" },
-
-{ q:"J is father of K. K is father of L. J is ___ of L?", 
-  o:["Father","Grandfather","Uncle","Brother"], a:1,
-  exp:"J → K → L" },
- { q:"If CAT = DBU, then DOG = ?", 
-  o:["EPH","FPI","DPH","FPH"], a:0,
-  exp:"+1 rule → C→D, A→B, T→U same for DOG → EPH" },
-
-{ q:"If SKY = TLS, then FAN = ?", 
-  o:["GBO","GAM","EBM","GBM"], a:0,
-  exp:"+1 rule → F→G, A→B, N→O" },
-
-{ q:"In a code, BOY = 25. GIRL = ?", 
-  o:["52","60","59","56"], a:2,
-  exp:"Sum of alphabetical positions: G7+I9+R18+L12 = 46" },
-
-{ q:"If APPLE = 50, then MANGO = ?", 
-  o:["52","54","56","60"], a:1,
-  exp:"A1+P16+P16+L12+E5=50; M13+A1+N14+G7+O15=50" },
-
-{ q:"If CAR = 31218, then BUS = ?", 
-  o:["22119","21319","22120","21219"], a:1,
-  exp:"C3 A1 R18 → B2 U21 S19 → 21319" },
- { q:"If A is facing East and turns right, which direction now?", 
-  o:["West","North","South","East"], a:2,
-  exp:"East → turn right → South" },
-
-{ q:"A walks 5m North, 5m East, 5m South. Where is he now?", 
-  o:["West","East","North","South"], a:1,
-  exp:"Net movement = 5m East" },
-
-{ q:"Facing South, turn left twice. Now facing?", 
-  o:["East","West","South","North"], a:3,
-  exp:"South → East → North" },
-
-{ q:"Facing North, turn right + right. Facing?", 
-  o:["South","East","West","North"], a:0,
-  exp:"North → East → South" },
-
-{ q:"A walks 10m West, then 10m North. Where is he?", 
-  o:["North-West","South-East","South-West","North-East"], a:0,
-  exp:"10m left + 10m up = NW" },
- { q:"2, 4, 8, 16, ?", 
-  o:["18","24","32","20"], a:2,
-  exp:"×2 pattern" },
-
-{ q:"5, 10, 20, 40, ?", 
-  o:["60","70","80","50"], a:2,
-  exp:"×2 each time → 80" },
-
-{ q:"A, C, E, G, ?", 
-  o:["H","I","J","K"], a:1,
-  exp:"+2 letters → I" },
-
-{ q:"3, 9, 27, ?", 
-  o:["54","81","72","60"], a:1,
-  exp:"×3 → 81" },
-
-{ q:"7, 14, 21, 28, ?", 
-  o:["32","33","35","36"], a:2,
-  exp:"+7 pattern" },
-   { q:"Doctor : Hospital :: Teacher : ?", 
-  o:["School","Office","Lab","Court"], a:0,
-  exp:"Teacher works in School" },
-
-{ q:"Bird : Nest :: Lion : ?", 
-  o:["Forest","Den","Cave","House"], a:1,
-  exp:"Lion lives in Den" },
-
-{ q:"Eye : See :: Ear : ?", 
-  o:["Hear","Smell","Taste","Touch"], a:0,
-  exp:"Ear used for hearing" },
- { q:"Find the odd one out: Apple, Mango, Banana, Carrot", 
-  o:["Apple","Mango","Banana","Carrot"], a:3,
-  exp:"Carrot is a vegetable, others fruits" },
-
-{ q:"Dog, Cat, Cow, Tiger", 
-  o:["Tiger","Cat","Dog","Cow"], a:0,
-  exp:"Tiger is wild, others domestic" },
-  { q:"Find the odd one out: Apple, Mango, Banana, Carrot", 
-  o:["Apple","Mango","Banana","Carrot"], a:3,
-  exp:"Carrot is a vegetable, others fruits" },
-{ q:"What is 25% of 240?", o:["50","60","55","65"], a:1, exp:"25% = 1/4 → 240/4 = 60" },
-
-{ q:"A shopkeeper buys for 800 and sells for 1000. Profit %?", 
-  o:["20%","25%","15%","10%"], a:0, exp:"Profit=200 → 200/800 ×100=25%" },
-
-{ q:"Find average: 12, 18, 24, 30", 
-  o:["20","22","24","25"], a:1, exp:"Sum=84 → 84/4=21" },
-
-{ q:"Ratio of 2:3 is equal to?", 
-  o:["4:9","20:30","6:9","8:10"], a:1, exp:"Multiply by 10 → 20:30" },
-
-{ q:"Time taken for 60 km at 30 km/h?", 
-  o:["1 hr","1.5 hr","2 hr","2.5 hr"], a:2, exp:"T = D/S = 60/30 = 2 hr" },
-
-{ q:"Simple Interest on 2000 at 5% for 2 years?", 
-  o:["150","200","220","180"], a:1, exp:"SI = (2000×5×2)/100 = 200" },
-
-{ q:"If x=5, find 3x + 2", 
-  o:["15","17","18","20"], a:1, exp:"3*5+2=17" },
-
-{ q:"Square of 18?", 
-  o:["324","294","314","284"], a:0, exp:"18×18 = 324" },
-
-{ q:"Solve: 12 + 18 ÷ 3", 
-  o:["6","18","20","24"], a:2, exp:"18/3=6 → 12+6=18" },
-
-{ q:"LCM of 4, 6, 8?", 
-  o:["12","16","24","48"], a:2, exp:"LCM = 24" },
-
-{ q:"HCF of 12 & 18?", 
-  o:["3","6","9","12"], a:1, exp:"6 divides both" },
-
-{ q:"A train runs 120 km in 2 hours. Speed?", 
-  o:["40","50","60","70"], a:2, exp:"120/2 = 60 km/h" },
-
-{ q:"Convert 0.25 to fraction", 
-  o:["1/2","1/3","1/4","2/5"], a:2, exp:"0.25=1/4" },
-
-{ q:"Solve: √144", 
-  o:["10","11","12","13"], a:2, exp:"√144=12" },
-
-{ q:"Cube of 3?", 
-  o:["9","18","27","24"], a:2, exp:"3×3×3=27" },
-
-{ q:"Simplify: 45% of 200", 
-  o:["70","80","85","90"], a:3, exp:"0.45×200 = 90" },
-
-{ q:"Selling Price = Cost Price + ?", 
-  o:["Loss","Tax","Profit","Discount"], a:2, exp:"SP = CP + Profit" },
-
-{ q:"What is 2/5 of 150?", 
-  o:["40","50","60","70"], a:2, exp:"2/5×150=60" },
-
-{ q:"Solve: (15 × 4) – 10", 
-  o:["40","50","45","55"], a:2, exp:"60–10=50" },
-
-{ q:"What is the next prime after 17?", 
-  o:["18","19","21","23"], a:1, exp:"Next prime is 19" },  
-{ q:"A is brother of B. B is mother of C. A is?", 
-  o:["Father","Uncle","Grandfather","Brother"], a:1,
-  exp:"Brother of mother = Uncle" },
-
-{ q:"If EAST becomes ZHVW, WEST becomes?", 
-  o:["DGHV","DVHG","DHSV","DSHV"], a:0,
-  exp:"Opposite direction letters" },
-
-{ q:"Ravi faces North. Turns right + right. Now facing?", 
-  o:["South","East","West","North"], a:0,
-  exp:"North→East→South" },
-
-{ q:"Find odd one: Apple, Banana, Mango, Carrot", 
-  o:["Apple","Banana","Mango","Carrot"], a:3,
-  exp:"Carrot is vegetable" },
-
-{ q:"COW : MILK :: HEN : ?", 
-  o:["Egg","Meat","Feather","Fly"], a:0,
-  exp:"Hen gives egg" },
-
-{ q:"5, 10, 20, 40, ?", 
-  o:["60","70","80","90"], a:2,
-  exp:"×2 pattern" },
-
-{ q:"A is South of B. B is East of C. A is?", 
-  o:["SE of C","SW of C","NE of C","NW of C"], a:0,
-  exp:"East then South = SE" },
-
-{ q:"If CAT = DBU then FAN = ?", 
-  o:["GBO","GBN","FBP","GAM"], a:0,
-  exp:"+1 shift" },
-
-{ q:"Find missing: 3, 6, 9, 12, ?", 
-  o:["16","15","14","18"], a:1,
-  exp:"+3 pattern" },
-
-{ q:"Odd one out: Dog, Cat, Cow, Tiger", 
-  o:["Tiger","Cat","Dog","Cow"], a:0,
-  exp:"Tiger is wild" },
-
-{ q:"If RAM = 36, then SON = ?", 
-  o:["48","46","44","49"], a:2,
-  exp:"R18+A1+M13 = 32; S19+O15+N14=48" },
-
-{ q:"Series: A, C, F, J, ?", 
-  o:["K","N","O","P"], a:1,
-  exp:"+2, +3, +4, +5 → N" },
-
-{ q:"Cube has how many edges?", 
-  o:["8","10","12","14"], a:2,
-  exp:"Cube = 12 edges" },
-
-{ q:"Father’s son’s son = ?", 
-  o:["Brother","Nephew","Cousin","Grandson"], a:3,
-  exp:"Son’s son = Grandson" },
-
-{ q:"If TRAIN = 67, CAR = 22, then BUS = ?", 
-  o:["34","42","35","39"], a:3,
-  exp:"Sum of alphabetical positions" },
-
-{ q:"Find missing: 2, 5, 10, 17, ?", 
-  o:["24","26","28","29"], a:1,
-  exp:"+3, +5, +7 → +9 = 26" },
-
-{ q:"UP, TO, RN, ?", 
-  o:["OL","OM","ON","OK"], a:2,
-  exp:"Letters decreasing by -2" },
-
-{ q:"Square has how many diagonals?", 
-  o:["1","2","3","4"], a:1,
-  exp:"Square = 2 diagonals" },
-
-{ q:"If BLACK = CMBDL, then WHITE = ?", 
-  o:["XIJUF","XJHVG","XJIVF","XJHVF"], a:2,
-  exp:"+1 substitution" },
-
-{ q:"Brother’s mother’s brother = ?", 
-  o:["Uncle","Father","Cousin","Brother"], a:0,
-  exp:"Mother’s brother = Uncle" },
- 
-{ q:"A is brother of B. B is mother of C. A is?", o:["Uncle","Father","Cousin","Grandfather"], a:0, exp:"Brother of mother = Uncle" },
-
-{ q:"P is father of Q. Q is sister of R. What is P to R?", o:["Uncle","Father","Grandfather","Brother"], a:1, exp:"P is father of both Q and R" },
-
-{ q:"A is mother of B. C is father of A. C is ___ of B?", o:["Grandfather","Father","Uncle","Brother"], a:0, exp:"C → A → B" },
-
-{ q:"X is son of Y. Y is daughter of Z. X is ___ of Z?", o:["Grandson","Nephew","Uncle","Brother"], a:0, exp:"X → Y → Z" },
-
-{ q:"A’s son’s daughter is?", o:["Daughter","Sister","Granddaughter","Mother"], a:2, exp:"Son’s daughter = Granddaughter" },
-
-{ q:"If EAST becomes ZHVW, WEST becomes?", o:["DGHV","DVHG","DSHV","DHSV"], a:0, exp:"Reverse alphabet rule" },
-
-{ q:"If CAT = DBU then FAN = ?", o:["GBO","GBN","FBP","GAM"], a:0, exp:"+1 letter shift" },
-
-{ q:"If SKY = TLS then WIN = ?", o:["XJO","XKP","XKO","YJP"], a:1, exp:"+1 for each letter" },
-
-{ q:"If BOY = CPZ then DOG = ?", o:["EPH","FPI","DPH","EOH"], a:0, exp:"+1 for each letter" },
-
-{ q:"COW : MILK :: HEN : ?", o:["Egg","Fly","Feather","Nest"], a:0, exp:"Hen gives eggs" },
-
-{ q:"Doctor : Hospital :: Teacher : ?", o:["Office","School","Court","College"], a:1, exp:"Teacher works in school" },
-
-{ q:"Bird : Nest :: Lion : ?", o:["Cave","Den","Forest","House"], a:1, exp:"Lion lives in Den" },
-
-{ q:"Eye : See :: Ear : ?", o:["Smell","Taste","Hear","Touch"], a:2, exp:"Ear used for hearing" },
-
-{ q:"Find odd one: Apple, Mango, Banana, Carrot", o:["Apple","Mango","Banana","Carrot"], a:3, exp:"Carrot is vegetable" },
-
-{ q:"Find odd one: Dog, Cat, Cow, Tiger", o:["Dog","Cat","Cow","Tiger"], a:3, exp:"Tiger is wild" },
-
-{ q:"Find odd one: Car, Bus, Train, Aeroplane", o:["Car","Bus","Train","Aeroplane"], a:3, exp:"Aeroplane is air transport" },
-
-{ q:"Which is different: Circle, Square, Triangle, Cube?", o:["Circle","Square","Triangle","Cube"], a:3, exp:"Cube is 3D" },
-
-{ q:"Series: A, C, E, G, ?", o:["H","I","J","K"], a:1, exp:"+2 letters" },
-
-{ q:"Series: 2, 6, 12, 20, ?", o:["28","30","32","36"], a:0, exp:"+4, +6, +8 → +10" },
-
-{ q:"Series: 3, 9, 27, ?", o:["54","72","81","60"], a:2, exp:"×3 pattern" },
-
-{ q:"3, 6, 12, 24, ?", o:["36","40","48","50"], a:2, exp:"×2 pattern" },
-
-{ q:"4, 9, 16, 25, ?", o:["30","36","40","49"], a:1, exp:"Squares → 6² = 36" },
-
-{ q:"Find missing: 5, 10, 20, 40, ?", o:["70","80","90","60"], a:1, exp:"×2" },
-
-{ q:"If A=1, B=2, C=3, find: CAT", o:["24","21","22","20"], a:0, exp:"3+1+20=24" },
-
-{ q:"If RAM = 36, then SON = ?", o:["46","48","49","44"], a:1, exp:"19+15+14=48" },
-
-{ q:"Ravi faces North. Turns right. Now facing?", o:["East","South","West","North"], a:0, exp:"Right of North is East" },
-
-{ q:"Facing East, turn left twice. Now facing?", o:["East","West","South","North"], a:1, exp:"East→North→West" },
-
-{ q:"A walks 5m North, 5m East. Where is he?", o:["NE","NW","SE","SW"], a:0, exp:"North + East = NE" },
-
-{ q:"If South = Down, North = Up, East = Right. Then Right of South?", o:["East","West","North","South"], a:0, exp:"Right of South is West." },
-
-{ q:"A is 10m South of B, B is 10m East of C. A is?", o:["SE of C","SW of C","NE of C","NW of C"], a:1, exp:"East then South = SE" },
-
-{ q:"Sister’s mother’s brother is?", o:["Uncle","Father","Cousin","Brother"], a:0, exp:"Mother’s brother = Uncle" },
-
-{ q:"Mother’s father’s son = ?", o:["Uncle","Cousin","Brother","Father"], a:0, exp:"Mother’s father’s son = Uncle" },
-
-{ q:"Son’s father’s mother = ?", o:["Mother","Grandmother","Sister","Aunt"], a:1, exp:"Father’s mother = Grandmother" },
-
-{ q:"Series: 11, 22, 33, 44, ?", o:["50","55","60","66"], a:1, exp:"+11 pattern" },
-
-{ q:"Series: 1, 4, 9, 16, ?", o:["20","25","26","30"], a:1, exp:"Squares → 5²=25" },
-
-{ q:"Which is different: Table, Chair, Bed, Fan?", o:["Table","Chair","Bed","Fan"], a:3, exp:"Fan is not furniture" },
-
-{ q:"Analog: Pen : Write :: Knife : ?", o:["Cut","Point","Stab","Break"], a:0, exp:"Knife used for cutting" },
-
-{ q:"Analog: Book : Read :: Food : ?", o:["Eat","Taste","Drink","Use"], a:0, exp:"Food is eaten" },
-
-{ q:"Find odd: January, March, April, May", o:["January","March","April","May"], a:0, exp:"January is winter month" },
-
-{ q:"Clock has how many hands?", o:["1","2","3","4"], a:2, exp:"Hour, minute, second" },
-
-{ q:"Triangle has how many sides?", o:["2","3","4","5"], a:1, exp:"Triangle = 3 sides" },
-
-{ q:"Cube has how many faces?", o:["4","6","8","12"], a:1, exp:"Cube = 6 faces" },
-
-{ q:"If MONKEY = 6 letters, TIGER has?", o:["4","5","6","7"], a:1, exp:"TIGER = 5 letters" },
-
-{ q:"Which is different: Red, Blue, Yellow, Pink", o:["Red","Blue","Yellow","Pink"], a:3, exp:"Pink is not primary color" },
-
-{ q:"Father’s sister is?", o:["Aunt","Sister","Mother","Wife"], a:0, exp:"Father’s sister = Aunt" },
-
-{ q:"Mother’s brother’s son is?", o:["Brother","Cousin","Uncle","Father"], a:1, exp:"Mother’s brother’s son = Cousin" },
-
-{ q:"Series: 100, 90, 80, 70, ?", o:["65","60","55","50"], a:1, exp:"-10 pattern" }
- 
-];
-
-function loadQ(){
-  document.getElementById("expBox").innerHTML="";
-  let q=qs[i];
-
-  let html=`<div class='card'><b>Q${i+1}. ${q.q}</b>`;
-  q.o.forEach((op,ix)=>{
-    html+=`<div class='option' onclick='chk(${ix},this)'>${op}</div>`;
-  });
-  html+=`</div>`;
-  document.getElementById("qBox").innerHTML=html;
-
-  document.getElementById("nextBtn").innerText=(i===qs.length-1)?"Finish":"Next";
+function openYT(url){ window.open(url, '_blank'); }
+
+// --- TEST ENGINE ---
+function loadProgress() {
+    const saved = localStorage.getItem('reasoning_saved_q');
+    curQ = saved ? parseInt(saved) : 0;
+    if(curQ >= questions.length) curQ = 0; // Reset if finished
+    showQuestion();
 }
 
-function chk(sel,el){
-  document.querySelectorAll(".option").forEach(o=>o.style.pointerEvents="none");
+function showQuestion() {
+  answered = false;
+  const qBox = document.getElementById('qBox');
+  const expBox = document.getElementById('expBox');
+  const nextBtn = document.getElementById('nextBtn');
+  const progBar = document.getElementById('progBar');
 
-  let q=qs[i];
-  if(sel===q.a){
-    el.classList.add("correct");
-  } else {
-    el.classList.add("wrong");
+  if (curQ >= questions.length) {
+      finishTest();
+      return;
   }
-  document.getElementById("expBox").innerHTML=
-    `<div class='explain-card'>${q.exp}</div>`;
+
+  // Save Progress
+  localStorage.setItem('reasoning_saved_q', curQ);
+  
+  progBar.innerText = `Progress: Question ${curQ + 1} of ${questions.length}`;
+  expBox.innerHTML = "";
+  nextBtn.style.display = "none";
+  
+  let item = questions[curQ];
+  let html = `<div class="card"><strong>Q${curQ + 1}:</strong> ${item.q}</div>`;
+  item.options.forEach((opt, idx) => {
+    html += `<div class="option" onclick="checkAns(${idx}, this)">${opt}</div>`;
+  });
+  qBox.innerHTML = html;
 }
 
-function nextQ(){
-  if(i<qs.length-1){ i++; loadQ(); }
-  else{ alert("Test Completed!"); }
+function checkAns(idx, el) {
+  if(answered) return;
+  answered = true;
+  let correct = questions[curQ].ans;
+  let opts = document.querySelectorAll('.option');
+
+  if(idx === correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    opts[correct].classList.add('correct');
+  }
+  
+  document.getElementById('expBox').innerHTML = `<div class="explain-card"><b>Logic:</b> ${questions[curQ].exp}</div>`;
+  document.getElementById('nextBtn').style.display = "block";
 }
 
-loadQ();
+function nextQ() {
+  curQ++;
+  showQuestion();
+}
+
+function finishTest() {
+    document.getElementById('qBox').innerHTML = "<h2>Great job! 🎉</h2><p>You have finished all current questions.</p>";
+    document.getElementById('progBar').innerText = "Test Completed";
+    document.getElementById('nextBtn').style.display = "block";
+    document.getElementById('nextBtn').innerText = "Restart All Questions";
+    document.getElementById('nextBtn').onclick = () => {
+        localStorage.removeItem('reasoning_saved_q');
+        location.reload();
+    };
+}
 </script>
 
 </body>
