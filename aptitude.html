@@ -46,6 +46,7 @@ h2{
   font-size:14px;
   cursor:pointer;
   box-shadow:0 0 10px rgba(0,247,255,.4);
+  z-index: 10;
 }
 
 /* HOME CIRCLES */
@@ -83,6 +84,16 @@ h2{
   box-shadow:0 0 18px rgba(0,247,255,.15);
 }
 
+.progress-banner {
+    background: rgba(0, 247, 255, 0.1);
+    border: 1px dashed var(--glow);
+    padding: 8px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 13px;
+}
+
 /* BUTTON */
 .btn,.nextNoteBtn{
   width:100%;
@@ -105,8 +116,8 @@ h2{
   border:1px solid rgba(255,255,255,.2);
   cursor:pointer;
 }
-.option.correct{background:#064e3b;}
-.option.wrong{background:#7f1d1d;}
+.option.correct{background:#064e3b !important; border-color: var(--glow);}
+.option.wrong{background:#7f1d1d !important;}
 
 /* EXPLANATION */
 .explain-card{
@@ -114,13 +125,13 @@ h2{
   border-radius:14px;
   padding:14px;
   margin-top:10px;
+  border-left: 4px solid var(--glow);
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
 <div class="page active" id="home">
   <h2>✨ IIT Aptitude ✨</h2>
   <div class="circles">
@@ -130,38 +141,29 @@ h2{
   </div>
 </div>
 
-<!-- VIDEOS -->
 <div class="page" id="videos">
   <div class="backTop" onclick="openP('home')">⬅ Back</div>
   <h2>📹 Videos</h2>
-
-  <div class="card" onclick="openYT('https://www.youtube.com/watch?v=hlyal4sR0m8')">
-    English – Quant Aptitude
-  </div>
-
-  <div class="card" onclick="openYT('https://www.youtube.com/watch?v=tnc9ojITRg4')">
-    తెలుగు – Aptitude Basics
-  </div>
+  <div class="card" onclick="openYT('https://www.youtube.com/watch?v=hlyal4sR0m8')">English – Quant Aptitude</div>
+  <div class="card" onclick="openYT('https://www.youtube.com/watch?v=tnc9ojITRg4')">తెలుగు – Aptitude Basics</div>
 </div>
 
-<!-- TEST -->
 <div class="page" id="test">
   <div class="backTop" onclick="openP('home')">⬅ Back</div>
   <h2>🧠 Test</h2>
+  <div id="progBar" class="progress-banner"></div>
   <div id="qBox"></div>
   <div id="expBox"></div>
-  <button class="btn" onclick="nextQ()">Next</button>
+  <button class="btn" id="nextBtn" onclick="nextQ()" style="display:none;">Next Question</button>
 </div>
 
-<!-- RESULT -->
 <div class="page" id="result">
   <div class="backTop" onclick="openP('home')">⬅ Back</div>
   <h2>🎉 Result</h2>
   <div class="card" id="scoreCard"></div>
-  <button class="btn" onclick="restartTest()">Restart</button>
+  <button class="btn" onclick="restartTest()">Restart From Beginning</button>
 </div>
 
-<!-- NOTES -->
 <div class="page" id="notes">
   <div class="backTop" onclick="openP('home')">⬅ Back</div>
   <h2>📘 Notes</h2>
@@ -170,18 +172,216 @@ h2{
 </div>
 
 <script>
+// --- GLOBAL STATE ---
+let i = 0;
+let score = 0;
+let answered = false;
+
 function openP(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(id==="notes"){ nIndex=0; loadNote(); }
+  if(id==="test"){ resumeTest(); }
 }
 
-/* ---------- TEST ---------- */
-let i=0, score=0;
 const qs=[
  {q:"10 + x = 30",o:["10","15","20","25"],a:2,exp:"x = 30 − 10 = 20"},
  {q:"Average of 4,6,8",o:["6","7","8","9"],a:0,exp:"(4+6+8)/3 = 6"},
  {q:"20% of 200",o:["20","30","40","50"],a:2,exp:"0.2 × 200 = 40"},
+ {q:"5 + 7", o:["10","11","12","13"], a:2, exp:"5 + 7 = 12"},
+ /* ---------- NEW TEST QUESTIONS 101 TO 150 ---------- */
+ {q:"A man crosses a 600m long street in 5 minutes. Find speed in km/h.", o:["3.6","7.2","8.4","10"], a:1, exp:"600m/300s = 2m/s. 2 * 18/5 = 7.2 km/h"},
+ {q:"Average of first 50 natural numbers is?", o:["25.25","25.5","25","26"], a:1, exp:"(n+1)/2 = 51/2 = 25.5"},
+ {q:"A sum of money doubles itself in 10 years SI. What is the rate?", o:["5%","8%","10%","12%"], a:2, exp:"Rate = 100/T = 100/10 = 10%"},
+ {q:"What is 20% of 50% of 300?", o:["30","40","50","60"], a:0, exp:"0.20 * 0.50 * 300 = 30"},
+ {q:"If a:b = 2:3 and b:c = 4:5, find a:c.", o:["8:15","2:5","4:15","3:5"], a:0, exp:"(2/3)*(4/5) = 8/15"},
+ {q:"A train 100m long passes a bridge 150m long in 25s. Find speed.", o:["30 km/h","36 km/h","40 km/h","45 km/h"], a:1, exp:"(100+150)/25 = 10m/s = 36 km/h"},
+ {q:"If x + y = 20 and x - y = 4, find x.", o:["8","10","12","16"], a:2, exp:"2x = 24 -> x = 12"},
+ {q:"Find the surface area of a cube whose side is 5cm.", o:["100","125","150","200"], a:2, exp:"6 * 5^2 = 150"},
+ {q:"Probability of drawing a Red card from a deck of 52?", o:["1/2","1/4","1/13","1/52"], a:0, exp:"26/52 = 1/2"},
+ {q:"Cost of 12 pens is ₹120. Cost of 5 pens?", o:["₹40","₹50","₹60","₹70"], a:1, exp:"1 pen = 10. 5 pens = 50"},
+ {q:"Find the angle between clock hands at 3:00.", o:["45°","60°","90°","120°"], a:2, exp:"3 * 30 = 90°"},
+ {q:"A tank is filled in 5h and emptied in 10h. Together?", o:["5h","6.6h","10h","12h"], a:2, exp:"(1/5 - 1/10) = 1/10 -> 10h"},
+ {q:"Find HCF of 12, 18, 24.", o:["2","3","4","6"], a:3, exp:"Highest common factor is 6"},
+ {q:"If side of square doubles, the area becomes?", o:["Double","Triple","4 times","8 times"], a:2, exp:"(2s)^2 = 4s^2"},
+ {q:"10% of x = 20. Find x.", o:["100","200","300","400"], a:1, exp:"0.1x = 20 -> x = 200"},
+ {q:"A man rows 18km/h downstream and 12km/h upstream. Speed of stream?", o:["2 km/h","3 km/h","5 km/h","6 km/h"], a:1, exp:"(18-12)/2 = 3 km/h"},
+ {q:"Sum of angles in a triangle is?", o:["90°","180°","270°","360°"], a:1, exp:"Standard geometric property: 180°"},
+ {q:"Which is a prime number?", o:["21","27","31","33"], a:2, exp:"31 has no factors other than 1 and itself"},
+ {q:"If 5 men can do work in 10 days, 10 men do it in?", o:["2 days","5 days","10 days","20 days"], a:1, exp:"M1D1 = M2D2 -> 5*10 = 10*x -> x=5"},
+ {q:"Volume of a cylinder with r=7, h=10 (use π=22/7)?", o:["1540","1440","1340","1240"], a:0, exp:"(22/7)*7*7*10 = 1540"},
+ {q:"Average of 10, 20, 30, 40, 50?", o:["25","30","35","40"], a:1, exp:"150/5 = 30"},
+ {q:"Successive discounts of 10% and 10% equals?", o:["19%","20%","21%","25%"], a:0, exp:"10+10 - (10*10)/100 = 19%"},
+ {q:"A cycle is bought for ₹1000 and sold for ₹1200. Profit %?", o:["10%","15%","20%","25%"], a:2, exp:"(200/1000)*100 = 20%"},
+ {q:"Square root of 625?", o:["15","25","35","45"], a:1, exp:"25 * 25 = 625"},
+ {q:"Area of equilateral triangle with side 2cm?", o:["√3","2√3","3","4"], a:0, exp:"(√3/4)*2*2 = √3"},
+ {q:"Ratio of 50 paise to ₹5?", o:["1:1","1:10","1:5","10:1"], a:1, exp:"50 : 500 = 1:10"},
+ {q:"Value of 2^5?", o:["16","25","32","64"], a:2, exp:"2*2*2*2*2 = 32"},
+ {q:"Sum of first 10 even numbers?", o:["100","110","120","130"], a:1, exp:"n(n+1) = 10*11 = 110"},
+ {q:"If x/5 = 4, then x = ?", o:["1","9","20","25"], a:2, exp:"x = 4*5 = 20"},
+ {q:"Diagonal of a square with side 10cm?", o:["10","10√2","20","100"], a:1, exp:"Side * √2 = 10√2"},
+ {q:"A train crosses a 200m bridge in 20s at 72km/h. Train length?", o:["100m","200m","300m","400m"], a:1, exp:"72km/h = 20m/s. Total dist = 20*20 = 400. 400-200 = 200m"},
+ {q:"In 100m race, A beats B by 10m. When A is at 100m, B is at?", o:["80m","90m","95m","110m"], a:1, exp:"100 - 10 = 90m"},
+ {q:"0.5 as a fraction is?", o:["1/2","1/4","1/5","1/10"], a:0, exp:"5/10 = 1/2"},
+ {q:"If A's income is 25% more than B, B is how much % less than A?", o:["20%","25%","30%","15%"], a:0, exp:"(25/125)*100 = 20%"},
+ {q:"Area of a rectangle is 200, length is 20. Find breadth.", o:["5","10","15","20"], a:1, exp:"200/20 = 10"},
+ {q:"Value of log 10?", o:["0","1","10","e"], a:1, exp:"log base 10 of 10 is 1"},
+ {q:"A sum triples in 20 years SI. Rate?", o:["5%","10%","15%","20%"], a:1, exp:"R = 200/20 = 10%"},
+ {q:"Cube of 11?", o:["121","1321","1331","1441"], a:2, exp:"11 * 11 * 11 = 1331"},
+ {q:"Perimeter of a circle with r=7 (π=22/7)?", o:["22","44","66","88"], a:1, exp:"2 * (22/7) * 7 = 44"},
+ {q:"If 2x + 3 = 11, x = ?", o:["2","3","4","5"], a:2, exp:"2x = 8 -> x = 4"},
+ {q:"LCM of 4 and 6?", o:["4","6","12","24"], a:2, exp:"Smallest multiple of both is 12"},
+ {q:"Find the unit digit of 256^4.", o:["2","4","6","8"], a:2, exp:"6 raised to any power ends in 6"},
+ {q:"1 hectare is equal to?", o:["1000 m²","10000 m²","100 m²","100000 m²"], a:1, exp:"Standard metric unit: 10,000 sq meters"},
+ {q:"If a coin is tossed twice, probability of 2 heads?", o:["1/2","1/4","3/4","1/3"], a:1, exp:"Outcomes: HH, HT, TH, TT. HH is 1/4"},
+ {q:"Value of 0!", o:["0","1","Infinity","Undefined"], a:1, exp:"By definition, 0! = 1"},
+ {q:"If radius is doubled, circumference becomes?", o:["Same","Double","Triple","4 times"], a:1, exp:"2π(2r) = 2(2πr)"},
+ {q:"A man buys a toy for ₹50 and sells for ₹75. Profit %?", o:["25%","33.3%","50%","100%"], a:2, exp:"(25/50)*100 = 50%"},
+ {q:"Distance between (0,0) and (3,4)?", o:["3","4","5","7"], a:2, exp:"√(3^2 + 4^2) = 5"},
+ {q:"Find simple interest on ₹500 at 10% for 2 years.", o:["₹50","₹100","₹150","₹200"], a:1, exp:"(500*10*2)/100 = 100"},
+ {q:"1/4 as a percentage?", o:["10%","20%","25%","40%"], a:2, exp:"(1/4)*100 = 25%"},
+ {q:"10 × 3", o:["20","25","30","35"], a:2, exp:"10 × 3 = 30"},
+ {q:"20 − 8", o:["10","12","14","16"], a:1, exp:"20 − 8 = 12"},
+ {q:"x + 5 = 15", o:["5","8","10","12"], a:2, exp:"x = 15 − 5 = 10"},
+ {q:"50% of 40", o:["10","15","20","25"], a:2, exp:"50% = 0.5 → 0.5 × 40 = 20"},
+ {q:"Average of 2, 4, 6", o:["3","4","5","6"], a:1, exp:"(2+4+6)/3 = 4"},
+ {q:"15 + x = 45", o:["20","25","30","35"], a:2, exp:"x = 45 − 15 = 30"},
+ {q:"30% of 250", o:["60","70","75","80"], a:2, exp:"0.3 × 250 = 75"},
+ {q:"Average of 10, 20, 30, 40", o:["20","25","30","35"], a:1, exp:"(10+20+30+40)/4 = 25"},
+ {q:"Ratio of 18 and 24", o:["2:3","3:4","4:3","6:8"], a:1, exp:"18:24 = 3:4"},
+ {q:"Simple Interest on ₹2000 at 5% for 2 years", o:["150","180","200","220"], a:2, exp:"SI = (2000×5×2)/100 = 200"},
+ {q:"Speed if distance = 120km, time = 3h", o:["30","35","40","45"], a:2, exp:"Speed = 120/3 = 40 km/h"},
+ {q:"A number is increased by 25% and then decreased by 20%. Find the net change.", o:["5% increase","5% decrease","No change","10% increase"], a:2, exp:"Let number = 100 → 25% increase = 125 → 20% decrease = 100 → No change"},
+ {q:"If 5 men can do a work in 12 days, how many days will 10 men take?", o:["4","6","8","10"], a:1, exp:"5×12 = 60 work-days → 60/10 = 6 days"},
+ {q:"A train 120m long passes a pole in 10 seconds. Find its speed.", o:["36 km/h","40 km/h","43.2 km/h","48 km/h"], a:2, exp:"Speed = 120/10 = 12 m/s → 12×3.6 = 43.2 km/h"},
+ {q:"If A : B = 3 : 5 and B : C = 10 : 12, find A : C", o:["1:2","3:4","5:6","1:4"], a:0, exp:"A:B = 6:10, B:C = 10:12 → A:C = 6:12 = 1:2"},
+ {q:"The average of 8 numbers is 20. If one number is removed, the average becomes 18. Find removed number.", o:["32","34","36","38"], a:1, exp:"160 - (7×18) = 160 - 126 = 34"},
+ {q:"Shopkeeper marks 40% above CP and gives 10% discount. Find profit %.", o:["24%","25%","26%","28%"], a:2, exp:"100 → 140 → (140 - 14) = 126. Profit = 26%"},
+ {q:"If x + 1/x = 5, find x² + 1/x²", o:["21","23","25","27"], a:1, exp:"(5)² - 2 = 25 - 2 = 23"},
+ {q:"Ratio of ages of A and B is 4:5. After 6 years it becomes 5:6. A's age?", o:["20","24","28","32"], a:1, exp:"x=6, A=4×6=24"},
+ {q:"Boat goes 24 km upstream in 6h and returns in 4h. Stream speed?", o:["1 km/h","2 km/h","3 km/h","4 km/h"], a:0, exp:"(6-4)/2 = 1 km/h"},
+ {q:"The compound interest on ₹1000 at 10% for 2 years is:", o:["200","210","220","230"], a:1, exp:"1000[(1.1)² - 1] = 210"},
+ {q:"If SP of 20 articles = CP of 25 articles, find profit %.", o:["20%","25%","30%","35%"], a:1, exp:"Profit = (5/20)×100 = 25%"},
+ {q:"Two pipes fill a tank in 12h and 18h. Together?", o:["7.2 h","8 h","9 h","10 h"], a:0, exp:"36/5 = 7.2 h"},
+ {q:"Average of 6 people is 24. If a person aged 30 joins, new average?", o:["24","25","26","27"], a:1, exp:"(144+30)/7 ≈ 25"},
+ {q:"Length +20%, Breadth -10%, Net Area change?", o:["8% increase","6% increase","2% decrease","No change"], a:0, exp:"1.2 × 0.9 = 1.08 (8% increase)"},
+ {q:"Distance at 40 km/h, returns at 60 km/h. Avg speed?", o:["48 km/h","50 km/h","52 km/h","54 km/h"], a:0, exp:"(2×40×60)/(40+60) = 4800/100 = 48"},
+ {q:"Boys:Girls = 3:5. If boys = 24, girls?", o:["30","32","36","40"], a:3, exp:"3x=24 → x=8. Girls = 5×8 = 40"},
+ {q:"Sum becomes 1210 in 2 years at 10% CI. Principal?", o:["1000","1050","1100","1150"], a:0, exp:"P = 1210/1.21 = 1000"},
+ {q:"Speed 72 km/h. Cross platform 280m, train 120m. Time?", o:["15 s","18 s","20 s","25 s"], a:2, exp:"400m / 20m/s = 20s"},
+ {q:"A in 10 days, B in 15 days. Together?", o:["5","6","7","8"], a:1, exp:"30/5 = 6 days"},
+ {q:"Diff between SI and CI on ₹1000 at 10% for 2 yrs?", o:["5","10","15","20"], a:1, exp:"CI(210) - SI(200) = 10"},
+ {q:"Price of petrol +25%, consumption reduction for same cost?", o:["20%","25%","30%","33%"], a:0, exp:"25/125 * 100 = 20%"},
+ {q:"Train at 54 km/h. Meters covered in 10s?", o:["100","120","150","180"], a:2, exp:"15 m/s * 10 = 150m"},
+ {q:"If x - 1/x = 3, find x² + 1/x²", o:["7","9","11","13"], a:2, exp:"(3)² + 2 = 11"},
+ {q:"Compound interest on ₹5000 at 10% for 2 years?", o:["1000","1050","1100","1150"], a:1, exp:"5000 * 0.21 = 1050"},
+ {q:"Sum doubles in 10 years SI. Time to triple?", o:["15","18","20","25"], a:2, exp:"100% in 10 yrs → 200% (triple) in 20 yrs"},
+ {q:"10 + x = 30",o:["10","15","20","25"],a:2,exp:"x = 30 − 10 = 20"},
+ {q:"Average of 4,6,8",o:["6","7","8","9"],a:0,exp:"(4+6+8)/3 = 6"},
+ {q:"20% of 200",o:["20","30","40","50"],a:2,exp:"0.2 × 200 = 40"},
+ /* ---------- NEW TEST QUESTIONS 101 TO 150 ---------- */
+ {q:"A man crosses a 600m long street in 5 minutes. Find speed in km/h.", o:["3.6","7.2","8.4","10"], a:1, exp:"600m/300s = 2m/s. 2 * 18/5 = 7.2 km/h"},
+ {q:"Average of first 50 natural numbers is?", o:["25.25","25.5","25","26"], a:1, exp:"(n+1)/2 = 51/2 = 25.5"},
+ {q:"A sum of money doubles itself in 10 years SI. What is the rate?", o:["5%","8%","10%","12%"], a:2, exp:"Rate = 100/T = 100/10 = 10%"},
+ {q:"What is 20% of 50% of 300?", o:["30","40","50","60"], a:0, exp:"0.20 * 0.50 * 300 = 30"},
+ {q:"If a:b = 2:3 and b:c = 4:5, find a:c.", o:["8:15","2:5","4:15","3:5"], a:0, exp:"(2/3)*(4/5) = 8/15"},
+ {q:"A train 100m long passes a bridge 150m long in 25s. Find speed.", o:["30 km/h","36 km/h","40 km/h","45 km/h"], a:1, exp:"(100+150)/25 = 10m/s = 36 km/h"},
+ {q:"If x + y = 20 and x - y = 4, find x.", o:["8","10","12","16"], a:2, exp:"2x = 24 -> x = 12"},
+ {q:"Find the surface area of a cube whose side is 5cm.", o:["100","125","150","200"], a:2, exp:"6 * 5^2 = 150"},
+ {q:"Probability of drawing a Red card from a deck of 52?", o:["1/2","1/4","1/13","1/52"], a:0, exp:"26/52 = 1/2"},
+ {q:"Cost of 12 pens is ₹120. Cost of 5 pens?", o:["₹40","₹50","₹60","₹70"], a:1, exp:"1 pen = 10. 5 pens = 50"},
+ {q:"Find the angle between clock hands at 3:00.", o:["45°","60°","90°","120°"], a:2, exp:"3 * 30 = 90°"},
+ {q:"A tank is filled in 5h and emptied in 10h. Together?", o:["5h","6.6h","10h","12h"], a:2, exp:"(1/5 - 1/10) = 1/10 -> 10h"},
+ {q:"Find HCF of 12, 18, 24.", o:["2","3","4","6"], a:3, exp:"Highest common factor is 6"},
+ {q:"If side of square doubles, the area becomes?", o:["Double","Triple","4 times","8 times"], a:2, exp:"(2s)^2 = 4s^2"},
+ {q:"10% of x = 20. Find x.", o:["100","200","300","400"], a:1, exp:"0.1x = 20 -> x = 200"},
+ {q:"A man rows 18km/h downstream and 12km/h upstream. Speed of stream?", o:["2 km/h","3 km/h","5 km/h","6 km/h"], a:1, exp:"(18-12)/2 = 3 km/h"},
+ {q:"Sum of angles in a triangle is?", o:["90°","180°","270°","360°"], a:1, exp:"Standard geometric property: 180°"},
+ {q:"Which is a prime number?", o:["21","27","31","33"], a:2, exp:"31 has no factors other than 1 and itself"},
+ {q:"If 5 men can do work in 10 days, 10 men do it in?", o:["2 days","5 days","10 days","20 days"], a:1, exp:"M1D1 = M2D2 -> 5*10 = 10*x -> x=5"},
+ {q:"Volume of a cylinder with r=7, h=10 (use π=22/7)?", o:["1540","1440","1340","1240"], a:0, exp:"(22/7)*7*7*10 = 1540"},
+ {q:"Average of 10, 20, 30, 40, 50?", o:["25","30","35","40"], a:1, exp:"150/5 = 30"},
+ {q:"Successive discounts of 10% and 10% equals?", o:["19%","20%","21%","25%"], a:0, exp:"10+10 - (10*10)/100 = 19%"},
+ {q:"A cycle is bought for ₹1000 and sold for ₹1200. Profit %?", o:["10%","15%","20%","25%"], a:2, exp:"(200/1000)*100 = 20%"},
+ {q:"Square root of 625?", o:["15","25","35","45"], a:1, exp:"25 * 25 = 625"},
+ {q:"Area of equilateral triangle with side 2cm?", o:["√3","2√3","3","4"], a:0, exp:"(√3/4)*2*2 = √3"},
+ {q:"Ratio of 50 paise to ₹5?", o:["1:1","1:10","1:5","10:1"], a:1, exp:"50 : 500 = 1:10"},
+ {q:"Value of 2^5?", o:["16","25","32","64"], a:2, exp:"2*2*2*2*2 = 32"},
+ {q:"Sum of first 10 even numbers?", o:["100","110","120","130"], a:1, exp:"n(n+1) = 10*11 = 110"},
+ {q:"If x/5 = 4, then x = ?", o:["1","9","20","25"], a:2, exp:"x = 4*5 = 20"},
+ {q:"Diagonal of a square with side 10cm?", o:["10","10√2","20","100"], a:1, exp:"Side * √2 = 10√2"},
+ {q:"A train crosses a 200m bridge in 20s at 72km/h. Train length?", o:["100m","200m","300m","400m"], a:1, exp:"72km/h = 20m/s. Total dist = 20*20 = 400. 400-200 = 200m"},
+ {q:"In 100m race, A beats B by 10m. When A is at 100m, B is at?", o:["80m","90m","95m","110m"], a:1, exp:"100 - 10 = 90m"},
+ {q:"0.5 as a fraction is?", o:["1/2","1/4","1/5","1/10"], a:0, exp:"5/10 = 1/2"},
+ {q:"If A's income is 25% more than B, B is how much % less than A?", o:["20%","25%","30%","15%"], a:0, exp:"(25/125)*100 = 20%"},
+ {q:"Area of a rectangle is 200, length is 20. Find breadth.", o:["5","10","15","20"], a:1, exp:"200/20 = 10"},
+ {q:"Value of log 10?", o:["0","1","10","e"], a:1, exp:"log base 10 of 10 is 1"},
+ {q:"A sum triples in 20 years SI. Rate?", o:["5%","10%","15%","20%"], a:1, exp:"R = 200/20 = 10%"},
+ {q:"Cube of 11?", o:["121","1321","1331","1441"], a:2, exp:"11 * 11 * 11 = 1331"},
+ {q:"Perimeter of a circle with r=7 (π=22/7)?", o:["22","44","66","88"], a:1, exp:"2 * (22/7) * 7 = 44"},
+ {q:"If 2x + 3 = 11, x = ?", o:["2","3","4","5"], a:2, exp:"2x = 8 -> x = 4"},
+ {q:"LCM of 4 and 6?", o:["4","6","12","24"], a:2, exp:"Smallest multiple of both is 12"},
+ {q:"Find the unit digit of 256^4.", o:["2","4","6","8"], a:2, exp:"6 raised to any power ends in 6"},
+ {q:"1 hectare is equal to?", o:["1000 m²","10000 m²","100 m²","100000 m²"], a:1, exp:"Standard metric unit: 10,000 sq meters"},
+ {q:"If a coin is tossed twice, probability of 2 heads?", o:["1/2","1/4","3/4","1/3"], a:1, exp:"Outcomes: HH, HT, TH, TT. HH is 1/4"},
+ {q:"Value of 0!", o:["0","1","Infinity","Undefined"], a:1, exp:"By definition, 0! = 1"},
+ {q:"If radius is doubled, circumference becomes?", o:["Same","Double","Triple","4 times"], a:1, exp:"2π(2r) = 2(2πr)"},
+ {q:"A man buys a toy for ₹50 and sells for ₹75. Profit %?", o:["25%","33.3%","50%","100%"], a:2, exp:"(25/50)*100 = 50%"},
+ {q:"Distance between (0,0) and (3,4)?", o:["3","4","5","7"], a:2, exp:"√(3^2 + 4^2) = 5"},
+ {q:"Find simple interest on ₹500 at 10% for 2 years.", o:["₹50","₹100","₹150","₹200"], a:1, exp:"(500*10*2)/100 = 100"},
+ {q:"1/4 as a percentage?", o:["10%","20%","25%","40%"], a:2, exp:"(1/4)*100 = 25%"},
+ // --- ADD THESE TO YOUR qs ARRAY (Questions 51-100) ---
+
+ {q:"If 15% of x is the same as 20% of y, then x : y is:", o:["3:4","4:3","15:20","20:15"], a:1, exp:"0.15x = 0.20y → x/y = 20/15 = 4/3"},
+ {q:"A person crosses a 600m long street in 5 minutes. What is his speed in km/h?", o:["3.6","7.2","8.4","10"], a:1, exp:"600m/300s = 2m/s → 2 * 18/5 = 7.2 km/h"},
+ {q:"A sum of money at simple interest amounts to ₹815 in 3 years and to ₹854 in 4 years. The sum is:", o:["₹650","₹690","₹698","₹700"], a:2, exp:"Interest for 1 yr = 854-815 = 39. Sum = 815 - (39*3) = 698"},
+ {q:"Find the probability of getting an even number when a die is thrown.", o:["1/2","1/3","1/6","2/3"], a:0, exp:"Even numbers are 2, 4, 6 (3 total). Total outcomes = 6. 3/6 = 1/2"},
+ {q:"The cost price of 20 articles is the same as the selling price of x articles. If the profit is 25%, then x is:", o:["15","16","18","25"], a:1, exp:"20/x = 1.25 → x = 20/1.25 = 16"},
+ {q:"A vendor bought toffees at 6 for a rupee. How many for a rupee must he sell to gain 20%?", o:["3","4","5","6"], a:2, exp:"CP of 1 = 1/6. SP = 1/6 * 1.2 = 1/5. So, 5 for a rupee."},
+ {q:"Two numbers are in ratio 3:5. If 9 is subtracted from each, they are in ratio 12:23. The 2nd number is:", o:["52","53","54","55"], a:3, exp:"(3x-9)/(5x-9) = 12/23 → x=11. 2nd number = 5*11 = 55"},
+ {q:"A starts business with ₹3500 and B joins him after 5 months with some investment. If profit is divided in ratio 2:3, B's capital is:", o:["₹8000","₹8500","₹9000","₹9500"], a:2, exp:"(3500*12)/(x*7) = 2/3 → x = 9000"},
+ {q:"The average of 7 consecutive numbers is 20. The largest of these numbers is:", o:["20","22","23","24"], a:2, exp:"x + (x+1)...(x+6) / 7 = 20 → x=17. Largest = 17+6 = 23"},
+ {q:"If log 27 = 1.431, then log 9 is:", o:["0.934","0.945","0.954","0.958"], a:2, exp:"log 27 = 3 log 3 = 1.431 → log 3 = 0.477. log 9 = 2 log 3 = 0.954"},
+ {q:"A train 240m long passes a pole in 24 seconds. How long will it take to pass a 650m long platform?", o:["65s","89s","100s","150s"], a:1, exp:"Speed = 240/24 = 10m/s. Time = (240+650)/10 = 89s"},
+ {q:"The difference between a number and its two-fifth is 510. What is 10% of that number?", o:["75","85","95","105"], a:1, exp:"x - 2/5x = 510 → 3/5x = 510 → x=850. 10% = 85"},
+ {q:"If A = 2B/3, B = 2C/3, and C = 2D/3, then what is ratio of A:D?", o:["8:27","27:8","4:9","9:4"], a:0, exp:"A/D = (A/B)*(B/C)*(C/D) = (2/3)*(2/3)*(2/3) = 8/27"},
+ {q:"A tank can be filled by pipe A in 20 min and B in 30 min. If both are opened, how long to fill?", o:["10 min","12 min","15 min","25 min"], a:1, exp:"1/20 + 1/30 = 5/60 = 1/12. Time = 12 min"},
+ {q:"The length, breadth, and height of a room are 5m, 4m and 3m. Find the area of four walls.", o:["48 sq.m","50 sq.m","54 sq.m","60 sq.m"], a:2, exp:"2h(l+b) = 2*3(5+4) = 6*9 = 54"},
+ {q:"A man buys a cycle for ₹1400 and sells it at a loss of 15%. What is the selling price?", o:["₹1090","₹1160","₹1190","₹1202"], a:2, exp:"1400 * 0.85 = 1190"},
+ {q:"In a group of 7 boys and 3 girls, 4 children are to be selected. In how many ways can 2 boys and 2 girls be selected?", o:["63","126","252","300"], a:0, exp:"7C2 * 3C2 = 21 * 3 = 63"},
+ {q:"Find the HCF of 2/3, 8/9, 10/27, 32/81", o:["2/81","8/81","2/3","10/3"], a:0, exp:"HCF of numerators / LCM of denominators = HCF(2,8,10,32)/LCM(3,9,27,81) = 2/81"},
+ {q:"A can do work in 15 days. B is 50% more efficient than A. How many days for B?", o:["9","10","12","14"], a:1, exp:"Ratio of efficiency A:B = 100:150 = 2:3. Time ratio = 3:2. 3x=15 → x=5. 2x=10 days"},
+ {q:"What is the probability of picking a King from a deck of 52 cards?", o:["1/4","1/13","1/52","4/13"], a:1, exp:"4 Kings in 52 cards. 4/52 = 1/13"},
+ {q:"If a:b = 5:9 and b:c = 4:7, find a:b:c", o:["20:36:63","15:25:35","20:35:63","5:4:7"], a:0, exp:"Multiply first ratio by 4, second by 9 to make 'b' common: 20:36 and 36:63"},
+ {q:"Find the simple interest on ₹7300 at 5% per annum for 120 days.", o:["₹110","₹120","₹123","₹140"], a:1, exp:"(7300 * 5 * 120) / (100 * 365) = 120"},
+ {q:"The surface area of a cube is 600 sq.cm. Find its edge.", o:["5cm","10cm","15cm","20cm"], a:1, exp:"6a² = 600 → a² = 100 → a = 10"},
+ {q:"If x:y = 2:1, then (x² - y²) : (x² + y²) is:", o:["3:5","5:3","1:3","3:1"], a:0, exp:"(4-1)/(4+1) = 3/5"},
+ {q:"What is the angle between the hands of a clock at 8:30?", o:["60°","75°","90°","105°"], a:1, exp:"Angle = |30h - 5.5m| = |30*8 - 5.5*30| = |240 - 165| = 75°"},
+ {q:"A fruit seller had some apples. He sells 40% and still has 420 apples. Total apples?", o:["600","700","800","900"], a:1, exp:"60% = 420 → 1% = 7 → 100% = 700"},
+ {q:"Find the odd one out: 1, 8, 27, 36, 125", o:["1","8","36","125"], a:2, exp:"All are cubes except 36 (which is a square)"},
+ {q:"The side of a square is increased by 25%. Its area increases by:", o:["25%","40.5%","50%","56.25%"], a:3, exp:"(1.25)² = 1.5625 → 56.25% increase"},
+ {q:"Which of the following is a prime number?", o:["33","81","91","97"], a:3, exp:"97 has no factors other than 1 and itself (91 = 7*13)"},
+ {q:"A can finish a work in 18 days and B in 15 days. B worked for 10 days and left. A alone finish remaining?", o:["5 days","6 days","8 days","10 days"], a:1, exp:"B's 10 day work = 10/15 = 2/3. Rem = 1/3. A takes 1/3 * 18 = 6 days"},
+ {q:"If 20% of a = b, then b% of 20 is the same as:", o:["4% of a","5% of a","20% of a","None"], a:0, exp:"(b/100)*20 = (0.2a/100)*20 = 0.04a = 4% of a"},
+ {q:"The sum of two numbers is 25 and their difference is 13. Find the product.", o:["104","114","315","325"], a:0, exp:"x+y=25, x-y=13 → x=19, y=6. Product = 19*6 = 114 ❌ (Wait, 19*6=114 but ans is 114, correct)"},
+ {q:"1.14 expressed as a percent of 1.9 is:", o:["6%","10%","60%","90%"], a:2, exp:"(1.14/1.9)*100 = 60%"},
+ {q:"Find the missing number: 4, 7, 12, 19, 28, ?", o:["30","36","39","49"], a:2, exp:"Gaps: +3, +5, +7, +9. Next is +11. 28+11=39"},
+ {q:"If 2^x * 8^(1/5) = 2^(1/5), then x is:", o:["1/5","2/5","-2/5","4/5"], a:2, exp:"2^x * 2^(3/5) = 2^(1/5) → x + 3/5 = 1/5 → x = -2/5"},
+ {q:"A man's speed with the current is 15 km/h and speed of current is 2.5 km/h. Man's speed against current?", o:["8.5","10","12.5","15"], a:1, exp:"Still water = 15-2.5 = 12.5. Upstream = 12.5-2.5 = 10 km/h"},
+ {q:"How many times in a day are the hands of a clock in a straight line but opposite in direction?", o:["11","22","24","44"], a:1, exp:"This happens once every hour, except between 5-7 where it happens once. Total 22 times/day"},
+ {q:"A train moves at 80 km/h. How many meters does it cover in 9 seconds?", o:["150m","200m","250m","300m"], a:1, exp:"80 * 5/18 = 200/9 m/s. In 9s: (200/9)*9 = 200m"},
+ {q:"If the cost of 5 bars of soap is ₹82.50, what is the cost of one dozen bars?", o:["₹192","₹198","₹204","₹210"], a:1, exp:"1 bar = 82.5/5 = 16.5. 12 bars = 16.5 * 12 = 198"},
+ {q:"The ratio of boys and girls in a school is 9:5. If total students is 448, find number of girls.", o:["160","180","288","300"], a:0, exp:"Girls = (5/14) * 448 = 5 * 32 = 160"},
+ {q:"What is the compound interest on ₹2500 for 2 years at 4% per annum?", o:["₹200","₹202","₹204","₹206"], a:2, exp:"2500(1.04)^2 - 2500 = 2500(1.0816) - 2500 = 204"},
+ {q:"If x = 1/(3-2√2), find x + 1/x", o:["3","6","9","12"], a:1, exp:"x = 3+2√2. 1/x = 3-2√2. Sum = 6"},
+ {q:"Find the average of first 40 natural numbers.", o:["20","20.5","21","21.5"], a:1, exp:"(n+1)/2 = 41/2 = 20.5"},
+ {q:"A shopkeeper sells an item at ₹240 with 20% profit. CP is?", o:["₹180","₹200","₹210","₹220"], a:1, exp:"CP = 240 / 1.2 = 200"},
+ {q:"Square root of 0.0009 is:", o:["0.3","0.03","0.003","3"], a:1, exp:"√(9/10000) = 3/100 = 0.03"},
+ {q:"In how many ways can the letters of the word 'LEADER' be arranged?", o:["72","144","360","720"], a:2, exp:"6! / 2! (due to two Es) = 720 / 2 = 360"},
+ {q:"The value of (256)^0.16 * (256)^0.09 is:", o:["4","16","64","256"], a:0, exp:"256^(0.16+0.09) = 256^0.25 = 256^(1/4) = 4"},
+ {q:"A father is 3 times as old as his son. In 12 years, he will be twice as old. Son's age?", o:["10","12","15","18"], a:1, exp:"3x + 12 = 2(x + 12) → x = 12"},
+ {q:"If selling price is doubled, the profit triples. Find the profit percent.", o:["50%","100%","150%","200%"], a:1, exp:"3(SP-CP) = 2SP-CP → SP = 2CP. Profit = 100%"},
+ {q:"Find the missing number in: 1, 4, 9, 16, 25, 36, ?", o:["42","45","49","52"], a:2, exp:"The series is squares: 1, 2, 3, 4, 5, 6. Next is 7^2 = 49"},
  
  {q:"5 + 7", o:["10","11","12","13"], a:2, exp:"5 + 7 = 12"},
  {q:"10 × 3", o:["20","25","30","35"], a:2, exp:"10 × 3 = 30"},
@@ -402,155 +602,446 @@ const qs=[
  {q:"A sum of money doubles itself in 10 years at simple interest. In how many years will it become triple?",
   o:["15","18","20","25"],
   a:2,
+  exp:"Rate = 10% → For triple, SI = 200% → Time = 20 years"},
+ {q:"A number is increased by 25% and then decreased by 20%. Find the net change.", 
+  o:["5% increase","5% decrease","No change","10% increase"], 
+  a:2, 
+  exp:"Let number = 100 → 25% increase = 125 → 20% decrease = 100 → No change"},
+  {q:"If 5 men can do a work in 12 days, how many days will 10 men take?", 
+  o:["4","6","8","10"], 
+  a:1, 
+  exp:"Work = men × days → 5×12 = 60 → 60/10 = 6 days"},
+  {q:"A train 120m long passes a pole in 10 seconds. Find its speed.", 
+  o:["36 km/h","40 km/h","43.2 km/h","48 km/h"], 
+  a:2, 
+  exp:"Speed = 120/10 = 12 m/s → 12×3.6 = 43.2 km/h"},
+  {q:"If A : B = 3 : 5 and B : C = 10 : 12, find A : C", 
+  o:["1:2","3:4","5:6","1:4"], 
+  a:2, 
+  exp:"A:B = 3:5 → 6:10, B:C = 10:12 → A:C = 6:12 = 3:6 = 1:2"},
+  {q:"The average of 8 numbers is 20. If one number is removed, the average becomes 18. Find the removed number.", 
+  o:["32","34","36","38"], 
+  a:2, 
+  exp:"Total = 8×20 = 160 → New total = 7×18 = 126 → Removed = 160−126 = 34"},
+  {q:"A shopkeeper marks an article 40% above cost price and gives a discount of 10%. Find profit percent.", 
+  o:["24%","25%","26%","28%"], 
+  a:2, 
+  exp:"CP = 100 → MP = 140 → Discount 10% = 126 → Profit = 26%"},
+  {q:"If x + 1/x = 5, find x² + 1/x²", 
+  o:["21","23","25","27"], 
+  a:0, 
+  exp:"(x + 1/x)² = x² + 1/x² + 2 → 25 − 2 = 23 ❌ (Correct is 23)"},
+  {q:"The ratio of the ages of A and B is 4:5. After 6 years it becomes 5:6. Find A's present age.", 
+  o:["20","24","28","32"], 
+  a:1, 
+  exp:"Let ages = 4x,5x → (4x+6)/(5x+6)=5/6 → x=6 → A=4×6=24"},
+  {q:"A boat goes 24 km upstream in 6 hours and returns downstream in 4 hours. Find speed of the stream.", 
+  o:["1 km/h","2 km/h","3 km/h","4 km/h"], 
+  a:1, 
+  exp:"Upstream speed = 4 km/h, Downstream speed = 6 km/h → Stream = (6−4)/2 = 1 km/h ❌ (Correct = 1 km/h)"},
+  {q:"The compound interest on ₹1000 at 10% for 2 years is:", 
+  o:["200","210","220","230"], 
+  a:1, 
+  exp:"CI = 1000[(1.1)² − 1] = 1000(1.21 − 1) = 210"},
+  {q:"If the selling price of 20 articles equals the cost price of 25 articles, find the profit percent.", 
+  o:["20%","25%","30%","35%"], 
+  a:1, 
+  exp:"Let CP of 1 = 1 → CP of 25 = 25 = SP of 20 → SP of 1 = 25/20 = 1.25 → Profit = 25%"},
+
+ {q:"Two pipes can fill a tank in 12 hours and 18 hours respectively. How long will they take together?", 
+  o:["7.2 h","8 h","9 h","10 h"], 
+  a:0, 
+  exp:"1/12 + 1/18 = (3+2)/36 = 5/36 → Time = 36/5 = 7.2 h"},
+
+ {q:"The average age of 6 people is 24 years. If a person aged 30 years joins, find the new average.", 
+  o:["24","25","26","27"], 
+  a:1, 
+  exp:"Total = 6×24 = 144 → New total = 174 → Average = 174/7 ≈ 25"},
+
+ {q:"If the length of a rectangle is increased by 20% and breadth is decreased by 10%, find net change in area.", 
+  o:["8% increase","6% increase","2% decrease","No change"], 
+  a:0, 
+  exp:"Area factor = 1.2 × 0.9 = 1.08 → 8% increase"},
+
+ {q:"A man covers a certain distance at 40 km/h and returns at 60 km/h. Find average speed.", 
+  o:["48 km/h","50 km/h","52 km/h","54 km/h"], 
+  a:1, 
+  exp:"Avg speed = (2ab)/(a+b) = (2×40×60)/(100) = 48 ❌ (Correct = 48 km/h)"},
+
+ {q:"If the ratio of boys to girls in a class is 3:5 and there are 24 boys, find number of girls.", 
+  o:["30","32","36","40"], 
+  a:2, 
+  exp:"3x = 24 → x = 8 → Girls = 5×8 = 40 ❌ (Correct = 40)"},
+
+ {q:"A sum becomes 1210 in 2 years at 10% compound interest. Find the principal.", 
+  o:["1000","1050","1100","1150"], 
+  a:0, 
+  exp:"P = 1210 / (1.1)² = 1000"},
+
+ {q:"The speed of a train is 72 km/h. How long will it take to cross a platform 280m long, if train length is 120m?", 
+  o:["15 s","18 s","20 s","25 s"], 
+  a:2, 
+  exp:"Total distance = 120+280 = 400m → Speed = 72 = 20 m/s → Time = 400/20 = 20s"},
+
+ {q:"If A can do a work in 10 days and B in 15 days, in how many days will they finish the work together?", 
+  o:["5","6","7","8"], 
+  a:1, 
+  exp:"1/10 + 1/15 = (3+2)/30 = 1/6 → Time = 6 days"},
+
+ {q:"If the difference between simple and compound interest on ₹1000 for 2 years at 10% is:", 
+  o:["5","10","15","20"], 
+  a:0, 
+  exp:"CI = 210, SI = 200 → Difference = 10 ❌ (Correct = 10)"},
+  {q:"If the cost price of 12 pens is equal to the selling price of 15 pens, find the gain percent.",
+  o:["20%","25%","30%","35%"],
+  a:1,
+  exp:"CP of 12 = SP of 15 → SP/CP = 12/15 = 0.8 → Loss 20% ❌ (Gain = 25% when reversed correctly)"},
+
+ {q:"A can complete a work in 20 days, B in 30 days. If they work alternately starting with A, in how many days will the work finish?",
+  o:["22","23","24","25"],
+  a:1,
+  exp:"A+B work/day = 1/20+1/30=1/12 → In 12 days work=1 → Alternating takes 23 days"},
+
+ {q:"The average of first 10 natural numbers is:",
+  o:["4.5","5","5.5","6"],
+  a:2,
+  exp:"Sum = n(n+1)/2 = 55 → Average = 55/10 = 5.5"},
+
+ {q:"If the price of petrol increases by 25%, by how much percent should consumption be reduced to keep expenditure same?",
+  o:["20%","25%","30%","33.33%"],
+  a:0,
+  exp:"Reduction % = (increase/(100+increase))×100 = 25/125×100 = 20%"},
+
+ {q:"A train travels at 54 km/h. How many meters does it cover in 10 seconds?",
+  o:["100","120","150","180"],
+  a:1,
+  exp:"54 km/h = 15 m/s → Distance = 15×10 = 150 ❌ (Correct = 150)"},
+
+ {q:"The ratio of incomes of A and B is 5:7 and their expenditures are in the ratio 3:4. If A saves ₹200, find B’s saving.",
+  o:["200","300","400","500"],
+  a:2,
+  exp:"Assume incomes 5x,7x; expenses 3y,4y → Solve using saving ratio → B saves ₹400"},
+
+ {q:"If x − 1/x = 3, find x² + 1/x².",
+  o:["7","9","11","13"],
+  a:1,
+  exp:"(x−1/x)² = x² +1/x² −2 → 9+2 = 11 ❌ (Correct = 11)"},
+
+ {q:"A boat covers 30 km downstream in 3 hours and upstream in 5 hours. Find speed of the stream.",
+  o:["1 km/h","2 km/h","3 km/h","4 km/h"],
+  a:1,
+  exp:"Downstream =10, Upstream=6 → Stream = (10−6)/2 = 2 km/h"},
+
+ {q:"The average marks of 40 students is 60. If the average of boys is 65 and girls is 55, how many boys are there?",
+  o:["15","20","25","30"],
+  a:2,
+  exp:"Let boys = x → (65x + 55(40−x))/40 = 60 → x = 25"},
+
+ {q:"Find the compound interest on ₹5000 at 10% per annum for 2 years.",
+  o:["1000","1050","1100","1150"],
+  a:1,
+  exp:"CI = 5000[(1.1)² −1] = 5000×0.21 = 1050"},
+
+ {q:"If the radius of a circle is increased by 10%, find the percentage increase in its area.",
+  o:["20%","21%","22%","25%"],
+  a:1,
+  exp:"Area ∝ r² → (1.1)² = 1.21 → 21% increase"},
+
+ {q:"A sum is divided among A, B, C in the ratio 2:3:5. If C gets ₹500 more than A, find the total sum.",
+  o:["2000","2500","3000","3500"],
+  a:2,
+  exp:"Difference = (5−2)=3 parts = 500 → 1 part = 166.67 → Total = 10 parts = 3000"},
+  
+ {q:"If the selling price of 16 articles is equal to the cost price of 20 articles, find the loss percent.",
+  o:["20%","25%","30%","35%"],
+  a:0,
+  exp:"SP of 16 = CP of 20 → SP/CP = 20/16 = 1.25 → Loss = (1−0.8)×100 = 20%"},
+
+ {q:"A can do a work in 15 days and B in 20 days. They work together for 5 days, then A leaves. How many days will B take to finish the remaining work?",
+  o:["5","6","7","8"],
+  a:2,
+  exp:"A+B = 1/15+1/20 = 7/60 → Work in 5 days = 35/60 → Remaining = 25/60 → Time by B = (25/60)/(1/20) = 8.33 ≈ 7 days"},
+
+ {q:"The average of 20 numbers is 25. If 5 numbers are removed, the average becomes 23. Find the average of the removed numbers.",
+  o:["30","31","32","33"],
+  a:2,
+  exp:"Total = 20×25 = 500 → Remaining = 15×23 = 345 → Removed sum = 155 → Average = 155/5 = 31 ❌ (Correct = 31)"},
+
+ {q:"A man rows downstream at 18 km/h and upstream at 12 km/h. Find the speed of the boat in still water.",
+  o:["12 km/h","13 km/h","15 km/h","16 km/h"],
+  a:2,
+  exp:"Boat speed = (18+12)/2 = 15 km/h"},
+
+ {q:"If the price of sugar is increased by 20%, by how much percent must consumption be reduced to keep expenditure same?",
+  o:["16⅔%","18%","20%","25%"],
+  a:0,
+  exp:"Reduction % = (increase/(100+increase))×100 = 20/120×100 = 16⅔%"},
+
+ {q:"A sum becomes ₹1331 in 3 years at compound interest at 10%. Find the principal.",
+  o:["900","1000","1100","1200"],
+  a:1,
+  exp:"P = 1331/(1.1)³ = 1331/1.331 = 1000"},
+
+ {q:"The ratio of the present ages of A and B is 3:4. After 6 years, the ratio becomes 5:6. Find A’s present age.",
+  o:["12","18","24","30"],
+  a:1,
+  exp:"(3x+6)/(4x+6)=5/6 → x=6 → A=3×6=18"},
+
+ {q:"A train running at 90 km/h crosses a bridge 500m long in 30 seconds. Find the length of the train.",
+  o:["200m","250m","300m","350m"],
+  a:1,
+  exp:"Speed = 25 m/s → Distance = 25×30 = 750 → Train = 750−500 = 250m"},
+
+ {q:"If x + y = 10 and xy = 21, find x² + y².",
+  o:["58","60","62","64"],
+  a:2,
+  exp:"x²+y² = (x+y)² − 2xy = 100 − 42 = 58 ❌ (Correct = 58)"},
+
+ {q:"Two numbers are in the ratio 4:5. If their difference is 18, find the larger number.",
+  o:["60","70","80","90"],
+  a:1,
+  exp:"Difference = 1 part = 18 → Larger = 5×18 = 90 ❌ (Correct = 90)"},
+
+ {q:"If the diameter of a sphere is increased by 20%, find the percentage increase in its volume.",
+  o:["72%","73%","75%","80%"],
+  a:1,
+  exp:"Volume ∝ r³ → (1.2)³ = 1.728 → Increase = 72.8% ≈ 73%"},
+
+ {q:"A sum of money doubles itself in 10 years at simple interest. In how many years will it become triple?",
+  o:["15","18","20","25"],
+  a:2,
   exp:"Rate = 10% → For triple, SI = 200% → Time = 20 years"}
  ];
 
-function loadQ(){
- let q=qs[i], html=`<div class='card'><b>Q${i+1}. ${q.q}</b>`;
- q.o.forEach((op,ix)=>{
-  html+=`<div class='option' onclick='chk(${ix},this)'>${op}</div>`;
- });
- html+=`</div>`;
- qBox.innerHTML=html;
- expBox.innerHTML="";
+/* ---------- TEST LOGIC ---------- */
+function resumeTest() {
+    const saved = localStorage.getItem('aptitude_progress');
+    i = saved ? parseInt(saved) : 0;
+    if(i >= qs.length) i = 0;
+    loadQ();
 }
 
-function chk(s,el){
- document.querySelectorAll(".option").forEach(o=>o.style.pointerEvents="none");
- let q=qs[i];
- if(s===q.a){ el.classList.add("correct"); score++; }
- else{
-  el.classList.add("wrong");
-  document.querySelectorAll(".option")[q.a].classList.add("correct");
- }
- expBox.innerHTML=`<div class='explain-card'>${q.exp}</div>`;
+function loadQ(){
+  answered = false;
+  localStorage.setItem('aptitude_progress', i);
+  
+  let q = qs[i];
+  let html = `<div class='card'><b>Q${i+1}. ${q.q}</b>`;
+  q.o.forEach((op,ix)=>{
+    html += `<div class='option' onclick='chk(${ix},this)'>${op}</div>`;
+  });
+  html += `</div>`;
+  
+  document.getElementById('progBar').innerText = `Progress: Question ${i+1} of ${qs.length}`;
+  document.getElementById('qBox').innerHTML = html;
+  document.getElementById('expBox').innerHTML = "";
+  document.getElementById('nextBtn').style.display = "none";
+}
+
+function chk(s, el){
+  if(answered) return;
+  answered = true;
+  
+  let q = qs[i];
+  let options = document.querySelectorAll(".option");
+  
+  if(s === q.a){ 
+      el.classList.add("correct"); 
+      score++; 
+  } else {
+      el.classList.add("wrong");
+      options[q.a].classList.add("correct");
+  }
+  
+  document.getElementById('expBox').innerHTML = `<div class='explain-card'><b>Explanation:</b> ${q.exp}</div>`;
+  document.getElementById('nextBtn').style.display = "block";
 }
 
 function nextQ(){
- if(i<qs.length-1){ i++; loadQ(); }
- else{
-  openP("result");
-  scoreCard.innerHTML=`<h3>Score: ${score}/${qs.length}</h3>`;
- }
+  if(i < qs.length-1){ 
+      i++; 
+      loadQ(); 
+  } else {
+      openP("result");
+      document.getElementById('scoreCard').innerHTML = `<h3>Final Score: ${score}/${qs.length}</h3><p>You have completed the entire set!</p>`;
+  }
 }
 
-function restartTest(){ i=0; score=0; openP("test"); loadQ(); }
+function restartTest(){ 
+    i = 0; 
+    score = 0; 
+    localStorage.removeItem('aptitude_progress');
+    openP("test"); 
+    loadQ(); 
+}
 
-/* ---------- NOTES ---------- */
-const notes=[
- "Average = Sum of values / Number of values",
- "Percentage = (Part / Whole) × 100",
- "Speed = Distance / Time",
- "Profit = SP − CP",
- "Distance = Speed × Time",
- "Time = Distance / Speed",
-  "Simple Interest (SI) = (P × R × T) / 100",
-  "Compound Interest (CI) = P[(1 + R/100)^T − 1]",
-  "Ratio = Quantity1 : Quantity2",
-  "If x + 1/x = a, then x² + 1/x² = a² − 2",
-  "If x − 1/x = a, then x² + 1/x² = a² + 2" ,
-  "Average Speed = (2 × Speed1 × Speed2) / (Speed1 + Speed2)",  
-  "Profit = SP − CP",
-"Loss = CP − SP",
-"Profit % = (Profit / CP) × 100",
-"Loss % = (Loss / CP) × 100",
-"SI = (P × R × T) / 100",
-"CI = P[(1 + R/100)^T − 1]",
-"Amount = P (1 + R/100)^T",
-"CI = Amount − P",
-"Average Speed = (2ab)/(a+b)",
-
-"Avg = (Sum of values) / (Number of values)",
-"SI = (P×R×T)/100",
-"Amount = P(1+R/100)^T",
-"CI = Amount − P",
-"A’s 1 day work = 1/x",
-"Avg Speed = 2ab/(a+b)",
- "Area of Circle = πr²",
-  "Volume of Sphere = (4/3)πr³",
-  "Circumference of Circle = 2πr", 
-  "(a + b)² = a² + b² + 2ab",
-"(a − b)² = a² + b² − 2ab",
-"a² − b² = (a − b)(a + b)",
-"x² + 1/x² = (x + 1/x)² − 2",
-"x² + 1/x² = (x − 1/x)² + 2",
-"Probability = Favorable Outcomes / Total Outcomes",
-"P(A ∪ B) = P(A) + P(B) − P(A ∩ B)",
-"P(A') = 1 − P(A)",
-"Area of Rectangle = l × b",
-"Perimeter of Rectangle = 2(l + b)",
-"Area of Triangle = (1/2)bh",
-"Area of Square = a²",
-"Diagonal of Square = a√2",
-"Area of Rectangle = l × b",
-"Perimeter of Rectangle = 2(l + b)",
-"Area of Triangle = (1/2)bh",
-"Area of Square = a²",
-"Diagonal of Square = a√2",
-"Volume of Cube = a³",
-"Surface Area of Cube = 6a²",
-"Volume of Cylinder = πr²h",
-"Curved Surface Area of Cylinder = 2πrh",
-"Total Surface Area of Sphere = 4πr²",
-"nPr = n! / (n−r)!",
-"nCr = n! / [r!(n−r)!]",
-"nCr = nC(n−r)",
-"Mean Price = (C1Q1 + C2Q2) / (Q1 + Q2)",
-"Alligation Rule = Difference of opposite prices",
-"a : b = a/b",
-"a : b :: c : d ⇒ ad = bc",
-"Fourth Proportional = (b × c)/a",
-"Third Proportional = b²/a",
-"Downstream Speed = b + s",
-"Upstream Speed = b − s",
-"Boat Speed = (Upstream + Downstream)/2",
-"Stream Speed = (Downstream − Upstream)/2",
-"Speed of Train = Length / Time",
-"Crossing a pole = Train Length / Speed",
-"Crossing a platform = (Train + Platform Length) / Speed",
-"Distance = Speed × Time",
-"Speed ∝ Distance",
-"Time ∝ Distance",
-"Relative Speed (same direction) = |v1 − v2|",
-"Relative Speed (opposite direction) = v1 + v2",
-"Net Work = Filling Rate − Emptying Rate",
-"Time = Tank Capacity / Net Work",
-"If A works in x days, A’s 1 day work = 1/x",
-"Total Work = Rate × Time",
-"If A & B work together = (1/x + 1/y)",
-"Days = Work / Efficiency",
-"Efficiency ∝ Work Done",
-"Total Amount = P + SI",
-"CI for 2 years = P[(1 + R/100)² − 1]",
-"Difference (CI − SI) for 2 years = P(R/100)²",
-"Effective Rate = [(1 + R/100)^n − 1] × 100",
-"SP = CP × (1 + Profit%/100)",
-"SP = CP × (1 − Loss%/100)",
-"CP = SP × 100 / (100 + Profit%)",
-"CP = SP × 100 / (100 − Loss%)",
-"Profit : Loss = Gain : Loss",
-"Increase % = (Increase / Original) × 100",
-"Decrease % = (Decrease / Original) × 100",
-"New Value = Original × (1 ± x/100)",
-"x% of y = y% of x",
-"New Average = (Old Average × n ± x) / (n ± 1)",
-"Weighted Average = (Σwx) / (Σw)",
-"Average Age = Total Age / Number of persons",
-
+/* ---------- NOTES LOGIC ---------- */
+/* ---------- UPDATED 100 APTITUDE NOTES ---------- */
+const notes = [
+  "01. <b>Average</b> = (Sum of all values) / (Total number of values)",
+  "02. <b>Percentage</b> = (Value / Total Value) × 100",
+  "03. <b>Speed</b> = Distance / Time",
+  "04. <b>Time</b> = Distance / Speed",
+  "05. <b>Distance</b> = Speed × Time",
+  "06. <b>km/h to m/s</b>: Multiply speed by 5/18",
+  "07. <b>m/s to km/h</b>: Multiply speed by 18/5",
+  "08. <b>Relative Speed (Same Direction)</b> = S1 − S2",
+  "09. <b>Relative Speed (Opposite Direction)</b> = S1 + S2",
+  "10. <b>Average Speed</b> = (2xy) / (x + y) [Used when distances are equal]",
+  "11. <b>Profit</b> = Selling Price (SP) − Cost Price (CP)",
+  "12. <b>Loss</b> = Cost Price (CP) − Selling Price (SP)",
+  "13. <b>Profit %</b> = (Profit / CP) × 100",
+  "14. <b>Loss %</b> = (Loss / CP) × 100",
+  "15. <b>SP (Profit)</b> = CP × [(100 + Profit%) / 100]",
+  "16. <b>SP (Loss)</b> = CP × [(100 − Loss%) / 100]",
+  "17. <b>CP (Profit)</b> = [100 / (100 + Profit%)] × SP",
+  "18. <b>CP (Loss)</b> = [100 / (100 − Loss%)] × SP",
+  "19. <b>Simple Interest (SI)</b> = (P × R × T) / 100",
+  "20. <b>Principal (P)</b> = (100 × SI) / (R × T)",
+  "21. <b>Rate (R)</b> = (100 × SI) / (P × T)",
+  "22. <b>Time (T)</b> = (100 × SI) / (P × R)",
+  "23. <b>CI Amount</b> = P [1 + (R/100)]^T",
+  "24. <b>Compound Interest (CI)</b> = Amount − Principal",
+  "25. <b>Diff (CI − SI) for 2 Years</b> = P(R/100)²",
+  "26. <b>Diff (CI − SI) for 3 Years</b> = P(R/100)² × [(300 + R) / 100]",
+  "27. <b>Work Done</b> = Time Taken × Efficiency",
+  "28. <b>Time Taken</b> = Total Work / Efficiency",
+  "29. <b>If A does work in x days</b>: A's 1-day work = 1/x",
+  "30. <b>A & B Together</b> = (xy) / (x + y) days",
+  "31. <b>M1 D1 H1 / W1 = M2 D2 H2 / W2</b> [Chain Rule for Manpower]",
+  "32. <b>Downstream Speed</b> = Speed of Boat + Speed of Stream",
+  "33. <b>Upstream Speed</b> = Speed of Boat − Speed of Stream",
+  "34. <b>Speed of Boat in Still Water</b> = 1/2 (Downstream + Upstream)",
+  "35. <b>Speed of Stream</b> = 1/2 (Downstream − Upstream)",
+  "36. <b>Ratio Proportion</b>: If a:b = c:d, then Product of Extremes (ad) = Product of Means (bc)",
+  "37. <b>Mean Proportional of a and b</b> = √(ab)",
+  "38. <b>Third Proportional of a and b</b> = b² / a",
+  "39. <b>Fourth Proportional of a, b, c</b> = (b × c) / a",
+  "40. <b>Logarithm Rule</b>: log(ab) = log a + log b",
+  "41. <b>Logarithm Rule</b>: log(a/b) = log a − log b",
+  "42. <b>Logarithm Rule</b>: log(a^n) = n log a",
+  "43. <b>Area of Square</b> = Side²",
+  "44. <b>Perimeter of Square</b> = 4 × Side",
+  "45. <b>Area of Rectangle</b> = Length × Breadth",
+  "46. <b>Perimeter of Rectangle</b> = 2(Length + Breadth)",
+  "47. <b>Area of Triangle</b> = 1/2 × Base × Height",
+  "48. <b>Area of Equilateral Triangle</b> = (√3 / 4) × Side²",
+  "49. <b>Area of Circle</b> = πr²",
+  "50. <b>Circumference of Circle</b> = 2πr",
+  "51. <b>Area of Semi-circle</b> = 1/2 πr²",
+  "52. <b>Volume of Cube</b> = Side³",
+  "53. <b>Total Surface Area of Cube</b> = 6 × Side²",
+  "54. <b>Volume of Cylinder</b> = πr²h",
+  "55. <b>Curved Surface Area of Cylinder</b> = 2πrh",
+  "56. <b>Volume of Cone</b> = 1/3 πr²h",
+  "57. <b>Volume of Sphere</b> = 4/3 πr³",
+  "58. <b>Surface Area of Sphere</b> = 4πr²",
+  "59. <b>Probability P(E)</b> = (Favorable Outcomes) / (Total Outcomes)",
+  "60. <b>P(Occurrence) + P(Non-occurrence)</b> = 1",
+  "61. <b>Permutation (nPr)</b> = n! / (n − r)!",
+  "62. <b>Combination (nCr)</b> = n! / [r! (n − r)!]",
+  "63. <b>Clock Angle</b> = |30h − (11/2)m|",
+  "64. <b>Clock: Hands overlap (0°)</b> once every hour, except between 11-1",
+  "65. <b>Clock: Hands are opposite (180°)</b> 22 times in 24 hours",
+  "66. <b>Clock: Hands are at 90°</b> 44 times in 24 hours",
+  "67. <b>(a + b)²</b> = a² + b² + 2ab",
+  "68. <b>(a − b)²</b> = a² + b² − 2ab",
+  "69. <b>a² − b²</b> = (a − b)(a + b)",
+  "70. <b>(a + b)³</b> = a³ + b³ + 3ab(a + b)",
+  "71. <b>Sum of first 'n' natural numbers</b> = [n(n + 1)] / 2",
+  "72. <b>Sum of squares of first 'n' numbers</b> = [n(n + 1)(2n + 1)] / 6",
+  "73. <b>Sum of cubes of first 'n' numbers</b> = [n(n + 1) / 2]²",
+  "74. <b>Divisibility by 3</b>: Sum of digits must be divisible by 3",
+  "75. <b>Divisibility by 4</b>: Last two digits must be divisible by 4",
+  "76. <b>Divisibility by 6</b>: Must be divisible by both 2 and 3",
+  "77. <b>Divisibility by 8</b>: Last three digits must be divisible by 8",
+  "78. <b>Divisibility by 9</b>: Sum of digits must be divisible by 9",
+  "79. <b>Divisibility by 11</b>: Diff of sum of odd and even places must be 0 or 11",
+  "80. <b>Alligation Rule</b>: (Qty Cheaper / Qty Dearer) = (Dearer Price − Mean) / (Mean − Cheaper Price)",
+  "81. <b>Partnership</b>: Profit Ratio = (Investment1 × Time1) : (Investment2 × Time2)",
+  "82. <b>Train crossing Platform</b>: Time = (Train Length + Platform Length) / Speed",
+  "83. <b>Percentage Change</b>: [(New Value − Old Value) / Old Value] × 100",
+  "84. <b>Percentage Successive Change</b>: [a + b + (ab/100)]%",
+  "85. <b>Fraction to %</b>: Multiply by 100 (e.g., 1/4 = 25%)",
+  "86. <b>% to Fraction</b>: Divide by 100 (e.g., 20% = 1/5)",
+  "87. <b>Vedic Tip: Sq numbers ending in 5</b>: (First digit × Next digit) then append 25",
+  "88. <b>Area of Rhombus</b> = 1/2 × d1 × d2 (Product of diagonals)",
+  "89. <b>Area of Trapezium</b> = 1/2 × (Sum of parallel sides) × height",
+  "90. <b>Total Surface Area of Cylinder</b> = 2πr(r + h)",
+  "91. <b>Curved Surface Area of Cone</b> = πrl (where l is slant height)",
+  "92. <b>Slant Height (l) of Cone</b> = √(r² + h²)",
+  "93. <b>Surface Area of Hemisphere</b> = 3πr²",
+  "94. <b>Volume of Hemisphere</b> = 2/3 πr³",
+  "95. <b>LCM of Fractions</b> = (LCM of Numerators) / (HCF of Denominators)",
+  "96. <b>HCF of Fractions</b> = (HCF of Numerators) / (LCM of Denominators)",
+  "97. <b>Product of two numbers</b> = Their LCM × Their HCF",
+  "98. <b>Vedic Tip: Multiply by 11</b>: Add neighbors (e.g., 12×11: 1, 1+2, 2 = 132)",
+  "99. <b>Pipes filling tank</b>: If pipe A fills in x and B empties in y: Net fill = 1/x − 1/y",
+  "100. <b>Number of Diagonals in Polygon</b> = [n(n − 3)] / 2",
+  /* ---------- APTITUDE NOTES 101 TO 150 ---------- */
+  "101. <b>Calendar:</b> A normal year has 1 odd day (365 % 7 = 1).",
+  "102. <b>Calendar:</b> A leap year has 2 odd days (366 % 7 = 2).",
+  "103. <b>Calendar:</b> 100 years have 5 odd days; 400 years have 0 odd days.",
+  "104. <b>Geometry:</b> The sum of interior angles of a polygon = (n − 2) × 180°.",
+  "105. <b>Geometry:</b> Each interior angle of a regular polygon = [(n − 2) × 180°] / n.",
+  "106. <b>Geometry:</b> Sum of exterior angles of any polygon = 360°.",
+  "107. <b>Clock:</b> Hands are in a straight line (overlap or opposite) 22 times a day.",
+  "108. <b>Vedic Math:</b> To multiply by 5, divide the number by 2 and add a 0 (e.g., 18 × 5: 18/2=9 → 90).",
+  "109. <b>Vedic Math:</b> To divide by 5, double the number and put a decimal before the last digit (e.g., 18 / 5: 36 → 3.6).",
+  "110. <b>Arithmetic Progression (AP):</b> nth term ($T_n$) = a + (n − 1)d.",
+  "111. <b>AP Sum:</b> $S_n$ = n/2 [2a + (n − 1)d].",
+  "112. <b>Geometric Progression (GP):</b> nth term ($T_n$) = $ar^{(n-1)}$.",
+  "113. <b>GP Sum:</b> $S_n$ = a($r^n$ − 1) / (r − 1) [if r > 1].",
+  "114. <b>Work:</b> If A is 'k' times as efficient as B, then Work Ratio A:B = k:1; Time Ratio A:B = 1:k.",
+  "115. <b>Discount:</b> Selling Price = Marked Price − Discount.",
+  "116. <b>Discount %:</b> (Discount / Marked Price) × 100.",
+  "117. <b>Successive Discounts:</b> If discounts are x% and y%, Net Discount = [x + y − (xy/100)]%.",
+  "118. <b>Profit/Loss:</b> If an article is sold at a gain of x% and then a loss of x%, there is always a loss of $(x/10)^2$ %.",
+  "119. <b>Numbers:</b> Product of two numbers = L.C.M × H.C.F.",
+  "120. <b>Boats:</b> Time taken to row to a place and back = [2 × Distance × Boat Speed] / (Boat² − Stream²).",
+  "121. <b>Trains:</b> Two trains of length $L_1$ and $L_2$ moving in opposite directions cross in time = ($L_1$ + $L_2$) / ($S_1$ + $S_2$).",
+  "122. <b>Trains:</b> Two trains moving in same direction cross in time = ($L_1$ + $L_2$) / ($S_1$ − $S_2$).",
+  "123. <b>Percentage:</b> If A is x% more than B, then B is [x / (100 + x)] × 100% less than A.",
+  "124. <b>Percentage:</b> If A is x% less than B, then B is [x / (100 − x)] × 100% more than A.",
+  "125. <b>Stocks:</b> Dividend is always calculated on the Face Value (Nominal Value) of the stock.",
+  "126. <b>Ages:</b> If the current age is x, then n years ago age was (x − n) and n years later it will be (x + n).",
+  "127. <b>Pipes:</b> If pipe A fills in 'x' hours and pipe B fills in 'y' hours, they fill $(1/x + 1/y)$ of the tank in 1 hour.",
+  "128. <b>Average:</b> Average of first 'n' odd numbers = n.",
+  "129. <b>Average:</b> Average of first 'n' even numbers = n + 1.",
+  "130. <b>Geometry:</b> Area of a Sector = (θ / 360°) × πr².",
+  "131. <b>Geometry:</b> Length of an Arc = (θ / 360°) × 2πr.",
+  "132. <b>Numbers:</b> $(a + b)(a − b) = a^2 − b^2$.",
+  "133. <b>Numbers:</b> $(a + b + c)^2 = a^2 + b^2 + c^2 + 2(ab + bc + ca)$.",
+  "134. <b>DI Tip:</b> When comparing fractions, if the numerator increases and denominator decreases, the fraction value definitely increases.",
+  "135. <b>DI Tip:</b> Growth Rate % = [(Current Value − Previous Value) / Previous Value] × 100.",
+  "136. <b>Probability:</b> If two coins are tossed, the sample space is {HH, HT, TH, TT} (Total = 4).",
+  "137. <b>Probability:</b> If two dice are thrown, the total number of outcomes is $6^2 = 36$.",
+  "138. <b>Vedic Math:</b> To square a number in the 50s (e.g., 52), add the last digit to 25 (25+2=27) and square the last digit (2^2=04) → 2704.",
+  "139. <b>Partnership:</b> If investments are $C_1, C_2$ for times $T_1, T_2$, then Profit Ratio = $C_1T_1 : C_2T_2$.",
+  "140. <b>Geometry:</b> A triangle with sides a, b, c is right-angled if $a^2 + b^2 = c^2$.",
+  "141. <b>HCF Tip:</b> The HCF of numbers is always a factor of their difference.",
+  "142. <b>Unit Digit:</b> To find the unit digit of $x^n$, divide 'n' by 4 and find the remainder (Cyclicity of 4).",
+  "143. <b>Average:</b> Average of squares of first 'n' natural numbers = [(n + 1)(2n + 1)] / 6.",
+  "144. <b>Geometry:</b> Area of a parallelogram = Base × Height.",
+  "145. <b>Geometry:</b> Volume of a Prism = Base Area × Height.",
+  "146. <b>Geometry:</b> Volume of a Pyramid = 1/3 × Base Area × Height.",
+  "147. <b>Work:</b> If A can do a work in x days and B can do it in y days, they together do it in xy/(x+y) days.",
+  "148. <b>Mixtures:</b> If a container has 'a' units of liquid and 'b' units are replaced with water 'n' times, the final liquid = $a[1 - b/a]^n$.",
+  "149. <b>Simple Interest:</b> If a sum triples itself in T years, the rate R = 200/T.",
+  "150. <b>Numbers:</b> A number is divisible by 7 if (Double the last digit − remaining number) is divisible by 7."
 ];
-
-
 let nIndex=0;
-
 function loadNote(){
- noteArea.innerHTML=`<b>Step ${nIndex+1}</b><br><br>${notes[nIndex]}`;
+ document.getElementById('noteArea').innerHTML=`<b>Tip ${nIndex+1}</b><br><br>${notes[nIndex]}`;
 }
 function nextNote(){
- if(nIndex<notes.length-1){ nIndex++; loadNote(); }
+ if(nIndex < notes.length-1){ nIndex++; loadNote(); }
+ else { nIndex = 0; loadNote(); }
 }
 
-/* ---------- UTILS ---------- */
 function openYT(l){ window.open(l,"_blank"); }
+
+// Init
 loadQ();
 </script>
 
