@@ -7,16 +7,11 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
 body {
-    min-height: 100vh;
-    background: #000;   /* pure black background */
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    overflow-x: hidden;
-}
-
+    min-height:100vh;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,50,0.6)),
+                url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1470&q=80') no-repeat center center/cover;
+    color:#fff; display:flex; flex-direction:column; align-items:center; position:relative; overflow-x:hidden;
+}zz
         
 body::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.4); z-index:0; }
 
@@ -28,7 +23,7 @@ body::after { content:''; position:absolute; top:0; left:0; width:100%; height:1
 }
 #welcomePage h1 {
     font-size:3rem; font-weight:bold; margin-bottom:18px;
-    text-shadow: 0 0 10px #c67070,0 0 20px #4a00e0;
+    text-shadow: 0 0 10px #e4dfdf,0 0 20px #4a00e0;
 }
 #welcomePage p {
     margin-bottom:24px; font-size:1.1rem; opacity:0.95;
@@ -136,7 +131,7 @@ body::after { content:''; position:absolute; top:0; left:0; width:100%; height:1
 
 <!-- Welcome Page (restored) -->
 <div id="welcomePage">
-    <h1>Welcome to Edumate Technical</h1>
+    <h1>Welcome to Edumate</h1>
     <button class="primary-btn" onclick="startLearning()">Start Learning</button>
     
     
@@ -238,6 +233,7 @@ body::after { content:''; position:absolute; top:0; left:0; width:100%; height:1
 
 
 <script>
+    
 /* --- Welcome + Auth flow --- */
 function startLearning(){
     // Start Learning -> show login modal (you can change to show signup if you prefer)
@@ -284,59 +280,35 @@ function signup(){
     alert('Signup successful! Please login now.');
     switchToLogin();
 }
-/* ================= LOGIN ================= */
+
 function login(){
     const email = document.getElementById('loginEmail').value.trim();
-    const pass  = document.getElementById('loginPassword').value.trim();
-
+    const pass = document.getElementById('loginPassword').value.trim();
     const raw = localStorage.getItem('edumateUser');
-    if(!raw){
-        alert('No account found. Please sign up.');
-        return;
-    }
-
+    if(!raw){ alert('No account found. Please sign up.'); return; }
     const user = JSON.parse(raw);
-
     if(user.email === email && user.pass === pass){
-        localStorage.setItem('edumateLoggedIn', 'true');
-        showDashboard(user);
+        // success -> show dashboard
+        closeAllAuth();
+        document.getElementById('dashboard').style.display = 'flex';
+        document.getElementById('welcomePage').style.display = 'none';
+        document.getElementById('username').innerText = user.name || 'Your Name';
     } else {
         alert('Invalid email or password!');
     }
 }
 
-/* ================= LOGOUT ================= */
 function logout(){
-    localStorage.removeItem('edumateLoggedIn');
+    // hide dashboard and auth, show welcome hero again
     document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('welcomePage').style.display = 'flex';
-}
-
-/* ================= SHOW DASHBOARD ================= */
-function showDashboard(user){
     closeAllAuth();
-    document.getElementById('dashboard').style.display = 'flex';
-    document.getElementById('welcomePage').style.display = 'none';
-
-    document.getElementById('username').innerText = user.name || 'Your Name';
-
-    if(user.photo){
-        document.getElementById('profile-photo').src = user.photo;
-    }
+    document.getElementById('welcomePage').style.display = 'flex';
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('welcomePage').style.display = 'flex';
-});
-
-
-/* ================= SIDEBAR ================= */
+/* --- UI helpers (unchanged) --- */
 function toggleSidebar(){
     document.getElementById('sidebar').classList.toggle('open');
 }
-
-/* ================= EDIT NAME (PERMANENT) ================= */
 function editProfile(e){
     e.stopPropagation();
 
@@ -356,8 +328,6 @@ function editProfile(e){
         }
     }
 }
-
-/* ================= UPLOAD PHOTO (PERMANENT) ================= */
 function uploadProfilePhoto(e){
     const file = e.target.files[0];
     if(!file) return;
@@ -376,8 +346,6 @@ function uploadProfilePhoto(e){
     };
     reader.readAsDataURL(file);
 }
-
-
 function personalDetails(){ alert("Here you can edit personal details."); }
 function metaAI(){ window.location.href='meta.html'; }
 function openCalculator(){ alert("Calculator will open here."); }
