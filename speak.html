@@ -1,284 +1,1245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>🪄 MULTI-PULL LANGUAGES - Unlimited</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>EDUMATE OMNI | MASTER EDITION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon: #00f3ff; --glass: rgba(255, 255, 255, 0.05); --bg: #020205; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: white; position: fixed; }
+        
+        .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 10%, #1a0033, #020205); z-index: 0; }
+        .glow-sphere { position: fixed; top: -10%; left: 50%; transform: translateX(-50%); width: 300px; height: 300px; background: var(--neon); filter: blur(120px); opacity: 0.2; pointer-events: none; z-index: 0; }
 
-<style>
-/* --- 1. THE MAGICAL THEME --- */
-:root {
-    --magic-purple: #6366f1;
-    --magic-cyan: #22d3ee;
-    --magic-gold: #fbbf24;
-    --glass: rgba(255, 255, 255, 0.08);
-    --border: rgba(255, 255, 255, 0.15);
-}
+        .app-shell { width: 100%; height: 100dvh; display: flex; flex-direction: column; padding: 1.2rem; position: relative; z-index: 1; max-width: 500px; margin: 0 auto; }
+        .nav { height: 60px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .b-btn { background: var(--glass); border: 1px solid var(--neon); color: var(--neon); padding: 8px 15px; border-radius: 12px; font-family: 'Orbitron'; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; }
+        .title { font-family: 'Orbitron'; color: var(--neon); font-size: 1.1rem; text-align: center; flex-grow: 1; text-shadow: 0 0 10px var(--neon); letter-spacing: 2px; }
 
-* { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .view { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .scroll-list { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px 0 30px; scrollbar-width: none; }
+        .scroll-list::-webkit-scrollbar { display: none; }
 
-body, html {
-    width: 100%; height: 100%;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: #020617;
-    color: #f8fafc;
-    overflow: hidden;
-    display: flex; justify-content: center; align-items: center;
-}
+        .card-sel { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 18px; display: flex; align-items: center; gap: 15px; border-left: 5px solid var(--neon); transition: 0.2s; cursor: pointer; }
+        .card-sel:active { transform: scale(0.96); }
 
-/* Animated Magic Stars Background */
-.stars-container {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle at 50% 50%, #1e1b4b, #020617);
-    z-index: -1;
-}
+        .tier-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 25px; text-align: center; margin-bottom: 15px; cursor: pointer; transition: 0.3s; }
+        .tier-card.active { border: 2px solid var(--neon); background: rgba(0, 243, 255, 0.08); box-shadow: 0 0 15px var(--neon); }
 
-.stars-container::after {
-    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
-                      radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-                      radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0));
-    background-repeat: repeat; background-size: 200px 200px;
-    animation: magicFloat 60s linear infinite; opacity: 0.3;
-}
+        .engine-card { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+        .main-display { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; padding: 2.5rem 1.2rem; text-align: center; border-top: 4px solid var(--neon); backdrop-filter: blur(10px); }
+        .e-emoji { font-size: 4rem; margin-bottom: 15px; display: block; filter: drop-shadow(0 0 10px var(--neon)); }
+        .e-native { font-size: 3rem; color: #fff; font-weight: 700; line-height: 1.2; margin-bottom: 15px; word-break: break-word; }
+        .e-sub { font-size: 1.1rem; color: var(--neon); font-family: 'Orbitron'; border: 1px solid var(--neon); padding: 8px 30px; border-radius: 50px; display: inline-block; text-transform: uppercase; background: rgba(0,0,0,0.3); }
+        .e-mean { font-size: 1.3rem; color: #aaa; display: block; margin-top: 20px; font-weight: 500; letter-spacing: 1px; }
 
-@keyframes magicFloat { from { transform: translateY(0); } to { transform: translateY(-2000px); } }
-
-/* --- 2. THE UI CARD --- */
-.app-card {
-    width: 95%; max-width: 600px; height: 90vh;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border);
-    border-radius: 40px;
-    padding: 40px;
-    display: flex; flex-direction: column;
-    box-shadow: 0 0 50px rgba(99, 102, 241, 0.2);
-}
-
-#home-view, #reader-view { height: 100%; display: flex; flex-direction: column; }
-
-/* --- 3. HOME VIEW --- */
-.magic-title {
-    font-size: 38px; font-weight: 900; text-align: center;
-    background: linear-gradient(to right, var(--magic-cyan), var(--magic-purple), var(--magic-gold));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 10px;
-}
-
-.lang-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 30px 0;
-}
-
-.magic-btn {
-    background: var(--glass);
-    border: 1px solid var(--border);
-    padding: 18px; border-radius: 20px;
-    color: white; font-weight: 600; cursor: pointer;
-    font-size: 16px;
-}
-
-.magic-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); border-color: var(--magic-cyan); }
-.magic-btn.active { background: var(--magic-purple); color: white; box-shadow: 0 0 20px var(--magic-purple); }
-
-.start-action {
-    margin-top: auto; padding: 22px; border-radius: 25px;
-    background: linear-gradient(135deg, var(--magic-purple), var(--magic-cyan));
-    color: white; border: none; font-size: 20px; font-weight: 900; cursor: pointer;
-    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-}
-
-/* --- 4. READER VIEW --- */
-.top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.exit-btn {
-    background: transparent; color: #94a3b8; border: 1px solid #334155;
-    padding: 8px 18px; border-radius: 12px; cursor: pointer; font-size: 14px;
-}
-.exit-btn:hover { color: #fca5a5; border-color: #ef4444; }
-
-.content-display {
-    flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 30px;
-}
-
-.text-glow {
-    position: relative; padding: 25px; border-radius: 25px;
-    background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border);
-}
-
-.native-txt { font-size: 28px; font-weight: 800; line-height: 1.3; color: #fff; }
-.english-txt { font-size: 20px; font-weight: 500; color: #94a3b8; font-style: italic; }
-
-.hidden { display: none !important; }
-</style>
+        .action-btn { width: 100%; padding: 1.3rem; background: var(--neon); border: none; color: #000; font-family: 'Orbitron'; font-weight: 700; border-radius: 22px; cursor: pointer; text-transform: uppercase; margin-top: 15px; transition: 0.3s; }
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
-<div class="stars-container"></div>
+<div class="stars"></div>
+<div class="glow-sphere" id="bg-glow"></div>
 
-<div class="app-card">
-    <div id="home-view">
-        <div class="magic-title"> MULTI-PULL LANGUAGES</div>
-        <p style="text-align: center; opacity: 0.7; font-size: 14px;">Unlimited Wisdom • India & Beyond</p>
-        
-        <div class="lang-grid">
-            <button class="magic-btn" onclick="setLang('en', this)">English </button>
-            <button class="magic-btn" onclick="setLang('hi', this)">Hindi (हिन्दी)</button>
-            <button class="magic-btn" onclick="setLang('te', this)">Telugu (తెలుగు)</button>
-            <button class="magic-btn" onclick="setLang('ta', this)">Tamil (தமிழ்)</button>
-            <button class="magic-btn" onclick="setLang('kn', this)">Kannada (ಕನ್ನಡ)</button>
-            <button class="magic-btn" onclick="setLang('ml', this)">Malayalam (മലയാളം)</button>
-        </div>
-
-        <button class="start-action" onclick="startSession()"> START</button>
+<div class="app-shell">q
+    <div id="scr-1" class="view">
+        <div class="nav"><div class="title">EDUMATE HUB</div></div>
+        <div class="scroll-list" id="lang-menu"></div>
     </div>
 
-    <div id="reader-view" class="hidden">
-        <div class="top-nav">
-            <button class="exit-btn" onclick="exitSession()">← Change Path</button>
-            <div style="color: var(--magic-gold); font-weight: bold; font-family: monospace;" id="timer">20:00</div>
+    <div id="scr-2" class="view hidden">
+        <div class="nav"><button class="b-btn" onclick="Core.go(1)">⬅ BACK</button><div class="title" id="tier-title">LEVELS</div></div>
+        <div style="flex-grow:1; display:flex; flex-direction:column; justify-content:center;">
+            <div class="tier-card" id="t-basic" onclick="Core.setT('basic')"><h2>BASIC</h2><p>Alphabets & Scripts</p></div>
+            <div class="tier-card" id="t-medium" onclick="Core.setT('medium')"><h2>MEDIUM</h2><p>Objects & Emojis</p></div>
+            <div class="tier-card" id="t-advanced" onclick="Core.setT('advanced')"><h2>ADVANCED</h2><p>Full Sentences</p></div>
         </div>
+        <button class="action-btn" onclick="Core.start()">START MODULE</button>
+    </div>
 
-        <div class="content-display">
-            <div class="text-glow">
-                <div class="native-txt" id="display-native"></div>
-            </div>
-            <div class="text-glow">
-                <div class="english-txt" id="display-english"></div>
+    <div id="scr-3" class="view hidden">
+        <div class="nav"><button class="b-btn" onclick="Core.go(2)">⬅ EXIT</button><div class="title" id="node-name">SYNCING</div></div>
+        <div class="engine-card">
+            <div class="main-display">
+                <span class="e-emoji" id="out-emoji">✨</span>
+                <h1 class="e-native" id="out-native">---</h1>
+                <div class="e-sub" id="out-sub">---</div>
+                <span class="e-mean" id="out-mean">---</span>
             </div>
         </div>
-
-        <button class="start-action" onclick="generateNew()">Next Unique Insight 🪄</button>
-        <p style="text-align: center; margin-top: 15px; font-size: 11px; opacity: 0.5;">REPETITION BLOCKED | GLOBAL SOURCES</p>
+        <button class="action-btn" id="next-btn" onclick="Core.next()">NEXT ITEM 🧬</button>
     </div>
 </div>
 
 <script>
-/* 🪄 THE UNLIMITED KNOWLEDGE ENGINE */
-const matrix = {
-    subjects: [
-     { en: "represents the soul of Bharat", hi: "भारत की आत्मा का प्रतिनिधित्व करता है", te: "భారతీయ ఆత్మకు ప్రతిరూపం", ta: "பாரதத்தின் ஆன்மாவைப் பிரதிபலிக்கிறது" },
-        { en: "brings peace and prosperity", hi: "शांति और समृद्धि लाता है", te: "శాంతి మరియు శ్రేయస్సును తెస్తుంది", ta: "அமைதியையும் செழிப்பையும் தருகிறது" },
-        { en: "protects our ancient traditions", hi: "हमारी प्राचीन परंपराओं की रक्षा करता है", te: "మన పురాతన సంప్రదాయాలను రక్షిస్తుంది", ta: "நமது பண்டைய பாரம்பரியங்களைப் பாதுகாக்கிறது" },
-        { en: "guides the path to wisdom", hi: "ज्ञान का मार्ग दिखाता है", te: "జ్ఞాన మార్గాన్ని చూపుతుంది", ta: "ஞானத்தின் பாதையைக் காட்டுகிறது" },
-        { en: "connects the past with the future", hi: "अतीत को भविष्य से जोड़ता है", te: "గతాన్ని భవిష్యత్తుతో కలుపుతుంది", ta: "கடந்த காலத்தை எதிர்காலத்துடன் இணைக்கிறது" },
-        { en: "showcases cultural richness", hi: "सांस्कृतिक समृद्धि को प्रदर्शित करता है", te: "సాంస్కృతిక గొప్పతనాన్ని చాటుతుంది", ta: "கலாச்சார செழுமையை வெளிப்படுத்துகிறது" },
-        { en: "The Holy Ganges", hi: "पवित्र गंगा", te: "పవిత్ర గంగా నది", ta: "புனித கங்கை" },
-        { en: "The Himalayas", hi: "हिमालय", te: "హిమాలయాలు", ta: "இமயமலை" },
-        { en: "Indian Democracy", hi: "भारतीय लोकतंत्र", te: "భారతీయ ప్రజాస్వామ్యం", ta: "இந்திய ஜனநாயகம்" },
-        { en: "Unity in Diversity", hi: "विविधता में एकता", te: "భిన్నత్వంలో ఏకత్వం", ta: "வேற்றுமையில் ஒற்றுமை" },
-        { en: "The Indian Flag", hi: "भारतीय तिरंगा", te: "భారత జాతీయ జెండా", ta: "இந்திய தேசிய கொடி" },
-        { en: "Digital India", hi: "डिजिटल इंडिया", te: "డిజిటల్ ఇండియా", ta: "டிஜிட்டல் இந்தியா" },
-        { en: "Lord Ganesha", hi: "भगवान गणेश", te: "వినాయకుడు", ta: "விநாயகர்" },
-        { en: "Lord Shiva", hi: "भगवान शिव", te: "శివుడు", ta: "சிவபெருமான்" },
-        { en: "Lord Vishnu", hi: "भगवान विष्णु", te: "శ్రీమహావిష్ణువు", ta: "மகாவிஷ்ணு" },
-        { en: "Goddess Lakshmi", hi: "देवी लक्ष्मी", te: "లక్ష్మీ దేవి", ta: "லட்சுமி தேவி" },
-        { en: "Goddess Saraswati", hi: "देवी सरस्वती", te: "సరస్వతీ దేవి", ta: "சரஸ்வதி தேவி" },
-        { en: "Lord Krishna", hi: "भगवान कृष्ण", te: "శ్రీ కృష్ణుడు", ta: "கிருஷ்ணர்" },
-        { en: "Lord Rama", hi: "भगवान राम", te: "శ్రీరాముడు", ta: "ஸ்ரீ ராமர்" },
-        { en: "Lord Hanuman", hi: "भगवान हनुमान", te: "ఆంజనేయ స్వామి", ta: "அனுமான்" },
-        
-        // --- CULTURE & HERITAGE ---
-        { en: "The Vedas", hi: "वेद", te: "వేదాలు", ta: "வேதங்கள்" },
-        { en: "Yoga and Meditation", hi: "योग और ध्यान", te: "యోగా మరియు ధ్యానం", ta: "யோகா மற்றும் தியானம்" },
-        { en: "Indian Classical Music", hi: "भारतीय शास्त्रीय संगीत", te: "భారతీయ శాస్త్రీయ సంగీతం", ta: "இந்திய பாரம்பரிய இசை" },
-        { en: "The Taj Mahal", hi: "ताजमहल", te: "తాజ్ మహల్", ta: "தாஜ்மஹால்" },
-        { en: "Ayurvedic Medicine", hi: "आयुर्वेद चिकित्सा", te: "ఆయుర్వేద వైద్యం", ta: "ஆயுர்வேத மருத்துவம்" },
-        { en: "Diwali (Festival of Lights)", hi: "दिवाली", te: "దీపావళి", ta: "தீபாவளி" },
-        { en: "for the whole world to see.", hi: "पूरी दुनिया के देखने के लिए।", te: "ప్రపంచం మొత్తం చూసేలా.", ta: "உலகம் முழுவதும் பார்க்கும் வகையில்." },
-        { en: "throughout every generation.", hi: "हर पीढ़ी के दौरान।", te: "ప్రతి తరంలోనూ.", ta: "ஒவ்வொரு தலைமுறையிலும்." },
-        { en: "with immense pride.", hi: "अपार गर्व के साथ।", te: "అత్యంత గర్వంతో.", ta: "மிக்க பெருமையுடன்." },
-        { en: "in the heart of every Indian.", hi: "हर भारतीय के दिल में।", te: "ప్రతి భారతీయుడి గుండెల్లో.", ta: "ஒவ்வொரு இந்தியனின் இதயத்திலும்." },
-        { en: "from the mountains to the sea.", hi: "पहाड़ों से समुद्र तक।", te: "పర్వతాల నుండి సముద్రం వరకు.", ta: "மலைகள் முதல் கடல் வரை." },
-   
+const Core = (() => {
+    const createBasic = (str, type) => str.split("").map(l => ({n:l, s:l, m:type}));
+
+    const db = {
+        te: { 
+    n: "Telugu", 
+    c: "#ff00ff",
+    // Level 1: Basic (The Complete Alphabet - Vowels & Consonants)
+    basic: [
+        // Vowels (Achulu)
+        {n:"అ", s:"a", m:"A as in America", e:"🅰️"},
+        {n:"ఆ", s:"aa", m:"A as in Father", e:"🚗"},
+        {n:"ఇ", s:"i", m:"I as in It", e:"ℹ️"},
+        {n:"ఈ", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"ఉ", s:"u", m:"U as in Put", e:"🆙"},
+        {n:"ఊ", s:"oo", m:"Oo as in Pool", e:"🌙"},
+        {n:"ఋ", s:"ru", m:"Ru as in Ritual", e:"🌀"},
+        {n:"ఎ", s:"e", m:"E as in Egg", e:"🥚"},
+        {n:"ఏ", s:"ae", m:"A as in Age", e:"⏳"},
+        {n:"ఐ", s:"ai", m:"Ai as in Ice", e:"🧊"},
+        {n:"ఒ", s:"o", m:"O as in On", e:"🔛"},
+        {n:"ఓ", s:"oh", m:"O as in Boat", e:"⛵"},
+        {n:"ఔ", s:"au", m:"Ou as in Out", e:"📢"},
+        {n:"అం", s:"am", m:"Am as in Umber", e:"☂️"},
+        {n:"అః", s:"aha", m:"Ah sound", e:"😄"},
+        // Consonants (Hallulu)
+        {n:"క", s:"ka", m:"K as in Kite", e:"🪁"},
+        {n:"ఖ", s:"kha", m:"Kh as in Khan", e:"💨"},
+        {n:"గ", s:"ga", m:"G as in Goat", e:"🐐"},
+        {n:"ఘ", s:"gha", m:"Gh as in Ghost", e:"👻"},
+        {n:"ఙ", s:"jna", m:"Nga sound", e:"👅"},
+        {n:"చ", s:"cha", m:"Ch as in Chair", e:"🪑"},
+        {n:"ఛ", s:"chha", m:"Hard Ch", e:"💨"},
+        {n:"జ", s:"ja", m:"J as in Joy", e:"💎"},
+        {n:"ఝ", s:"jha", m:"Jh as in Jhar", e:"🌊"},
+        {n:"ఞ", s:"nya", m:"Nya sound", e:"👅"},
+        {n:"ట", s:"ta", m:"T as in Tub", e:"🛁"},
+        {n:"ఠ", s:"tha", m:"Hard T as in North", e:"💨"},
+        {n:"డ", s:"da", m:"D as in Dog", e:"🐕"},
+        {n:"ఢ", s:"dha", m:"Hard D sound", e:"💨"},
+        {n:"ణ", s:"na", m:"N as in Noon", e:"📌"},
+        {n:"త", s:"tha", m:"Th as in Thick", e:"📐"},
+        {n:"ద", s:"dha", m:"Th as in That", e:"👉"},
+        {n:"ధ", s:"dhha", m:"Hard Th sound", e:"💨"},
+        {n:"న", s:"na", m:"N as in No", e:"🚫"},
+        {n:"ప", s:"pa", m:"P as in Pen", e:"🖊️"},
+        {n:"ఫ", s:"pha", m:"Ph as in Phone", e:"📞"},
+        {n:"బ", s:"ba", m:"B as in Bat", e:"🦇"},
+        {n:"భ", s:"bha", m:"Bh as in Bharat", e:"🇮🇳"},
+        {n:"మ", s:"ma", m:"M as in Me", e:"🙋"},
+        {n:"య", s:"ya", m:"Y as in Yes", e:"✅"},
+        {n:"ర", s:"ra", m:"R as in Run", e:"🏃"},
+        {n:"ల", s:"la", m:"L as in Love", e:"❤️"},
+        {n:"వ", s:"va", m:"V as in Van", e:"🚐"},
+        {n:"శ", s:"sha", m:"Sh as in Ship", e:"🚢"},
+        {n:"ష", s:"sha", m:"Sh as in Shut", e:"🤫"},
+        {n:"స", s:"sa", m:"S as in Sun", e:"☀️"},
+        {n:"హ", s:"ha", m:"H as in Hi", e:"👋"},
+        {n:"ళ", s:"la", m:"Retroflex L", e:"👅"},
+        {n:"క్ష", s:"ksha", m:"Ksh sound", e:"⚔️"},
+        {n:"ఱ", s:"ra", m:"Hard R", e:"🛤️"}
+    ],
     
-        {en: "India", hi: "भारत", te: "భారతదేశం", ta: "இந்தியா", kn: "ಭಾರತ", ml: "ഇന്ത്യ"},
-        {en: "Indian culture", hi: "भारतीय संस्कृति", te: "భారతీయ సంస్కృతి", ta: "இந்திய கலாச்சாரம்", kn: "ಭಾರತೀಯ ಸಂಸ್ಕೃತಿ", ml: "ഇന്ത്യൻ സംസ്കാരം"},
-        {en: "Indian history", hi: "भारतीय इतिहास", te: "భారతీయ చరిత్ర", ta: "இந்திய வரலாறு", kn: "ಭಾರತೀಯ ಇತಿಹಾಸ", ml: "ഇന്ത്യൻ ചരിത്രം"},
-        {en: "Freedom fighters of India", hi: "भारत के स्वतंत्रता सेनानी", te: "భారత స్వాతంత్ర్య సమరయోధులు", ta: "இந்திய விடுதலை வீரர்கள்", kn: "ಭಾರತದ ಸ್ವಾತಂತ್ರ್ಯ ಹೋರಾಟಗಾರರು", ml: "ഇന്ത്യയുടെ സ്വാതന്ത്ര്യ സമര പോരാളികൾ"},
-        {en: "Indian economy", hi: "भारतीय अर्थव्यवस्था", te: "భారత ఆర్థిక వ్యవస్థ", ta: "இந்திய பொருளாதாரம்", kn: "ಭಾರತೀಯ ಆರ್ಥಿಕತೆ", ml: "ഇന്ത്യൻ സമ്പദ്‌വ്യവസ്ഥ"},
-        {en: "Indian technology", hi: "भारतीय प्रौद्योगिकी", te: "భారత సాంకేతికత", ta: "இந்திய தொழில்நுட்பம்", kn: "ಭಾರತೀಯ ತಂತ್ರಜ್ಞಾನ", ml: "ഇന്ത്യൻ സാങ്കേതികവിദ്യ"},
-        {en: "Indian villages", hi: "भारतीय गाँव", te: "భారత గ్రామాలు", ta: "இந்திய கிராமங்கள்", kn: "ಭಾರತೀಯ ಗ್ರಾಮಗಳು", ml: "ഇന്ത്യൻ ഗ്രാമങ്ങൾ"},
-        {en: "Indian cities", hi: "भारतीय शहर", te: "భారత నగరాలు", ta: "இந்திய நகரங்கள்", kn: "ಭಾರತೀಯ ನಗರಗಳು", ml: "ഇന്ത്യൻ നഗരങ്ങൾ"},
-        {en: "Indian education system", hi: "भारतीय शिक्षा प्रणाली", te: "భారత విద్యా వ్యవస్థ", ta: "இந்திய கல்வி அமைப்பு", kn: "ಭಾರತೀಯ ಶಿಕ್ಷಣ ವ್ಯವಸ್ಥೆ", ml: "ഇന്ത്യൻ വിദ്യാഭ്യാസ സംവിധാനം"},
-        {en: "Indian diversity", hi: "भारतीय विविधता", te: "భారత వైవిధ్యం", ta: "இந்திய பல்வகைமை", kn: "ಭಾರತೀಯ ವೈವಿಧ್ಯ", ml: "ഇന്ത്യൻ വൈവിധ്യം"}
+    // Level 2: Medium (Next set of Words)
+    medium: [
+        {n:"పండు", s:"Pandu", m:"Fruit", e:"🍎"},
+        {n:"కుక్క", s:"Kukka", m:"Dog", e:"🐕"},
+        {n:"పిల్లి", s:"Pilli", m:"Cat", e:"🐈"},
+        {n:"గుర్రం", s:"Gurram", m:"Horse", e:"🐎"},
+        {n:"కోతి", s:"Kothi", m:"Monkey", e:"🐒"},
+        {n:"పాము", s:"Paamu", m:"Snake", e:"🐍"},
+        {n:"చేప", s:"Chepa", m:"Fish", e:"🐟"},
+        {n:"పక్షి", s:"Pakshi", m:"Bird", e:"🐦"},
+        {n:"నీరు", s:"Neeru", m:"Water", e:"💧"},
+        {n:"నిప్పు", s:"Nippu", m:"Fire", e:"🔥"},
+        {n:"ఆకాశం", s:"Aakasham", m:"Sky", e:"☁️"},
+        {n:"నక్షత్రం", s:"Nakshatram", m:"Star", e:"⭐"},
+        {n:"పెన్ను", s:"Pennu", m:"Pen", e:"🖊️"},
+        {n:"కాగితం", s:"Kagitham", m:"Paper", e:"📄"},
+        {n:"బల్ల", s:"Balla", m:"Table", e:"🪵"},
+        {n:"కుర్చీ", s:"Kurchi", m:"Chair", e:"🪑"},
+        {n:"తలుపు", s:"Thalupu", m:"Door", e:"🚪"},
+        {n:"కిటికీ", s:"Kitiki", m:"Window", e:"🪟"},
+        {n:"అద్దం", s:"Addam", m:"Mirror", e:"🪞"},
+        {n:"సంచి", s:"Sanchi", m:"Bag", e:"🎒"}
     ],
 
-    verbs: [
-        {en: "inspires the world", hi: "दुनिया को प्रेरित करता है", te: "ప్రపంచాన్ని ప్రేరేపిస్తుంది", ta: "உலகத்தை ஊக்குவிக்கிறது", kn: "ಜಗತ್ತಿಗೆ ಪ್ರೇರಣೆ ನೀಡುತ್ತದೆ", ml: "ലോകത്തെ പ്രചോദിപ്പിക്കുന്നു"},
-        {en: "shows unity in diversity", hi: "विविधता में एकता दिखाता है", te: "వైవిధ్యంలో ఏకత్వాన్ని చూపుతుంది", ta: "பல்வகைமையில் ஒற்றுமையை காட்டுகிறது", kn: "ವೈವಿಧ್ಯದಲ್ಲಿ ಏಕತೆಯನ್ನು ತೋರಿಸುತ್ತದೆ", ml: "വൈവിധ്യത്തിലെ ഐക്യം കാണിക്കുന്നു"},
-        {en: "is growing rapidly", hi: "तेजी से बढ़ रहा है", te: "వేగంగా ఎదుగుతోంది", ta: "வேகமாக வளர்கிறது", kn: "ವೇಗವಾಗಿ ಬೆಳೆಯುತ್ತಿದೆ", ml: "വേഗത്തിൽ വളരുന്നു"},
-        {en: "connects tradition and modernity", hi: "परंपरा और आधुनिकता को जोड़ता है", te: "సాంప్రదాయం మరియు ఆధునికతను కలుపుతుంది", ta: "பாரம்பரியம் மற்றும் நவீனத்தன்மையை இணைக்கிறது", kn: "ಪರಂಪರೆ ಮತ್ತು ಆಧುನಿಕತೆಯನ್ನು ಸಂಪರ್ಕಿಸುತ್ತದೆ", ml: "പരമ്പരയും ആധുനികതയും ബന്ധിപ്പിക്കുന്നു"}
-    ],
-
-    contexts: [
-        {en: "in every state of India.", hi: "भारत के हर राज्य में।", te: "భారతదేశంలోని ప్రతి రాష్ట్రంలో.", ta: "இந்தியாவின் ஒவ்வொரு மாநிலத்திலும்.", kn: "ಭಾರತದ ಪ್ರತಿಯೊಂದು ರಾಜ್ಯದಲ್ಲೂ.", ml: "ഇന്ത്യയിലെ ഓരോ സംസ്ഥാനത്തിലും."},
-        {en: "for future generations.", hi: "भविष्य की पीढ़ियों के लिए।", te: "భవిష్యత్ తరాల కోసం.", ta: "எதிர்கால தலைமுறைகளுக்காக.", kn: "ಭವಿಷ್ಯದ ತಲೆಮಾರಿಗೆ.", ml: "ഭാവി തലമുറകൾക്കായി."},
-        {en: "with pride and unity.", hi: "गौरव और एकता के साथ।", te: "గర్వం మరియు ఏకత్వంతో.", ta: "பெருமை மற்றும் ஒற்றுமையுடன்.", kn: "ಗರ್ವ ಮತ್ತು ಏಕತೆಯೊಂದಿಗೆ.", ml: "അഭിമാനവും ഐക്യവും കൊണ്ട്."}
+    // Level 3: Advanced (Next set of Sentences)
+    advanced: [
+        {n:"నీకు ఏం కావాలి?", s:"Neeku em kavali?", m:"What do you want?", e:"❓"},
+        {n:"నాకు నీళ్లు కావాలి.", s:"Naaku neellu kavali.", m:"I want water.", e:"💧"},
+        {n:"అతను ఎక్కడికి వెళ్తున్నాడు?", s:"Athanu ekkadiki velthunnadu?", m:"Where is he going?", e:"🚶"},
+        {n:"ఆమె బాగా పాడుతుంది.", s:"Aame baga paduthundi.", m:"She sings well.", e:"🎤"},
+        {n:"నేను రేపు వస్తాను.", s:"Nenu repu vasthanu.", m:"I will come tomorrow.", e:"📅"},
+        {n:"ఇది చాలా ఖరీదైనది.", s:"Idi chala kharidhainadhi.", m:"This is very expensive.", e:"💰"},
+        {n:"నాకు ఆకలిగా లేదు.", s:"Naaku akaliga ledu.", m:"I am not hungry.", e:"🙅"},
+        {n:"మీరు ఎక్కడ పని చేస్తున్నారు?", s:"Meeru ekkada pani chesthunnaru?", m:"Where are you working?", e:"🏢"},
+        {n:"తెలుగు చాలా తియ్యని భాష.", s:"Telugu chala thiyyani bhasha.", m:"Telugu is a very sweet language.", e:"🍯"},
+        {n:"బయట వర్షం పడుతోంది.", s:"Bayata varsham paduthondi.", m:"It is raining outside.", e:"🌧️"}
     ]
-};
-
-
-let activeLang = "";
-let memory = new Set();
-
-function setLang(code, btn) {
-    activeLang = code;
-    document.querySelectorAll('.magic-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-}
-
-function startSession() {
-    if (!activeLang) { alert("Please select a magical path (Language)!"); return; }
-    document.getElementById('home-view').classList.add('hidden');
-    document.getElementById('reader-view').classList.remove('hidden');
-    generateNew();
-}
-
-function exitSession() {
-    document.getElementById('reader-view').classList.add('hidden');
-    document.getElementById('home-view').classList.remove('hidden');
-}
-
-function generateNew() {
-    let s, v, c, key;
-    const max = matrix.subjects.length * matrix.verbs.length * matrix.contexts.length;
+},
+        ta: { 
+    n: "Tamil", 
+    c: "#00ffff",
+    // Level 1: Basic (The Complete Alphabet with Phonetics)
+    basic: [
+        // Vowels (Uyir Ezhuthukkal)
+        {n:"அ", s:"a", m:"A as in America", e:"🅰️"},
+        {n:"ஆ", s:"aa", m:"A as in Father", e:"🚗"},
+        {n:"இ", s:"i", m:"I as in It", e:"ℹ️"},
+        {n:"ஈ", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"உ", s:"u", m:"U as in Pull", e:"🆙"},
+        {n:"ஊ", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"எ", s:"e", m:"E as in Egg", e:"🥚"},
+        {n:"ஏ", s:"ae", m:"A as in Age", e:"⏳"},
+        {n:"ஐ", s:"ai", m:"Ai as in Ice", e:"🧊"},
+        {n:"ஒ", s:"o", m:"O as in On", e:"🔛"},
+        {n:"ஓ", s:"oh", m:"O as in Boat", e:"⛵"},
+        {n:"ஔ", s:"au", m:"Ou as in Out", e:"📢"},
+        {n:"ஃ", s:"akh", m:"Special Ayutha Ezhuthu", e:"✨"},
+        // Consonants (Mei Ezhuthukkal - Basic forms)
+        {n:"க", s:"ka/ga", m:"K as in Kite", e:"🪁"},
+        {n:"ங", s:"nga", m:"Ng as in Sing", e:"👅"},
+        {n:"ச", s:"cha/sa", m:"Ch as in Chair", e:"🪑"},
+        {n:"ஞ", s:"nya", m:"Ny as in Canyon", e:"👃"},
+        {n:"ட", s:"ta/da", m:"T as in Tub", e:"🛁"},
+        {n:"ண", s:"na", m:"Hard N sound", e:"📌"},
+        {n:"த", s:"tha/dha", m:"Th as in Thick", e:"📐"},
+        {n:"ந", s:"na", m:"N as in No", e:"🚫"},
+        {n:"ப", s:"pa/ba", m:"P as in Pen", e:"🖊️"},
+        {n:"ம", s:"ma", m:"M as in Me", e:"🙋"},
+        {n:"ய", s:"ya", m:"Y as in Yes", e:"✅"},
+        {n:"ர", s:"ra", m:"R as in Run", e:"🏃"},
+        {n:"ல", s:"la", m:"L as in Love", e:"❤️"},
+        {n:"வ", s:"va", m:"V as in Van", e:"🚐"},
+        {n:"ழ", s:"zha", m:"Unique Tamil 'L' sound", e:"👅"},
+        {n:"ள", s:"la", m:"Retroflex L", e:"👅"},
+        {n:"ற", s:"ra", m:"Hard R", e:"🛤️"},
+        {n:"ன", s:"na", m:"N as in Noon", e:"📍"}
+    ],
     
-    // Prevent repetition
-    if (memory.size >= max) memory.clear();
+    // Level 2: Medium (Targeting 200 Words - Block 1)
+    medium: [
+        {n:"அம்மா", s:"Amma", m:"Mother", e:"👩"},
+        {n:"அப்பா", s:"Appa", m:"Father", e:"👨"},
+        {n:"தம்பி", s:"Thambi", m:"Younger Brother", e:"👦"},
+        {n:"தங்கை", s:"Thangai", m:"Younger Sister", e:"👧"},
+        {n:"சாப்பாடு", s:"Saappadu", m:"Food", e:"🍚"},
+        {n:"தண்ணீர்", s:"Thanneer", m:"Water", e:"💧"},
+        {n:"பால்", s:"Paal", m:"Milk", e:"🥛"},
+        {n:"புலி", s:"Puli", m:"Tiger", e:"🐯"},
+        {n:"சிங்கம்", s:"Singam", m:"Lion", e:"🦁"},
+        {n:"நாய்", s:"Naay", m:"Dog", e:"🐕"},
+        {n:"பூனை", s:"Poonai", m:"Cat", e:"🐱"},
+        {n:"மரம்", s:"Maram", m:"Tree", e:"🌳"},
+        {n:"பூ", s:"Poo", m:"Flower", e:"🌸"},
+        {n:"பழம்", s:"Pazham", m:"Fruit", e:"🍎"},
+        {n:"வானம்", s:"Vaanam", m:"Sky", e:"☁️"},
+        {n:"பூமி", s:"Bhumi", m:"Earth", e:"🌍"},
+        {n:"காற்று", s:"Kaatru", m:"Wind", e:"🌬️"},
+        {n:"நெருப்பு", s:"Neruppu", m:"Fire", e:"🔥"},
+        {n:"புத்தகம்", s:"Puthagam", m:"Book", e:"📚"},
+        {n:"பேனா", s:"Pena", m:"Pen", e:"🖋️"},
+        {n:"பள்ளி", s:"Palli", m:"School", e:"🏫"},
+        {n:"கோவில்", s:"Kovil", m:"Temple", e:"🛕"},
+        {n:"ஊர்", s:"Oor", m:"Village/Town", e:"🏡"},
+        {n:"நகரம்", s:"Nagaram", m:"City", e:"🏙️"},
+        {n:"வண்டி", s:"Vandi", m:"Vehicle", e:"🚗"},
+        {n:"தூக்கம்", s:"Thookkam", m:"Sleep", e:"😴"},
+        {n:"வேலை", s:"Veelai", m:"Work", e:"💼"},
+        {n:"விளையாட்டு", s:"Vilaiyattu", m:"Game", e:"⚽"},
+        {n:"பாடல்", s:"Paadal", m:"Song", e:"🎵"},
+        {n:"கண்", s:"Kann", m:"Eye", e:"👁️"}
+    ],
 
-    do {
-        s = Math.floor(Math.random() * matrix.subjects.length);
-        v = Math.floor(Math.random() * matrix.verbs.length);
-        c = Math.floor(Math.random() * matrix.contexts.length);
-        key = `${s}-${v}-${c}`;
-    } while (memory.has(key));
-
-    memory.add(key);
-
-    const subject = matrix.subjects[s];
-    const verb = matrix.verbs[v];
-    const context = matrix.contexts[c];
-
-    // Handle English Selection specially
-    if (activeLang === 'en') {
-        document.getElementById('display-native').innerText = `${subject.en} ${verb.en} ${context.en}`;
-        document.getElementById('display-english').innerText = "Focus Mode: Primary Language Active";
-    } else {
-        document.getElementById('display-native').innerText = `${subject[activeLang]} ${verb[activeLang]} ${context[activeLang]}`;
-        document.getElementById('display-english').innerText = `${subject.en} ${verb.en} ${context.en}`;
-    }
+    // Level 3: Advanced (Targeting 300 Sentences - Block 1)
+    advanced: [
+        {n:"உன் பெயர் என்ன?", s:"Un peyar enna?", m:"What is your name?", e:"❓"},
+        {n:"எனக்கு பசிக்கிறது.", s:"Enakku pasikkiradhu.", m:"I am hungry.", e:"😋"},
+        {n:"நீ எங்கே இருக்கிறாய்?", s:"Nee enge irukkiraay?", m:"Where are you?", e:"📍"},
+        {n:"நான் வீட்டுக்கு போகிறேன்.", s:"Naan veetukku pogiren.", m:"I am going home.", e:"🏠"},
+        {n:"மணி என்ன?", s:"Mani enna?", m:"What is the time?", e:"⌚"},
+        {n:"இன்று மிகவும் வெயிலாக இருக்கிறது.", s:"Indru migavum veyilaga irukkiradhu.", m:"Today is very sunny.", e:"☀️"},
+        {n:"எனக்கு உதவி செய்வாயா?", s:"Enakku udhavi seivaaya?", m:"Will you help me?", e:"🤝"},
+        {n:"நாளை சந்திப்போம்.", s:"Naalai sandhippom.", m:"See you tomorrow.", e:"👋"},
+        {n:"இது என் புத்தகம்.", s:"Idhu en puthagam.", m:"This is my book.", e:"📖"},
+        {n:"நீங்கள் என்ன செய்கிறீர்கள்?", s:"Neengal enna seigireergal?", m:"What are you doing?", e:"🤔"},
+        {n:"எனக்கு தமிழ் பிடிக்கும்.", s:"Enakku Thamizh pidikkum.", m:"I like Tamil.", e:"❤️"},
+        {n:"சாப்பாடு ருசியாக உள்ளது.", s:"Saappadu rusiyaaga ulladhu.", m:"The food is tasty.", e:"🍲"},
+        {n:"மழை பெய்கிறது.", s:"Mazhai peigiradhu.", m:"It is raining.", e:"🌧️"},
+        {n:"நான் பள்ளிக்கு செல்ல வேண்டும்.", s:"Naan pallikku sella vendum.", m:"I have to go to school.", e:"🎒"},
+        {n:"உன் வயது என்ன?", s:"Un vayadhu enna?", m:"How old are you?", e:"🎂"},
+        {n:"மிக்க நன்றி.", s:"Mikka nandri.", m:"Thank you very much.", e:"🙏"},
+        {n:"நான் நன்றாக படிப்பேன்.", s:"Naan nandraaga padippen.", m:"I will study well.", e:"🎓"},
+        {n:"அவன் என் நண்பன்.", s:"Avan en nanban.", m:"He is my friend.", e:"👬"},
+        {n:"அவள் என் சகோதரி.", s:"Aval en sagodhari.", m:"She is my sister.", e:"👭"},
+        {n:"நாம் சினிமாவுக்கு போவோமா?", s:"Naam cinemavukku povoma?", m:"Shall we go to a movie?", e:"🎬"}
+    ]
+},
+        kn: { 
+    n: "Kannada", 
+    c: "#ffff00",
+    // Level 1: Basic (Full Alphabet with Phonetics)
+    basic: [
+        {n:"ಅ", s:"a", m:"A as in Apple", e:"🅰️"},
+        {n:"ಆ", s:"aa", m:"A as in Father", e:"🚗"},
+        {n:"ಇ", s:"i", m:"I as in It", e:"ℹ️"},
+        {n:"ಈ", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"ಉ", s:"u", m:"U as in Put", e:"🆙"},
+        {n:"ಊ", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"ಋ", s:"ru", m:"Ru as in Ritual", e:"🌀"},
+        {n:"ಎ", s:"e", m:"E as in Egg", e:"🥚"},
+        {n:"ಏ", s:"ae", m:"A as in Age", e:"⏳"},
+        {n:"ಐ", s:"ai", m:"Ai as in Ice", e:"🧊"},
+        {n:"ಒ", s:"o", m:"O as in On", e:"🔛"},
+        {n:"ಓ", s:"oh", m:"O as in Boat", e:"⛵"},
+        {n:"ಔ", s:"au", m:"Ou as in Out", e:"📢"},
+        {n:"ಅಂ", s:"am", m:"Am as in Umber", e:"☂️"},
+        {n:"ಅಃ", s:"aha", m:"Ah sound", e:"😄"},
+        {n:"ಕ", s:"ka", m:"K as in Kite", e:"🪁"},
+        {n:"ಖ", s:"kha", m:"Hard K sound", e:"💨"},
+        {n:"ಗ", s:"ga", m:"G as in Goat", e:"🐐"},
+        {n:"ಘ", s:"gha", m:"Hard G sound", e:"👻"},
+        {n:"ಚ", s:"cha", m:"Ch as in Chair", e:"🪑"},
+        {n:"ಜ", s:"ja", m:"J as in Joy", e:"💎"},
+        {n:"ಟ", s:"ta", m:"T as in Tub", e:"🛁"},
+        {n:"ಡ", s:"da", m:"D as in Dog", e:"🐕"},
+        {n:"ತ", s:"tha", m:"Th as in Thick", e:"📐"},
+        {n:"ದ", s:"dha", m:"Th as in That", e:"👉"},
+        {n:"ನ", s:"na", m:"N as in No", e:"🚫"},
+        {n:"ಪ", s:"pa", m:"P as in Pen", e:"🖊️"},
+        {n:"ಬ", s:"ba", m:"B as in Bat", e:"🦇"},
+        {n:"ಮ", s:"ma", m:"M as in Me", e:"🙋"},
+        {n:"ಯ", s:"ya", m:"Y as in Yes", e:"✅"},
+        {n:"ರ", s:"ra", m:"R as in Run", e:"🏃"},
+        {n:"ಲ", s:"la", m:"L as in Love", e:"❤️"},
+        {n:"ವ", s:"va", m:"V as in Van", e:"🚐"},
+        {n:"ಸ", s:"sa", m:"S as in Sun", e:"☀️"},
+        {n:"ಹ", s:"ha", m:"H as in Hi", e:"👋"}
+    ],
+    // Level 2: Medium (Words)
+    medium: [
+        {n:"ಹಾಲು", s:"Haalu", m:"Milk", e:"🥛"},
+        {n:"ನೀರು", s:"Neeru", m:"Water", e:"💧"},
+        {n:"ಅನ್ನ", s:"Anna", m:"Rice/Food", e:"🍚"},
+        {n:"ತಾಯಿ", s:"Thaayi", m:"Mother", e:"👩"},
+        {n:"ತಂದೆ", s:"Thande", m:"Father", e:"👨"},
+        {n:"ಹಣ್ಣು", s:"Hannu", m:"Fruit", e:"🍎"},
+        {n:"ಗಿಡ", s:"Gida", m:"Plant/Tree", e:"🌳"},
+        {n:"ಮನೆ", s:"Mane", m:"House", e:"🏠"},
+        {n:"ಶಾಲೆ", s:"Shaale", m:"School", e:"🏫"},
+        {n:"ನಾಯಿ", s:"Naayi", m:"Dog", e:"🐕"}
+    ],
+    // Level 3: Advanced (Sentences)
+    advanced: [
+        {n:"ನಿಮ್ಮ ಹೆಸರೇನು?", s:"Nimma hesarenu?", m:"What is your name?", e:"❓"},
+        {n:"ನನಗೆ ಹಸಿವಾಗುತ್ತಿದೆ.", s:"Nanage hasivaaguttide.", m:"I am hungry.", e:"😋"},
+        {n:"ನೀವು ಎಲ್ಲಿರುವಿರಿ?", s:"Neevu elliruviri?", m:"Where are you?", e:"📍"},
+        {n:"ಇದು ನನ್ನ ಪುಸ್ತಕ.", s:"Idu nanna pustaka.", m:"This is my book.", e:"📖"},
+        {n:"ತುಂಬಾ ಧನ್ಯವಾದಗಳು.", s:"Tumba dhanyavadagalu.", m:"Thank you very much.", e:"🙏"},
+        {n:"ಊಟ ಆಯಿತಾ?", s:"Oota aayita?", m:"Did you eat?", e:"🍲"},
+        {n:"ನಾನು ಶಾಲೆಗೆ ಹೋಗುತ್ತಿದ್ದೇನೆ.", s:"Naanu shalege hoguttiddene.", m:"I am going to school.", e:"🎒"},
+        {n:"ಕನ್ನಡ ಸುಂದರ ಭಾಷೆ.", s:"Kannada sundara bhaashe.", m:"Kannada is a beautiful language.", e:"❤️"},
+        {n:"ನಾಳೆ ಸಿಗೋಣ.", s:"Naale sigona.", m:"See you tomorrow.", e:"👋"},
+        {n:"ಕ್ಷಮಿಸಿ, ನನಗೆ ತಿಳಿಯಲಿಲ್ಲ.", s:"Kshamisi, nanage tiliyalilla.", m:"Sorry, I didn't understand.", e:"🙇"}
+    ]
+},
+       hi: { 
+    n: "Hindi", 
+    c: "#ff9900",
+    // Level 1: Basic (Full Alphabet with Phonetics)
+    basic: [
+        // Vowels (Swar)
+        {n:"अ", s:"a", m:"A as in America", e:"🅰️"},
+        {n:"आ", s:"aa", m:"A as in Father", e:"🚗"},
+        {n:"इ", s:"i", m:"I as in It", e:"ℹ️"},
+        {n:"ई", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"उ", s:"u", m:"U as in Put", e:"🆙"},
+        {n:"ऊ", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"ऋ", s:"ri", m:"Ri as in Ritual", e:"🌀"},
+        {n:"ए", s:"e", m:"E as in Egg", e:"🥚"},
+        {n:"ऐ", s:"ai", m:"Ai as in Ice", e:"🧊"},
+        {n:"ओ", s:"o", m:"O as in On", e:"🔛"},
+        {n:"औ", s:"au", m:"Ou as in Out", e:"📢"},
+        {n:"अं", s:"am", m:"Am as in Umber", e:"☂️"},
+        {n:"अः", s:"aha", m:"Ah sound", e:"😄"},
+        // Consonants (Vyanjan)
+        {n:"क", s:"ka", m:"K as in Kite", e:"🪁"},
+        {n:"ख", s:"kha", m:"Hard K sound", e:"💨"},
+        {n:"ग", s:"ga", m:"G as in Goat", e:"🐐"},
+        {n:"घ", s:"gha", m:"Hard G sound", e:"👻"},
+        {n:"च", s:"cha", m:"Ch as in Chair", e:"🪑"},
+        {n:"छ", s:"chha", m:"Hard Ch", e:"💨"},
+        {n:"ज", s:"ja", m:"J as in Joy", e:"💎"},
+        {n:"झ", s:"jha", m:"Jh sound", e:"🌊"},
+        {n:"ट", s:"ta", m:"T as in Tub", e:"🛁"},
+        {n:"ठ", s:"tha", m:"Hard T", e:"💨"},
+        {n:"ड", s:"da", m:"D as in Dog", e:"🐕"},
+        {n:"ढ", s:"dha", m:"Hard D", e:"💨"},
+        {n:"त", s:"tha", m:"Th as in Thick", e:"📐"},
+        {n:"द", s:"dha", m:"Th as in That", e:"👉"},
+        {n:"न", s:"na", m:"N as in No", e:"🚫"},
+        {n:"प", s:"pa", m:"P as in Pen", e:"🖊️"},
+        {n:"फ", s:"pha", m:"Ph as in Phone", e:"📞"},
+        {n:"ब", s:"ba", m:"B as in Bat", e:"🦇"},
+        {n:"भ", s:"bha", m:"Bh sound", e:"🇮🇳"},
+        {n:"म", s:"ma", m:"M as in Me", e:"🙋"},
+        {n:"य", s:"ya", m:"Y as in Yes", e:"✅"},
+        {n:"र", s:"ra", m:"R as in Run", e:"🏃"},
+        {n:"ल", s:"la", m:"L as in Love", e:"❤️"},
+        {n:"व", s:"va", m:"V as in Van", e:"🚐"},
+        {n:"श", s:"sha", m:"Sh as in Ship", e:"🚢"},
+        {n:"ष", s:"sha", m:"Hard Sh", e:"🤫"},
+        {n:"स", s:"sa", m:"S as in Sun", e:"☀️"},
+        {n:"ह", s:"ha", m:"H as in Hi", e:"👋"}
+    ],
+    // Level 2: Medium (Targeting 200 Words - Block 1)
+    medium: [
+        {n:"माँ", s:"Maa", m:"Mother", e:"👩"},
+        {n:"पिता", s:"Pita", m:"Father", e:"👨"},
+        {n:"भाई", s:"Bhai", m:"Brother", e:"👦"},
+        {n:"बहन", s:"Behen", m:"Sister", e:"👧"},
+        {n:"खाना", s:"Khana", m:"Food", e:"🍚"},
+        {n:"पानी", s:"Paani", m:"Water", e:"💧"},
+        {n:"दूध", s:"Doodh", m:"Milk", e:"🥛"},
+        {n:"सूरज", s:"Suraj", m:"Sun", e:"☀️"},
+        {n:"चाँद", s:"Chaand", m:"Moon", e:"🌙"},
+        {n:"पेड़", s:"Ped", m:"Tree", e:"🌳"},
+        {n:"फूल", s:"Phool", m:"Flower", e:"🌸"},
+        {n:"फल", s:"Phal", m:"Fruit", e:"🍎"},
+        {n:"घर", s:"Ghar", m:"House", e:"🏠"},
+        {n:"किताब", s:"Kitab", m:"Book", e:"📚"},
+        {n:"स्कुल", s:"School", m:"School", e:"🏫"},
+        {n:"दोस्त", s:"Dost", m:"Friend", e:"🤝"},
+        {n:"शेर", s:"Sher", m:"Lion", e:"🦁"},
+        {n:"हाथी", s:"Haathi", m:"Elephant", e:"🐘"},
+        {n:"काम", s:"Kaam", m:"Work", e:"💼"},
+        {n:"खुशी", s:"Khushi", m:"Happiness", e:"😊"}
+    ],
+    // Level 3: Advanced (Targeting 300 Sentences - Block 1)
+    advanced: [
+        {n:"आपका नाम क्या है?", s:"Aapka naam kya hai?", m:"What is your name?", e:"❓"},
+        {n:"मुझे भूख लगी है।", s:"Mujhe bhook lagi hai.", m:"I am hungry.", e:"😋"},
+        {n:"आप कहाँ रहते हैं?", s:"Aap kahan rehte hain?", m:"Where do you live?", e:"📍"},
+        {n:"मैं घर जा रहा हूँ।", s:"Main ghar ja raha hoon.", m:"I am going home.", e:"🏠"},
+        {n:"समय क्या हुआ है?", s:"Samay kya hua hai?", m:"What is the time?", e:"⌚"},
+        {n:"आज मौसम बहुत अच्छा है।", s:"Aaj mausam bahut achha hai.", m:"Today the weather is very good.", e:"🌈"},
+        {n:"क्या आप मेरी मदद करेंगे?", s:"Kya aap meri madad karenge?", m:"Will you help me?", e:"🤝"},
+        {n:"नमस्ते, आप कैसे हैं?", s:"Namaste, aap kaise hain?", m:"Hello, how are you?", e:"🙏"},
+        {n:"भारत मेरा देश है।", s:"Bharat mera desh hai.", m:"India is my country.", e:"🇮🇳"},
+        {n:"कल फिर मिलेंगे।", s:"Kal phir milenge.", m:"Will meet again tomorrow.", e:"👋"},
+        {n:"यह मेरी किताब है।", s:"Yeh meri kitab hai.", m:"This is my book.", e:"📖"},
+        {n:"खाना बहुत स्वादिष्ट है।", s:"Khana bahut swadisht hai.", m:"The food is very delicious.", e:"🍲"},
+        {n:"मुझे हिंदी सीखना पसंद है।", s:"Mujhe Hindi seekhna pasand hai.", m:"I like learning Hindi.", e:"❤️"},
+        {n:"बाहर बारिश हो रही है।", s:"Baahar baarish ho rahi hai.", m:"It is raining outside.", e:"🌧️"},
+        {n:"बहुत-बहुत धन्यवाद।", s:"Bahut bahut dhanyavad.", m:"Thank you very much.", e:"🙏"}
+    ]
+},
+        en: { 
+    n: "English", 
+    c: "#00f3ff",
+    // Level 1: Basic (A-Z Alphabet)
+    basic: [
+        {n:"A", s:"ay", m:"A as in Apple", e:"🍎"},
+        {n:"B", s:"bee", m:"B as in Boy", e:"👦"},
+        {n:"C", s:"see", m:"C as in Cat", e:"🐱"},
+        {n:"D", s:"dee", m:"D as in Dog", e:"🐶"},
+        {n:"E", s:"ee", m:"E as in Egg", e:"🥚"},
+        {n:"F", s:"eff", m:"F as in Fish", e:"🐟"},
+        {n:"G", s:"jee", m:"G as in Goat", e:"🐐"},
+        {n:"H", s:"aitch", m:"H as in Hat", e:"🎩"},
+        {n:"I", s:"eye", m:"I as in Ice", e:"🧊"},
+        {n:"J", s:"jay", m:"J as in Jet", e:"✈️"},
+        {n:"K", s:"kay", m:"K as in Kite", e:"🪁"},
+        {n:"L", s:"ell", m:"L as in Lion", e:"🦁"},
+        {n:"M", s:"em", m:"M as in Moon", e:"🌙"},
+        {n:"N", s:"en", m:"N as in Net", e:"🕸️"},
+        {n:"O", s:"oh", m:"O as in Orange", e:"🍊"},
+        {n:"P", s:"pee", m:"P as in Pen", e:"🖊️"},
+        {n:"Q", s:"cue", m:"Q as in Queen", e:"👑"},
+        {n:"R", s:"arr", m:"R as in Rain", e:"🌧️"},
+        {n:"S", s:"ess", m:"S as in Sun", e:"☀️"},
+        {n:"T", s:"tee", m:"T as in Tree", e:"🌳"},
+        {n:"U", s:"you", m:"U as in Up", e:"🆙"},
+        {n:"V", s:"vee", m:"V as in Van", e:"🚐"},
+        {n:"W", s:"double-u", m:"W as in Watch", e:"⌚"},
+        {n:"X", s:"ex", m:"X as in X-ray", e:"🩻"},
+        {n:"Y", s:"why", m:"Y as in Yellow", e:"💛"},
+        {n:"Z", s:"zee", m:"Z as in Zebra", e:"🦓"}
+    ],
+    // Level 2: Medium (Targeting 200 Words - Block 1)
+    medium: [
+        {n:"Mother", s:"muh-thur", m:"The woman who gave birth to you", e:"👩"},
+        {n:"Father", s:"fah-thur", m:"The man who raised you", e:"👨"},
+        {n:"Water", s:"wah-ter", m:"Liquid for drinking", e:"💧"},
+        {n:"Food", s:"food", m:"Something you eat", e:"🍚"},
+        {n:"School", s:"skool", m:"Place for learning", e:"🏫"},
+        {n:"Teacher", s:"tee-cher", m:"Person who teaches", e:"🧑‍🏫"},
+        {n:"Friend", s:"frend", m:"A person you like", e:"🤝"},
+        {n:"Mobile", s:"mo-bile", m:"Cell phone", e:"📱"},
+        {n:"Work", s:"wurk", m:"Job or activity", e:"💼"},
+        {n:"Time", s:"tyme", m:"Hours and minutes", e:"⏰"},
+        {n:"Money", s:"muh-nee", m:"Used to buy things", e:"💵"},
+        {n:"House", s:"howss", m:"Place where you live", e:"🏠"},
+        {n:"Doctor", s:"dok-tur", m:"Medical professional", e:"👨‍⚕️"},
+        {n:"Sleep", s:"sleep", m:"Resting at night", e:"😴"},
+        {n:"Book", s:"buk", m:"Pages for reading", e:"📚"},
+        {n:"City", s:"sit-ee", m:"Large town", e:"🏙️"},
+        {n:"Earth", s:"urth", m:"Our planet", e:"🌍"},
+        {n:"Sky", s:"skye", m:"Space above us", e:"🌌"},
+        {n:"Happy", s:"hap-ee", m:"Feeling good", e:"😊"},
+        {n:"Love", s:"luv", m:"Strong affection", e:"❤️"}
+    ],
+    // Level 3: Advanced (Targeting 300 Sentences - Block 1)
+    advanced: [
+        {n:"What is your name?", s:"Wot iz yur naym?", m:"Asking for identity", e:"❓"},
+        {n:"I am a student.", s:"Eye am a stu-dent.", m:"Identifying as a learner", e:"🎓"},
+        {n:"Where is the station?", s:"Wair iz the stay-shun?", m:"Asking for directions", e:"🚉"},
+        {n:"Nice to meet you.", s:"Nise too meet yu.", m:"Greeting someone", e:"🤝"},
+        {n:"Can you help me?", s:"Kan yu help mee?", m:"Asking for assistance", e:"🙏"},
+        {n:"I don't understand.", s:"Eye dont un-der-stand.", m:"Expressing confusion", e:"🤔"},
+        {n:"How much does it cost?", s:"How mutch duz it kost?", m:"Asking for the price", e:"💰"},
+        {n:"I am learning English.", s:"Eye am lur-ning Eng-lish.", m:"Learning status", e:"📖"},
+        {n:"What time is it?", s:"Wot tyme iz it?", m:"Asking the time", e:"⌚"},
+        {n:"I love my country.", s:"Eye luv my kun-tree.", m:"Expressing patriotism", e:"🇮🇳"},
+        {n:"Have a great day!", s:"Hav a grayt day!", m:"Well wishing", e:"✨"},
+        {n:"I am feeling hungry.", s:"Eye am fee-ling hung-ree.", m:"Wanting food", e:"😋"},
+        {n:"See you later.", s:"See yu lay-ter.", m:"Saying goodbye", e:"👋"},
+        {n:"It is raining today.", s:"It iz ray-ning too-day.", m:"Weather update", e:"🌧️"},
+        {n:"Thank you very much.", s:"Thank yu ver-ee mutch.", m:"Expressing gratitude", e:"🙏"}
+    ]
+},
+       ml: { 
+    n: "Malayalam", 
+    c: "#00ff66",
+    // Level 1: Basic (Full Alphabet with Phonetics)
+    basic: [
+        // Vowels (Swaraksharangal)
+        {n:"അ", s:"a", m:"A as in America", e:"🅰️"},
+        {n:"ആ", s:"aa", m:"A as in Father", e:"🚗"},
+        {n:"ഇ", s:"i", m:"I as in It", e:"ℹ️"},
+        {n:"ഈ", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"ഉ", s:"u", m:"U as in Put", e:"🆙"},
+        {n:"ഊ", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"ഋ", s:"ru", m:"Ru as in Ritual", e:"🌀"},
+        {n:"എ", s:"e", m:"Short E as in Egg", e:"🥚"},
+        {n:"ഏ", s:"ae", m:"Long A as in Age", e:"⏳"},
+        {n:"ഐ", s:"ai", m:"Ai as in Ice", e:"🧊"},
+        {n:"ഒ", s:"o", m:"Short O as in On", e:"🔛"},
+        {n:"ഓ", s:"oh", m:"Long O as in Boat", e:"⛵"},
+        {n:"ഔ", s:"au", m:"Ou as in Out", e:"📢"},
+        {n:"അം", s:"am", m:"Am sound", e:"☂️"},
+        {n:"അഃ", s:"aha", m:"Ah sound", e:"😄"},
+        // Consonants (Vyanjanangal)
+        {n:"ക", s:"ka", m:"K as in Kite", e:"🪁"},
+        {n:"ഖ", s:"kha", m:"Hard K sound", e:"💨"},
+        {n:"ഗ", s:"ga", m:"G as in Goat", e:"🐐"},
+        {n:"ഘ", s:"gha", m:"Hard G sound", e:"👻"},
+        {n:"ങ", s:"nga", m:"Ng as in Sing", e:"👅"},
+        {n:"ച", s:"cha", m:"Ch as in Chair", e:"🪑"},
+        {n:"ഛ", s:"chha", m:"Hard Ch", e:"💨"},
+        {n:"ജ", s:"ja", m:"J as in Joy", e:"💎"},
+        {n:"ഝ", s:"jha", m:"Jh sound", e:"🌊"},
+        {n:"ഞ", s:"nya", m:"Nya sound", e:"👃"},
+        {n:"ട", s:"ta", m:"Hard T as in Tub", e:"🛁"},
+        {n:"ഠ", s:"tha", m:"Hard Th", e:"💨"},
+        {n:"ഡ", s:"da", m:"Hard D as in Dog", e:"🐕"},
+        {n:"ഢ", s:"dha", m:"Hard Dh", e:"💨"},
+        {n:"ണ", s:"na", m:"Retroflex N", e:"📌"},
+        {n:"ത", s:"tha", m:"Soft Th as in Thick", e:"📐"},
+        {n:"ദ", s:"dha", m:"Soft D as in That", e:"👉"},
+        {n:"ധ", s:"dhha", m:"Hard soft D", e:"💨"},
+        {n:"ന", s:"na", m:"N as in No", e:"🚫"},
+        {n:"പ", s:"pa", m:"P as in Pen", e:"🖊️"},
+        {n:"ഫ", s:"pha", m:"Ph as in Phone", e:"📞"},
+        {n:"ബ", s:"ba", m:"B as in Bat", e:"🦇"},
+        {n:"ഭ", s:"bha", m:"Bh sound", e:"🇮🇳"},
+        {n:"മ", s:"ma", m:"M as in Me", e:"🙋"},
+        {n:"യ", s:"ya", m:"Y as in Yes", e:"✅"},
+        {n:"ര", s:"ra", m:"R as in Run", e:"🏃"},
+        {n:"ല", s:"la", m:"L as in Love", e:"❤️"},
+        {n:"വ", s:"va", m:"V as in Van", e:"🚐"},
+        {n:"ശ", s:"sha", m:"Sh as in Ship", e:"🚢"},
+        {n:"ഷ", s:"sha", m:"Hard Sh", e:"🤫"},
+        {n:"സ", s:"sa", m:"S as in Sun", e:"☀️"},
+        {n:"ഹ", s:"ha", m:"H as in Hi", e:"👋"},
+        {n:"ള", s:"la", m:"Retroflex L", e:"👅"},
+        {n:"ഴ", s:"zha", m:"Unique Zh sound", e:"👅"},
+        {n:"റ", s:"ra", m:"Hard R", e:"🛤️"}
+    ],
+    // Level 2: Medium (Words)
+    medium: [
+        {n:"അമ്മ", s:"Amma", m:"Mother", e:"👩"},
+        {n:"അച്ഛൻ", s:"Achhan", m:"Father", e:"👨"},
+        {n:"വെള്ളം", s:"Vellam", m:"Water", e:"💧"},
+        {n:"ഭക്ഷണം", s:"Bhakshanam", m:"Food", e:"🍚"},
+        {n:"പാൽ", s:"Paal", m:"Milk", e:"🥛"},
+        {n:"വീട്", s:"Veed", m:"House", e:"🏠"},
+        {n:"മരം", s:"Maram", m:"Tree", e:"🌳"},
+        {n:"പൂവ്", s:"Poov", m:"Flower", e:"🌸"},
+        {n:"ആന", s:"Aana", m:"Elephant", e:"🐘"},
+        {n:"പുസ്തകം", s:"Pusthakam", m:"Book", e:"📚"},
+        {n:"പേന", s:"Pena", m:"Pen", e:"🖊️"},
+        {n:"സ്കൂൾ", s:"School", m:"School", e:"🏫"},
+        {n:"ആകാശം", s:"Aakasham", m:"Sky", e:"☁️"},
+        {n:"കണ്ണ്", s:"Kann", m:"Eye", e:"👁️"},
+        {n:"ചിരി", s:"Chiri", m:"Smile", e:"😊"}
+    ],
+    // Level 3: Advanced (Sentences)
+    advanced: [
+        {n:"നിങ്ങളുടെ പേര് എന്താണ്?", s:"Ningalude per enthann?", m:"What is your name?", e:"❓"},
+        {n:"എനിക്ക് വിശക്കുന്നു.", s:"Enikku vishakkunnu.", m:"I am hungry.", e:"😋"},
+        {n:"സുഖമാണോ?", s:"Sukhamano?", m:"Are you fine? / How are you?", e:"🤝"},
+        {n:"ഞാൻ വീട്ടിൽ പോകുന്നു.", s:"Njan veettil pokunnu.", m:"I am going home.", e:"🏠"},
+        {n:"സമയം എത്രയായി?", s:"Samayam ethrayayi?", m:"What is the time?", e:"⌚"},
+        {n:"എനിക്ക് സഹായം വേണം.", s:"Enikku sahayam venam.", m:"I need help.", e:"🙏"},
+        {n:"ഇന്ന് നല്ല ദിവസമാണ്.", s:"Innu nalla divasamann.", m:"Today is a good day.", e:"☀️"},
+        {n:"നാളെ കാണാം.", s:"Naale kaanam.", m:"See you tomorrow.", e:"👋"},
+        {n:"ഭക്ഷണം വളരെ രുചിയുണ്ട്.", s:"Bhakshanam valare ruchiyundu.", m:"The food is very tasty.", e:"🍲"},
+        {n:"എനിക്ക് മലയാളം ഇഷ്ടമാണ്.", s:"Enikku Malayalam ishtamann.", m:"I like Malayalam.", e:"❤️"}
+    ]
+},
+       ja: { 
+    n: "Japanese", 
+    c: "#ff3131",
+    // Level 1: Basic (Hiragana Alphabet with Phonetics)
+    basic: [
+        {n:"あ", s:"a", m:"A as in Apple", e:"🍎"},
+        {n:"い", s:"i", m:"Ee as in Feel", e:"👀"},
+        {n:"う", s:"u", m:"Oo as in Moon", e:"🌙"},
+        {n:"え", s:"e", m:"E as in Egg", e:"🥚"},
+        {n:"お", s:"o", m:"O as in On", e:"🔛"},
+        {n:"か", s:"ka", m:"K as in Kite", e:"🪁"},
+        {n:"き", s:"ki", m:"Key sound", e:"🔑"},
+        {n:"く", s:"ku", m:"Ku as in Cuckoo", e:"🕊️"},
+        {n:"け", s:"ke", m:"Ke as in Kettle", e:"☕"},
+        {n:"こ", s:"ko", m:"Ko as in Koi", e:"🐟"},
+        {n:"さ", s:"sa", m:"Sa as in Sauce", e:"🥫"},
+        {n:"し", s:"shi", m:"Shi as in Ship", e:"🚢"},
+        {n:"す", s:"su", m:"Su as in Soon", e:"🔜"},
+        {n:"せ", s:"se", m:"Se as in Set", e:"🌅"},
+        {n:"そ", s:"so", m:"So as in Soda", e:"🥤"},
+        {n:"た", s:"ta", m:"Ta as in Taco", e:"🌮"},
+        {n:"ち", s:"chi", m:"Chee as in Cheese", e:"🧀"},
+        {n:"つ", s:"tsu", m:"Tsu as in Tsunami", e:"🌊"},
+        {n:"て", s:"te", m:"Te as in Ten", e:"🔟"},
+        {n:"と", s:"to", m:"To as in Toe", e:"👣"},
+        {n:"な", s:"na", m:"Na as in Knot", e:"🪢"},
+        {n:"に", s:"ni", m:"Knee sound", e:"🦵"},
+        {n:"ぬ", s:"nu", m:"Nu as in Noodle", e:"🍜"},
+        {n:"ね", s:"ne", m:"Ne as in Net", e:"🕸️"},
+        {n:"の", s:"no", m:"No as in Nose", e:"👃"},
+        {n:"は", s:"ha", m:"Ha as in Ha-ha", e:"😄"},
+        {n:"ひ", s:"hi", m:"He as in He-man", e:"🦸"},
+        {n:"ふ", s:"fu", m:"Fu as in Fuji", e:"🗻"},
+        {n:"へ", s:"he", m:"He as in Help", e:"🆘"},
+        {n:"ほ", s:"ho", m:"Ho as in Home", e:"🏠"},
+        {n:"ま", s:"ma", m:"Ma as in Mama", e:"👩"},
+        {n:"み", s:"mi", m:"Me as in Meat", e:"🥩"},
+        {n:"む", s:"mu", m:"Mu as in Moon", e:"🌙"},
+        {n:"め", s:"me", m:"Me as in Metal", e:"🤘"},
+        {n:"も", s:"mo", m:"Mo as in More", e:"➕"},
+        {n:"や", s:"ya", m:"Ya as in Yacht", e:"⛵"},
+        {n:"ゆ", s:"yu", m:"Yu as in You", e:"🫵"},
+        {n:"よ", s:"yo", m:"Yo as in Yo-yo", e:"🪀"},
+        {n:"ら", s:"ra", m:"Ra as in Ramen", e:"🍜"},
+        {n:"り", s:"ri", m:"Ree as in Reef", e:"🪸"},
+        {n:"る", s:"ru", m:"Ru as in Ruby", e:"💎"},
+        {n:"れ", s:"re", m:"Re as in Red", e:"🔴"},
+        {n:"ろ", s:"ro", m:"Ro as in Rope", e:"🪢"},
+        {n:"わ", s:"wa", m:"Wa as in Water", e:"💧"},
+        {n:"を", s:"wo", m:"Wo as in Wolf", e:"🐺"},
+        {n:"ん", s:"n", m:"N as in Pen", e:"🖊️"}
+    ],
+    // Level 2: Medium (Basic Nouns/Words)
+    medium: [
+        {n:"ねこ", s:"Neko", m:"Cat", e:"🐱"},
+        {n:"いぬ", s:"Inu", m:"Dog", e:"🐶"},
+        {n:"さかな", s:"Sakana", m:"Fish", e:"🐟"},
+        {n:"みず", s:"Mizu", m:"Water", e:"💧"},
+        {n:"ごはん", s:"Gohan", m:"Rice/Meal", e:"🍚"},
+        {n:"ともだち", s:"Tomodachi", m:"Friend", e:"🤝"},
+        {n:"せんせい", s:"Sensei", m:"Teacher", e:"🧑‍🏫"},
+        {n:"がっこう", s:"Gakkou", m:"School", e:"🏫"},
+        {n:"ほん", s:"Hon", m:"Book", e:"📚"},
+        {n:"くるま", s:"Kuruma", m:"Car", e:"🚗"},
+        {n:"さくら", s:"Sakura", m:"Cherry Blossom", e:"🌸"},
+        {n:"すし", s:"Sushi", m:"Sushi", e:"🍣"},
+        {n:"うち", s:"Uchi", m:"Home", e:"🏠"},
+        {n:"あめ", s:"Ame", m:"Rain", e:"🌧️"},
+        {n:"そら", s:"Sora", m:"Sky", e:"🌌"}
+    ],
+    // Level 3: Advanced (Common Sentences)
+    advanced: [
+        {n:"おなまえは なんですか？", s:"Onamae wa nan desu ka?", m:"What is your name?", e:"❓"},
+        {n:"おなかが すきました。", s:"Onaka ga sukimashita.", m:"I am hungry.", e:"😋"},
+        {n:"こんにちは。", s:"Konnichiwa.", m:"Hello / Good afternoon.", e:"🌞"},
+        {n:"ありがとうございます。", s:"Arigatou gozaimasu.", m:"Thank you very much.", e:"🙏"},
+        {n:"いま なんじ ですか？", s:"Ima nan-ji desu ka?", m:"What time is it now?", e:"⌚"},
+        {n:"どこに いますか？", s:"Doko ni imasu ka?", m:"Where are you?", e:"📍"},
+        {n:"すしを たべます。", s:"Sushi o tabemasu.", m:"I eat sushi.", e:"🥢"},
+        {n:"にほんごを べんきょうします。", s:"Nihongo o benkyou shimasu.", m:"I study Japanese.", e:"📖"},
+        {n:"いい おてんき ですね。", s:"Ii otenki desu ne.", m:"The weather is nice, isn't it?", e:"🌈"},
+        {n:"また あいましょう。", s:"Mata aimashou.", m:"Let's meet again.", e:"👋"}
+    ]
+},
+       ko: { 
+    n: "Korean", 
+    c: "#5d5dff",
+    // Level 1: Basic (Hangul Alphabet - Consonants & Vowels)
+    basic: [
+        // Consonants (Ja-eum)
+        {n:"ㄱ", s:"g/k", m:"G as in Gun", e:"🔫"},
+        {n:"ㄴ", s:"n", m:"N as in Nose", e:"👃"},
+        {n:"ㄷ", s:"d/t", m:"D as in Door", e:"🚪"},
+        {n:"ㄹ", s:"r/l", m:"R as in Rattlesnake", e:"🐍"},
+        {n:"ㅁ", s:"m", m:"M as in Mouth", e:"👄"},
+        {n:"ㅂ", s:"b/p", m:"B as in Bucket", e:"🪣"},
+        {n:"ㅅ", s:"s", m:"S as in Star", e:"⭐"},
+        {n:"ㅇ", s:"ng", m:"Ng as in Sing (silent at start)", e:"🤫"},
+        {n:"ㅈ", s:"j", m:"J as in Jeep", e:"🚙"},
+        {n:"ㅊ", s:"ch", m:"Ch as in Chin", e:"🧔"},
+        {n:"ㅋ", s:"k", m:"K as in Key", e:"🔑"},
+        {n:"ㅌ", s:"t", m:"T as in Tall", e:"🦒"},
+        {n:"ㅍ", s:"p", m:"P as in Part", e:"🧩"},
+        {n:"ㅎ", s:"h", m:"H as in Hat", e:"🎩"},
+        // Vowels (Mo-eum)
+        {n:"ㅏ", s:"a", m:"A as in Father", e:"🚗"},
+        {n:"ㅑ", s:"ya", m:"Ya as in Yacht", e:"⛵"},
+        {n:"ㅓ", s:"eo", m:"U as in Up", e:"🆙"},
+        {n:"ㅕ", s:"yeo", m:"Yo as in Young", e:"👶"},
+        {n:"ㅗ", s:"o", m:"O as in Over", e:"⤴️"},
+        {n:"ㅛ", s:"yo", m:"Yo as in Yo-yo", e:"🪀"},
+        {n:"ㅜ", s:"u", m:"Oo as in Moon", e:"🌙"},
+        {n:"ㅠ", s:"yu", m:"Yu as in You", e:"🫵"},
+        {n:"ㅡ", s:"eu", m:"Eu as in Brook (short)", e:"🪵"},
+        {n:"ㅣ", s:"i", m:"Ee as in Feel", e:"👀"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"어머니", s:"Eomeoni", m:"Mother", e:"👩"},
+        {n:"아버지", s:"Abeoji", m:"Father", e:"👨"},
+        {n:"친구", s:"Chingu", m:"Friend", e:"🤝"},
+        {n:"물", s:"Mul", m:"Water", e:"💧"},
+        {n:"밥", s:"Bap", m:"Rice/Meal", e:"🍚"},
+        {n:"학교", s:"Hak-gyo", m:"School", e:"🏫"},
+        {n:"선생님", s:"Seon-saeng-nim", m:"Teacher", e:"🧑‍🏫"},
+        {n:"책", s:"Chaek", m:"Book", e:"📚"},
+        {n:"꽃", s:"Kkot", m:"Flower", e:"🌸"},
+        {n:"고양이", s:"Go-yang-i", m:"Cat", e:"🐱"},
+        {n:"강아지", s:"Gang-a-ji", m:"Puppy/Dog", e:"🐶"},
+        {n:"바다", s:"Ba-da", m:"Sea", e:"🌊"},
+        {n:"하늘", s:"Ha-neul", m:"Sky", e:"☁️"},
+        {n:"사랑", s:"Sa-rang", m:"Love", e:"❤️"},
+        {n:"우유", s:"U-yu", m:"Milk", e:"🥛"}
+    ],
+    // Level 3: Advanced (Daily Sentences)
+    advanced: [
+        {n:"이름이 뭐예요?", s:"I-reum-i mwo-ye-yo?", m:"What is your name?", e:"❓"},
+        {n:"배고파요.", s:"Bae-go-pa-yo.", m:"I am hungry.", e:"😋"},
+        {n:"안녕하세요.", s:"An-nyeong-ha-se-yo.", m:"Hello / How are you?", e:"🙏"},
+        {n:"감사합니다.", s:"Gam-sa-ham-ni-da.", m:"Thank you.", e:"🙇"},
+        {n:"어디에 살아요?", s:"Eo-di-e sa-ra-yo?", m:"Where do you live?", e:"🏠"},
+        {n:"몇 시예요?", s:"Myeot si-ye-yo?", m:"What time is it?", e:"⌚"},
+        {n:"도와주세요!", s:"Do-wa-ju-se-yo!", m:"Help me please!", e:"🆘"},
+        {n:"한국말 조금 해요.", s:"Han-gung-mal jo-geum hae-yo.", m:"I speak a little Korean.", e:"🇰🇷"},
+        {n:"만나서 반가워요.", s:"Man-na-seo ban-ga-wo-yo.", m:"Nice to meet you.", e:"🤝"},
+        {n:"잘 가요!", s:"Jal ga-yo!", m:"Goodbye!", e:"👋"}
+    ]
+},
+       fr: { 
+    n: "French", 
+    c: "#4d9eff",
+    // Level 1: Basic (Alphabet & Essential Accents)
+    basic: [
+        {n:"A", s:"ah", m:"A as in Apple", e:"🍎"},
+        {n:"B", s:"bay", m:"B as in Boy", e:"👦"},
+        {n:"C", s:"say", m:"C as in Cat", e:"🐱"},
+        {n:"D", s:"day", m:"D as in Dog", e:"🐶"},
+        {n:"E", s:"uh", m:"E as in Egg", e:"🥚"},
+        {n:"F", s:"eff", m:"F as in Fish", e:"🐟"},
+        {n:"G", s:"zhay", m:"G as in Garage", e:"🚗"},
+        {n:"H", s:"ash", m:"H is usually silent", e:"🤫"},
+        {n:"I", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"J", s:"zhee", m:"J as in Jeep", e:"🚙"},
+        {n:"K", s:"kah", m:"K as in Kite", e:"🪁"},
+        {n:"L", s:"ell", m:"L as in Lion", e:"🦁"},
+        {n:"M", s:"em", m:"M as in Moon", e:"🌙"},
+        {n:"N", s:"en", m:"N as in Net", e:"🕸️"},
+        {n:"O", s:"oh", m:"O as in Over", e:"⤴️"},
+        {n:"P", s:"pay", m:"P as in Pen", e:"🖊️"},
+        {n:"Q", s:"koo", m:"Q sound", e:"❓"},
+        {n:"R", s:"air", m:"Soft throat R", e:"🗣️"},
+        {n:"S", s:"ess", m:"S as in Sun", e:"☀️"},
+        {n:"T", s:"tay", m:"T as in Tree", e:"🌳"},
+        {n:"U", s:"oo", m:"U as in Blue", e:"🔵"},
+        {n:"V", s:"vay", m:"V as in Van", e:"🚐"},
+        {n:"W", s:"doob-la-vay", m:"Double-V", e:"〰️"},
+        {n:"X", s:"eeks", m:"X sound", e:"❌"},
+        {n:"Y", s:"ee-grek", m:"Y sound", e:"❔"},
+        {n:"Z", s:"zed", m:"Z as in Zebra", e:"🦓"},
+        {n:"É", s:"ay", m:"Acute accent", e:"✨"},
+        {n:"À", s:"ah", m:"Grave accent", e:"📍"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"Mère", s:"mair", m:"Mother", e:"👩"},
+        {n:"Père", s:"pair", m:"Father", e:"👨"},
+        {n:"Ami", s:"ah-mee", m:"Friend", e:"🤝"},
+        {n:"Eau", s:"oh", m:"Water", e:"💧"},
+        {n:"Pain", s:"pan", m:"Bread/Food", e:"🥖"},
+        {n:"Maison", s:"may-zon", m:"House", e:"🏠"},
+        {n:"École", s:"ay-kol", m:"School", e:"🏫"},
+        {n:"Livre", s:"leev-ruh", m:"Book", e:"📚"},
+        {n:"Fleur", s:"flur", m:"Flower", e:"🌸"},
+        {n:"Chat", s:"shah", m:"Cat", e:"🐱"},
+        {n:"Chien", s:"shee-en", m:"Dog", e:"🐶"},
+        {n:"Ville", s:"veel", m:"City", e:"🏙️"},
+        {n:"Soleil", s:"so-lay", m:"Sun", e:"☀️"},
+        {n:"Lune", s:"loon", m:"Moon", e:"🌙"},
+        {n:"Amour", s:"ah-moor", m:"Love", e:"❤️"}
+    ],
+    // Level 3: Advanced (Daily Sentences)
+    advanced: [
+        {n:"Comment vous appelez-vous ?", s:"Ko-mon voo za-play voo?", m:"What is your name?", e:"❓"},
+        {n:"J'ai faim.", s:"Zhay fan.", m:"I am hungry.", e:"😋"},
+        {n:"Bonjour, comment ça va ?", s:"Bon-zhoor, ko-mon sah vah?", m:"Hello, how are you?", e:"🙏"},
+        {n:"Merci beaucoup.", s:"Mair-see bo-koo.", m:"Thank you very much.", e:"🙇"},
+        {n:"Où habitez-vous ?", s:"Oo ah-bee-tay voo?", m:"Where do you live?", e:"🏠"},
+        {n:"Quelle heure est-il ?", s:"Kell ur ay-teel?", m:"What time is it?", e:"⌚"},
+        {n:"Aidez-moi, s'il vous plaît.", s:"Ay-day mwah, seel voo play.", m:"Help me please.", e:"🆘"},
+        {n:"Je parle un peu français.", s:"Zhuh parl un puh fron-say.", m:"I speak a little French.", e:"🇫🇷"},
+        {n:"Enchanté.", s:"On-shon-tay.", m:"Nice to meet you.", e:"🤝"},
+        {n:"Au revoir !", s:"Oh ruh-vwar!", m:"Goodbye!", e:"👋"}
+    ]
+},
+        es: { 
+    n: "Spanish", 
+    c: "#ffcc00",
+    // Level 1: Basic (Alphabet & Special Characters)
+    basic: [
+        {n:"A", s:"ah", m:"A as in Apple", e:"🍎"},
+        {n:"B", s:"bay", m:"B as in Boy", e:"👦"},
+        {n:"C", s:"say", m:"C as in Cat", e:"🐱"},
+        {n:"D", s:"day", m:"D as in Dog", e:"🐶"},
+        {n:"E", s:"ay", m:"E as in Egg", e:"🥚"},
+        {n:"F", s:"eff-ay", m:"F as in Fish", e:"🐟"},
+        {n:"G", s:"hay", m:"H sound", e:"💨"},
+        {n:"H", s:"ah-chay", m:"Always silent", e:"🤫"},
+        {n:"I", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"J", s:"ho-tah", m:"H as in Hot", e:"🔥"},
+        {n:"K", s:"kah", m:"K as in Kite", e:"🪁"},
+        {n:"L", s:"el-ay", m:"L as in Lion", e:"🦁"},
+        {n:"M", s:"em-ay", m:"M as in Moon", e:"🌙"},
+        {n:"N", s:"en-ay", m:"N as in Net", e:"🕸️"},
+        {n:"Ñ", s:"en-yay", m:"Ny as in Canyon", e:"🏜️"},
+        {n:"O", s:"oh", m:"O as in Over", e:"⤴️"},
+        {n:"P", s:"pay", m:"P as in Pen", e:"🖊️"},
+        {n:"Q", s:"koo", m:"Q sound", e:"❓"},
+        {n:"R", s:"er-ay", m:"Rolled R sound", e:"👅"},
+        {n:"S", s:"es-ay", m:"S as in Sun", e:"☀️"},
+        {n:"T", s:"tay", m:"T as in Tree", e:"🌳"},
+        {n:"U", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"V", s:"ub-ay", m:"B sound", e:"🦇"},
+        {n:"W", s:"dob-lay-ub-ay", m:"Double-U", e:"〰️"},
+        {n:"X", s:"ek-ees", m:"X sound", e:"❌"},
+        {n:"Y", s:"ee-gree-ay-gah", m:"Y as in Yes", e:"✅"},
+        {n:"Z", s:"say-tah", m:"S sound", e:"🦓"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"Madre", s:"mah-dray", m:"Mother", e:"👩"},
+        {n:"Padre", s:"pah-dray", m:"Father", e:"👨"},
+        {n:"Agua", s:"ah-gwah", m:"Water", e:"💧"},
+        {n:"Comida", s:"ko-mee-dah", m:"Food", e:"🍚"},
+        {n:"Leche", s:"lay-chay", m:"Milk", e:"🥛"},
+        {n:"Casa", s:"kah-sah", m:"House", e:"🏠"},
+        {n:"Escuela", s:"es-kway-lah", m:"School", e:"🏫"},
+        {n:"Libro", s:"lee-bro", m:"Book", e:"📚"},
+        {n:"Flor", s:"floor", m:"Flower", e:"🌸"},
+        {n:"Gato", s:"gah-to", m:"Cat", e:"🐱"},
+        {n:"Perro", s:"pair-ro", m:"Dog", e:"🐶"},
+        {n:"Sol", s:"soul", m:"Sun", e:"☀️"},
+        {n:"Luna", s:"loo-nah", m:"Moon", e:"🌙"},
+        {n:"Amigo", s:"ah-mee-go", m:"Friend", e:"🤝"},
+        {n:"Amor", s:"ah-more", m:"Love", e:"❤️"}
+    ],
+    // Level 3: Advanced (Common Sentences)
+    advanced: [
+        {n:"¿Cómo te llamas?", s:"Ko-mo tay yah-mahs?", m:"What is your name?", e:"❓"},
+        {n:"Tengo hambre.", s:"Ten-go ahm-bray.", m:"I am hungry.", e:"😋"},
+        {n:"Hola, ¿cómo estás?", s:"Oh-lah, ko-mo es-tahs?", m:"Hello, how are you?", e:"🙏"},
+        {n:"Muchas gracias.", s:"Moo-chahs grah-see-ahs.", m:"Thank you very much.", e:"🙇"},
+        {n:"¿Dónde vives?", s:"Don-day bee-bays?", m:"Where do you live?", e:"🏠"},
+        {n:"¿Qué hora es?", s:"Kay ora es?", m:"What time is it?", e:"⌚"},
+        {n:"¡Ayúdame, por favor!", s:"Ah-yoo-dah-may, por fa-bore!", m:"Help me please!", e:"🆘"},
+        {n:"Hablo un poco de español.", s:"Ah-blo oon po-ko day es-pan-yol.", m:"I speak a little Spanish.", e:"🇪🇸"},
+        {n:"Mucho gusto.", s:"Moo-cho goos-to.", m:"Nice to meet you.", e:"🤝"},
+        {n:"¡Adiós!", s:"Ah-dee-ohs!", m:"Goodbye!", e:"👋"}
+    ]
+},
+        de: { 
+    n: "German", 
+    c: "#ffea00",
+    // Level 1: Basic (Alphabet & Special Characters)
+    basic: [
+        {n:"A", s:"ah", m:"A as in Apple", e:"🍎"},
+        {n:"B", s:"bay", m:"B as in Boy", e:"👦"},
+        {n:"C", s:"tsay", m:"C sound", e:"🐱"},
+        {n:"D", s:"day", m:"D as in Dog", e:"🐶"},
+        {n:"E", s:"ay", m:"E as in Egg", e:"🥚"},
+        {n:"F", s:"eff", m:"F as in Fish", e:"🐟"},
+        {n:"G", s:"gay", m:"G as in Goat", e:"🐐"},
+        {n:"H", s:"hah", m:"H as in Hat", e:"🎩"},
+        {n:"I", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"J", s:"yot", m:"Y as in Yes", e:"✅"},
+        {n:"K", s:"kah", m:"K as in Kite", e:"🪁"},
+        {n:"L", s:"ell", m:"L as in Lion", e:"🦁"},
+        {n:"M", s:"em", m:"M as in Moon", e:"🌙"},
+        {n:"N", s:"en", m:"N as in Net", e:"🕸️"},
+        {n:"O", s:"oh", m:"O as in Over", e:"⤴️"},
+        {n:"P", s:"pay", m:"P as in Pen", e:"🖊️"},
+        {n:"Q", s:"koo", m:"Q sound", e:"❓"},
+        {n:"R", s:"err", m:"Throat R sound", e:"🗣️"},
+        {n:"S", s:"ess", m:"S as in Sun", e:"☀️"},
+        {n:"T", s:"tay", m:"T as in Tree", e:"🌳"},
+        {n:"U", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"V", s:"fow", m:"F as in Father", e:"👨"},
+        {n:"W", s:"vay", m:"V as in Van", e:"🚐"},
+        {n:"X", s:"iks", m:"X sound", e:"❌"},
+        {n:"Y", s:"ypsilon", m:"Y sound", e:"❔"},
+        {n:"Z", s:"tset", m:"Ts sound", e:"⚙️"},
+        {n:"Ä", s:"ae", m:"A-umlaut", e:"✨"},
+        {n:"Ö", s:"oe", m:"O-umlaut", e:"🌀"},
+        {n:"Ü", s:"ue", m:"U-umlaut", e:"💎"},
+        {n:"ß", s:"ess-tset", m:"Double S sound", e:"🐍"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"Mutter", s:"moo-ter", m:"Mother", e:"👩"},
+        {n:"Vater", s:"fah-ter", m:"Father", e:"👨"},
+        {n:"Wasser", s:"vahs-ser", m:"Water", e:"💧"},
+        {n:"Essen", s:"ess-en", m:"Food", e:"🍚"},
+        {n:"Milch", s:"milsh", m:"Milk", e:"🥛"},
+        {n:"Haus", s:"hows", m:"House", e:"🏠"},
+        {n:"Schule", s:"shoo-le", m:"School", e:"🏫"},
+        {n:"Buch", s:"booh", m:"Book", e:"📚"},
+        {n:"Blume", s:"bloo-me", m:"Flower", e:"🌸"},
+        {n:"Katze", s:"kaht-se", m:"Cat", e:"🐱"},
+        {n:"Hund", s:"hoont", m:"Dog", e:"🐶"},
+        {n:"Sonne", s:"zon-ne", m:"Sun", e:"☀️"},
+        {n:"Mond", s:"mohnd", m:"Moon", e:"🌙"},
+        {n:"Freund", s:"froynd", m:"Friend", e:"🤝"},
+        {n:"Liebe", s:"lee-be", m:"Love", e:"❤️"}
+    ],
+    // Level 3: Advanced (Common Sentences)
+    advanced: [
+        {n:"Wie heißen Sie?", s:"Vee hy-sen zee?", m:"What is your name?", e:"❓"},
+        {n:"Ich habe Hunger.", s:"Ish hah-be hoon-ger.", m:"I am hungry.", e:"😋"},
+        {n:"Hallo, wie geht es dir?", s:"Hah-lo, vee gayt es deer?", m:"Hello, how are you?", e:"🙏"},
+        {n:"Vielen Dank.", s:"Fee-len dank.", m:"Thank you very much.", e:"🙇"},
+        {n:"Wo wohnen Sie?", s:"Vo vo-nen zee?", m:"Where do you live?", e:"🏠"},
+        {n:"Wie spät ist es?", s:"Vee shpayt ist es?", m:"What time is it?", e:"⌚"},
+        {n:"Helfen Sie mir bitte!", s:"Hel-fen zee meer bit-te!", m:"Help me please!", e:"🆘"},
+        {n:"Ich spreche ein bisschen Deutsch.", s:"Ish shpreh-he ayn bis-shen doytsh.", m:"I speak a little German.", e:"🇩🇪"},
+        {n:"Freut mich.", s:"Froyt mish.", m:"Nice to meet you.", e:"🤝"},
+        {n:"Auf Wiedersehen!", s:"Owf vee-der-zayn!", m:"Goodbye!", e:"👋"}
+    ]
+},
+        zh: { 
+    n: "Chinese", 
+    c: "#ff0000",
+    // Level 1: Basic (Numbers & Essential Tones)
+    basic: [
+        {n:"一", s:"yī", m:"One", e:"1️⃣"},
+        {n:"二", s:"èr", m:"Two", e:"2️⃣"},
+        {n:"三", s:"sān", m:"Three", e:"3️⃣"},
+        {n:"四", s:"sì", m:"Four", e:"4️⃣"},
+        {n:"五", s:"wǔ", m:"Five", e:"5️⃣"},
+        {n:"六", s:"liù", m:"Six", e:"6️⃣"},
+        {n:"七", s:"qī", m:"Seven", e:"7️⃣"},
+        {n:"八", s:"bā", m:"Eight", e:"8️⃣"},
+        {n:"九", s:"jiǔ", m:"Nine", e:"9️⃣"},
+        {n:"十", s:"shí", m:"Ten", e:"🔟"},
+        {n:"你", s:"nǐ", m:"You", e:"🫵"},
+        {n:"我", s:"wǒ", m:"I / Me", e:"🙋"},
+        {n:"他", s:"tā", m:"He / Him", e:"👨"},
+        {n:"她", s:"tā", m:"She / Her", e:"👩"},
+        {n:"好", s:"hǎo", m:"Good / Well", e:"👍"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"妈妈", s:"māma", m:"Mother", e:"👩"},
+        {n:"爸爸", s:"bàba", m:"Father", e:"👨"},
+        {n:"朋友", s:"péngyǒu", m:"Friend", e:"🤝"},
+        {n:"水", s:"shuǐ", m:"Water", e:"💧"},
+        {n:"米饭", s:"mǐfàn", m:"Rice / Food", e:"🍚"},
+        {n:"家", s:"jiā", m:"Home / House", e:"🏠"},
+        {n:"学校", s:"xuéxiào", m:"School", e:"🏫"},
+        {n:"书", s:"shū", m:"Book", e:"📚"},
+        {n:"花", s:"huā", m:"Flower", e:"🌸"},
+        {n:"猫", s:"māo", m:"Cat", e:"🐱"},
+        {n:"狗", s:"gǒu", m:"Dog", e:"🐶"},
+        {n:"太阳", s:"tàiyáng", m:"Sun", e:"☀️"},
+        {n:"月亮", s:"yuèliang", m:"Moon", e:"🌙"},
+        {n:"老师", s:"lǎoshī", m:"Teacher", e:"🧑‍🏫"},
+        {n:"爱", s:"ài", m:"Love", e:"❤️"}
+    ],
+    // Level 3: Advanced (Daily Sentences)
+    advanced: [
+        {n:"你叫什么名字？", s:"Nǐ jiào shénme míngzì?", m:"What is your name?", e:"❓"},
+        {n:"我饿了。", s:"Wǒ è le.", m:"I am hungry.", e:"😋"},
+        {n:"你好，怎么样？", s:"Nǐ hǎo, zěnmeyàng?", m:"Hello, how are you?", e:"🙏"},
+        {n:"谢谢你。", s:"Xièxiè nǐ.", m:"Thank you.", e:"🙇"},
+        {n:"你住在哪里？", s:"Nǐ zhù zài nǎlǐ?", m:"Where do you live?", e:"🏠"},
+        {n:"现在几点？", s:"Xiànzài jǐ diǎn?", m:"What time is it now?", e:"⌚"},
+        {n:"请帮帮我。", s:"Qǐng bāngbāng wǒ.", m:"Help me please.", e:"🆘"},
+        {n:"我会说一点中文。", s:"Wǒ huì shuō yīdiǎn Zhōngwén.", m:"I speak a little Chinese.", e:"🇨🇳"},
+        {n:"很高兴认识你。", s:"Hěn gāoxìng rènshì nǐ.", m:"Nice to meet you.", e:"🤝"},
+        {n:"再见！", s:"Zàijiàn!", m:"Goodbye!", e:"👋"}
+    ]
+},
+        ar: { 
+    n: "Arabic", 
+    c: "#00ff88",
+    // Level 1: Basic (Alphabet & Phonetics)
+    basic: [
+        {n:"أ", s:"alif", m:"A as in Apple", e:"🍎"},
+        {n:"ب", s:"baa", m:"B as in Boy", e:"👦"},
+        {n:"ت", s:"taa", m:"T as in Tall", e:"🦒"},
+        {n:"ث", s:"thaa", m:"Th as in Think", e:"📐"},
+        {n:"ج", s:"jeem", m:"J as in Jeep", e:"🚙"},
+        {n:"ح", s:"haa", m:"Deep breathy H", e:"🗣️"},
+        {n:"خ", s:"khaa", m:"Kh sound (scratchy)", e:"💨"},
+        {n:"د", s:"daal", m:"D as in Dog", e:"🐕"},
+        {n:"ذ", s:"dhaal", m:"Th as in That", e:"👉"},
+        {n:"ر", s:"raa", m:"Rolled R", e:"🛤️"},
+        {n:"ز", s:"zaay", m:"Z as in Zebra", e:"🦓"},
+        {n:"س", s:"seen", m:"S as in Sun", e:"☀️"},
+        {n:"ش", s:"sheen", m:"Sh as in Ship", e:"🚢"},
+        {n:"ص", s:"saad", m:"Heavy S", e:"💪"},
+        {n:"ض", s:"daad", m:"Heavy D", e:"💥"},
+        {n:"ط", s:"taa", m:"Heavy T", e:"🏗️"},
+        {n:"ظ", s:"zaa", m:"Heavy Th", e:"🛡️"},
+        {n:"ع", s:"ayn", m:"Deep throat sound", e:"🌀"},
+        {n:"غ", s:"ghayn", m:"Gargling G", e:"🌊"},
+        {n:"ف", s:"faa", m:"F as in Fish", e:"🐟"},
+        {n:"ق", s:"qaaf", m:"Deep K sound", e:"⛏️"},
+        {n:"ك", s:"kaaf", m:"K as in Kite", e:"🪁"},
+        {n:"ل", s:"laam", m:"L as in Lion", e:"🦁"},
+        {n:"م", s:"meem", m:"M as in Moon", e:"🌙"},
+        {n:"ن", s:"noon", m:"N as in Net", e:"🕸️"},
+        {n:"ه", s:"haa", m:"H as in Hat", e:"🎩"},
+        {n:"و", s:"waw", m:"W as in Water", e:"💧"},
+        {n:"ي", s:"yaa", m:"Y as in Yes", e:"✅"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"أُم", s:"Umm", m:"Mother", e:"👩"},
+        {n:"أَب", s:"Abb", m:"Father", e:"👨"},
+        {n:"صديق", s:"Sadeeq", m:"Friend", e:"🤝"},
+        {n:"ماء", s:"Maa'", m:"Water", e:"💧"},
+        {n:"طعام", s:"Ta'aam", m:"Food", e:"🍚"},
+        {n:"بيت", s:"Bayt", m:"House", e:"🏠"},
+        {n:"مدرسة", s:"Madrasa", m:"School", e:"🏫"},
+        {n:"كتاب", s:"Kitaab", m:"Book", e:"📚"},
+        {n:"زهرة", s:"Zahra", m:"Flower", e:"🌸"},
+        {n:"قطة", s:"Qitta", m:"Cat", e:"🐱"},
+        {n:"كلب", s:"Kalb", m:"Dog", e:"🐶"},
+        {n:"شمس", s:"Shams", m:"Sun", e:"☀️"},
+        {n:"قمر", s:"Qamar", m:"Moon", e:"🌙"},
+        {n:"معلم", s:"Mu'allim", m:"Teacher", e:"🧑‍🏫"},
+        {n:"حب", s:"Hubb", m:"Love", e:"❤️"}
+    ],
+    // Level 3: Advanced (Common Sentences)
+    advanced: [
+        {n:"ما اسمك؟", s:"Ma ismuka?", m:"What is your name?", e:"❓"},
+        {n:"أنا جائع.", s:"Ana jaa'i'.", m:"I am hungry.", e:"😋"},
+        {n:"مرحباً، كيف حالك؟", s:"Marhaban, kayfa haaluka?", m:"Hello, how are you?", e:"🙏"},
+        {n:"شكراً جزيلاً.", s:"Shukran jazeelan.", m:"Thank you very much.", e:"🙇"},
+        {n:"أين تعيش؟", s:"Ayna ta'eesh?", m:"Where do you live?", e:"🏠"},
+        {n:"كم الساعة الآن؟", s:"Kam al-saa'a al-aan?", m:"What time is it now?", e:"⌚"},
+        {n:"ساعدني من فضلك.", s:"Saa'idnee min fadlik.", m:"Help me please.", e:"🆘"},
+        {n:"أتكلم القليل من العربية.", s:"Atakallam al-qaleel min al-arabiyya.", m:"I speak a little Arabic.", e:"🇸🇦"},
+        {n:"تشرفنا.", s:"Tasharrafna.", m:"Nice to meet you.", e:"🤝"},
+        {n:"مع السلامة!", s:"Ma'a al-salama!", m:"Goodbye!", e:"👋"}
+    ]
+},
+        ru: { 
+    n: "Russian", 
+    c: "#cc00ff",
+    // Level 1: Basic (Cyrillic Alphabet & Phonetics)
+    basic: [
+        {n:"А", s:"ah", m:"A as in Apple", e:"🍎"},
+        {n:"Б", s:"beh", m:"B as in Boy", e:"👦"},
+        {n:"В", s:"veh", m:"V as in Van", e:"🚐"},
+        {n:"Г", s:"geh", m:"G as in Goat", e:"🐐"},
+        {n:"Д", s:"deh", m:"D as in Dog", e:"🐶"},
+        {n:"Е", s:"yeh", m:"Ye as in Yes", e:"✅"},
+        {n:"Ё", s:"yo", m:"Yo as in Yo-yo", e:"🪀"},
+        {n:"Ж", s:"zheh", m:"S as in Measure", e:"📏"},
+        {n:"З", s:"zeh", m:"Z as in Zebra", e:"🦓"},
+        {n:"И", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"Й", s:"yot", m:"Y as in Boy", e:"👦"},
+        {n:"К", s:"kah", m:"K as in Kite", e:"🪁"},
+        {n:"Л", s:"ell", m:"L as in Lion", e:"🦁"},
+        {n:"М", s:"em", m:"M as in Moon", e:"🌙"},
+        {n:"Н", s:"en", m:"N as in Net", e:"🕸️"},
+        {n:"О", s:"oh", m:"O as in Over", e:"⤴️"},
+        {n:"П", s:"peh", m:"P as in Pen", e:"🖊️"},
+        {n:"Р", s:"err", m:"Rolled R", e:"🛤️"},
+        {n:"С", s:"ess", m:"S as in Sun", e:"☀️"},
+        {n:"Т", s:"teh", m:"T as in Tree", e:"🌳"},
+        {n:"У", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"Ф", s:"eff", m:"F as in Fish", e:"🐟"},
+        {n:"Х", s:"khah", m:"Kh sound (scratchy)", e:"💨"},
+        {n:"Ц", s:"tse", m:"Ts as in Cats", e:"🐈"},
+        {n:"Ч", s:"cheh", m:"Ch as in Chair", e:"🪑"},
+        {n:"Ш", s:"shah", m:"Sh as in Ship", e:"🚢"},
+        {n:"Щ", s:"shcha", m:"Fresh cheese sound", e:"🧀"},
+        {n:"Ы", s:"i", m:"Hard 'ee' sound", e:"💎"},
+        {n:"Э", s:"eh", m:"E as in Egg", e:"🥚"},
+        {n:"Ю", s:"yu", m:"U as in Universe", e:"🌌"},
+        {n:"Я", s:"yah", m:"Ya as in Yard", e:"🏡"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"Мама", s:"Mama", m:"Mother", e:"👩"},
+        {n:"Папа", s:"Papa", m:"Father", e:"👨"},
+        {n:"Друг", s:"Droog", m:"Friend", e:"🤝"},
+        {n:"Вода", s:"Voda", m:"Water", e:"💧"},
+        {n:"Еда", s:"Yeda", m:"Food", e:"🍚"},
+        {n:"Дом", s:"Dom", m:"House", e:"🏠"},
+        {n:"Школа", s:"Shkola", m:"School", e:"🏫"},
+        {n:"Книга", s:"Kniga", m:"Book", e:"📚"},
+        {n:"Цветок", s:"Tsvetok", m:"Flower", e:"🌸"},
+        {n:"Кот", s:"Kot", m:"Cat", e:"🐱"},
+        {n:"Собака", s:"Sobaka", m:"Dog", e:"🐶"},
+        {n:"Солнце", s:"Solntse", m:"Sun", e:"☀️"},
+        {n:"Луна", s:"Luna", m:"Moon", e:"🌙"},
+        {n:"Учитель", s:"Uchitel", m:"Teacher", e:"🧑‍🏫"},
+        {n:"Любовь", s:"Lyubov", m:"Love", e:"❤️"}
+    ],
+    // Level 3: Advanced (Daily Sentences)
+    advanced: [
+        {n:"Как тебя зовут?", s:"Kak tebya zovut?", m:"What is your name?", e:"❓"},
+        {n:"Я хочу есть.", s:"Ya hochu yest.", m:"I am hungry.", e:"😋"},
+        {n:"Привет, как дела?", s:"Privet, kak dela?", m:"Hello, how are you?", e:"🙏"},
+        {n:"Большое спасибо.", s:"Bolshoye spasibo.", m:"Thank you very much.", e:"🙇"},
+        {n:"Где ты живешь?", s:"Gde ty zhivesh?", m:"Where do you live?", e:"🏠"},
+        {n:"Который час?", s:"Kotoryy chas?", m:"What time is it?", e:"⌚"},
+        {n:"Помогите мне, пожалуйста.", s:"Pomogite mne, pozhaluysta.", m:"Help me please.", e:"🆘"},
+        {n:"Я немного говорю по-русски.", s:"Ya nemnogo govoryu po-russki.", m:"I speak a little Russian.", e:"🇷🇺"},
+        {n:"Приятно познакомиться.", s:"Priyatno poznakomit'sya.", m:"Nice to meet you.", e:"🤝"},
+        {n:"До свидания!", s:"Do svidaniya!", m:"Goodbye!", e:"👋"}
+    ]
+},
+        it: { 
+    n: "Italian", 
+    c: "#008c45",
+    // Level 1: Basic (Alphabet & Pronunciation)
+    basic: [
+        {n:"A", s:"ah", m:"A as in Apple", e:"🍎"},
+        {n:"B", s:"bee", m:"B as in Boy", e:"👦"},
+        {n:"C", s:"chee", m:"Ch as in Cheese", e:"🧀"},
+        {n:"D", s:"dee", m:"D as in Dog", e:"🐶"},
+        {n:"E", s:"ay", m:"E as in Egg", e:"🥚"},
+        {n:"F", s:"eff-ay", m:"F as in Fish", e:"🐟"},
+        {n:"G", s:"jee", m:"J as in Jeep", e:"🚙"},
+        {n:"H", s:"akk-ah", m:"Always silent", e:"🤫"},
+        {n:"I", s:"ee", m:"Ee as in Feel", e:"👀"},
+        {n:"L", s:"ell-ay", m:"L as in Lion", e:"🦁"},
+        {n:"M", s:"em-ay", m:"M as in Moon", e:"🌙"},
+        {n:"N", s:"en-ay", m:"N as in Net", e:"🕸️"},
+        {n:"O", s:"oh", m:"O as in Over", e:"⤴️"},
+        {n:"P", s:"pay", m:"P as in Pen", e:"🖊️"},
+        {n:"Q", s:"koo", m:"Q sound", e:"❓"},
+        {n:"R", s:"err-ay", m:"Rolled R", e:"🛤️"},
+        {n:"S", s:"ess-ay", m:"S as in Sun", e:"☀️"},
+        {n:"T", s:"tee", m:"T as in Tree", e:"🌳"},
+        {n:"U", s:"oo", m:"Oo as in Moon", e:"🌙"},
+        {n:"V", s:"voo", m:"V as in Van", e:"🚐"},
+        {n:"Z", s:"dzay-tah", m:"Z sound", e:"🦓"},
+        {n:"CH", s:"k", m:"K sound (e.g. Bruschetta)", e:"🥖"},
+        {n:"GLI", s:"lyee", m:"Yee sound", e:"🍝"}
+    ],
+    // Level 2: Medium (Common Nouns)
+    medium: [
+        {n:"Madre", s:"mah-dray", m:"Mother", e:"👩"},
+        {n:"Padre", s:"pah-dray", m:"Father", e:"👨"},
+        {n:"Acqua", s:"ah-kwah", m:"Water", e:"💧"},
+        {n:"Cibo", s:"chee-bo", m:"Food", e:"🍚"},
+        {n:"Latte", s:"laht-tay", m:"Milk", e:"🥛"},
+        {n:"Casa", s:"kah-sah", m:"House", e:"🏠"},
+        {n:"Scuola", s:"skwo-lah", m:"School", e:"🏫"},
+        {n:"Libro", s:"lee-bro", m:"Book", e:"📚"},
+        {n:"Fiore", s:"fyo-ray", m:"Flower", e:"🌸"},
+        {n:"Gatto", s:"gaht-to", m:"Cat", e:"🐱"},
+        {n:"Cane", s:"kah-nay", m:"Dog", e:"🐶"},
+        {n:"Sole", s:"so-lay", m:"Sun", e:"☀️"},
+        {n:"Luna", s:"loo-nah", m:"Moon", e:"🌙"},
+        {n:"Amico", s:"ah-mee-ko", m:"Friend", e:"🤝"},
+        {n:"Amore", s:"ah-mo-ray", m:"Love", e:"❤️"}
+    ],
+    // Level 3: Advanced (Daily Sentences)
+    advanced: [
+        {n:"Come ti chiami?", s:"Ko-may tee kyah-mee?", m:"What is your name?", e:"❓"},
+        {n:"Ho fame.", s:"Oh fah-may.", m:"I am hungry.", e:"😋"},
+        {n:"Ciao, come stai?", s:"Chow, ko-may sty?", m:"Hello, how are you?", e:"🙏"},
+        {n:"Grazie mille.", s:"Grah-tsyay meel-lay.", m:"Thank you very much.", e:"🙇"},
+        {n:"Dove vivi?", s:"Do-vay vee-vee?", m:"Where do you live?", e:"🏠"},
+        {n:"Che ore sono?", s:"Kay o-ray so-no?", m:"What time is it?", e:"⌚"},
+        {n:"Aiutami, per favore!", s:"Ah-yoo-tah-mee, pair fah-vo-ray!", m:"Help me please!", e:"🆘"},
+        {n:"Parlo un po' di italiano.", s:"Par-lo oon po dee ee-tahl-yah-no.", m:"I speak a little Italian.", e:"🇮🇹"},
+        {n:"Piacere di conoscerti.", s:"Pyah-chay-ray dee ko-no-shair-tee.", m:"Nice to meet you.", e:"🤝"},
+        {n:"Arrivederci!", s:"Ah-ree-vay-dair-chee!", m:"Goodbye!", e:"👋"}
+    ]
 }
+    };
 
-// 20 Minute Magical Refresh
-setInterval(() => {
-    const m = new Date().getMinutes();
-    const s = new Date().getSeconds();
-    const remain = 19 - (m % 20);
-    const secRemain = 59 - s;
-    document.getElementById('timer').innerText = `${remain}:${secRemain < 10 ? '0'+secRemain : secRemain}`;
-    if (m % 20 === 0 && s === 0) location.reload();
-}, 1000);
+    const langs = Object.keys(db).map(k => ({id: k, n: db[k].n, c: db[k].c}));
+    let state = { l: '', t: '', i: 0 };
+
+    return {
+        init: () => {
+            document.getElementById('lang-menu').innerHTML = langs.map(l => `
+                <div class="card-sel" style="border-left-color:${l.c}" onclick="Core.selL('${l.id}')">
+                    <div style="font-size:1.2rem;">🌐</div>
+                    <div style="font-family:Orbitron; font-size:1.1rem; color:${l.c}">${l.n}</div>
+                </div>`).join('');
+        },
+        go: (v) => { [1,2,3].forEach(n => document.getElementById('scr-'+n).classList.add('hidden')); document.getElementById('scr-'+v).classList.remove('hidden'); },
+        selL: (id) => { state.l = id; document.getElementById('bg-glow').style.background = db[id].c; document.getElementById('tier-title').innerText = db[id].n.toUpperCase(); Core.go(2); },
+        setT: (t) => { state.t = t; document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('active')); document.getElementById('t-'+t).classList.add('active'); },
+        start: () => { if(!state.t) { alert("Select Level First!"); return; } state.i = 0; Core.go(3); Core.render(); },
+        render: () => {
+            const list = db[state.l][state.t];
+            const data = list[state.i];
+            const color = db[state.l].c;
+            
+            document.getElementById('out-emoji').innerText = data.e || '✨';
+            document.getElementById('out-native').innerText = data.n;
+            document.getElementById('out-sub').innerText = data.s;
+            document.getElementById('out-mean').innerText = data.m;
+            document.getElementById('node-name').innerText = db[state.l].n.toUpperCase();
+            
+            const btn = document.getElementById('next-btn');
+            if (state.i === list.length - 1) {
+                btn.innerText = "FINISH MODULE ✅";
+                btn.style.background = "#00ff66";
+                btn.style.boxShadow = "0 0 20px #00ff66";
+            } else {
+                btn.innerText = "NEXT ITEM 🧬";
+                btn.style.background = "var(--neon)";
+                btn.style.boxShadow = "0 0 20px rgba(0,243,255,0.4)";
+            }
+        },
+        next: () => {
+            const list = db[state.l][state.t];
+            if(state.i >= list.length - 1) { alert("MODULE COMPLETED! 🎉"); Core.go(2); }
+            else { state.i++; Core.render(); }
+        }
+    };
+})();
+Core.init();
 </script>
-
 </body>
 </html>
