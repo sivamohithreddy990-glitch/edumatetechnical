@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>B.Tech Study Hub – All Colleges</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins,Arial,sans-serif;
+  background:#f4f6fb;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+h1{
+  text-align:center;
+  color:#2563eb;
+}
+select,input{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  margin:10px 0;
+  box-shadow:0 6px 14px rgba(0,0,0,.1);
+}
+.card{
+  background:#fff;
+  padding:18px;
+  border-radius:18px;
+  margin:12px 0;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+  cursor:pointer;
+  transition:.3s;
+}
+.card:hover{transform:translateY(-4px)}
+.btn{
+  display:inline-block;
+  padding:8px 14px;
+  margin:6px 4px;
+  border-radius:8px;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+}
+.view{border:2px solid #2563eb;color:#2563eb}
+.download{background:#2563eb;color:#fff}
+.back{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:8px 14px;
+  background:#2563eb;
+  color:#fff;
+  border-radius:8px;
+  text-decoration:none;
+}
+.unit{
+  background:#f8fafc;
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 : COLLEGE -->
+<div class="container" id="pageCollege">
+  <h1>🏫 Select College</h1>
+  <select id="college">
+    <option value="">-- Select College --</option>
+    <option>SVCE Tirupati</option>
+    <option>Sri Venkateswara University</option>
+    <option>Madanapalle Institute of Technology</option>
+    <option>Chadalawada Ramanamma Engineering College</option>
+    <option>SVCET Chittoor</option>
+    <option>NBKRIST</option>
+    <option>VIT Vellore</option>
+    <option>IIT Tirupati</option>
+    <option>NIT Andhra Pradesh</option>
+    <option>Other College</option>
+  </select>
+
+  <div class="card" onclick="openSubjects()">
+    👉 Continue
+  </div>
+</div>
+
+<!-- PAGE 2 : SUBJECTS -->
+<div class="container hidden" id="pageSubjects">
+  <a class="back" onclick="goBack('pageCollege','pageSubjects')">← Back</a>
+  <h1>📚 All B.Tech Subjects (R23)</h1>
+  <div id="subjects"></div>
+</div>
+
+<!-- PAGE 3 : UNITS -->
+<div class="container hidden" id="pageUnits">
+  <a class="back" onclick="goBack('pageSubjects','pageUnits')">← Back</a>
+  <h1 id="unitTitle"></h1>
+  <div id="units"></div>
+</div>
+
+<script>
+const subjectsList = [
+ "Engineering Mathematics",
+ "Linear Algebra & Calculus",
+ "Discrete Mathematics",
+ "Engineering Physics",
+ "Engineering Chemistry",
+ "C Programming",
+ "Python Programming",
+ "Java Programming",
+ "Data Structures",
+ "DBMS",
+ "Operating Systems",
+ "Computer Networks",
+ "Software Engineering",
+ "Web Technologies",
+ "Artificial Intelligence",
+ "Machine Learning",
+ "Data Science",
+ "Cloud Computing",
+ "Cyber Security",
+ "Digital Electronics",
+ "Microprocessors",
+ "Control Systems",
+ "Power Systems",
+ "BEEE",
+ "BCME",
+ "Engineering Drawing",
+ "English",
+ "Environmental Science"
+];
+
+let selectedCollege="";
+let selectedSubject="";
+
+function openSubjects(){
+  const c=document.getElementById("college").value;
+  if(!c){alert("Please select college");return;}
+  selectedCollege=c;
+  document.getElementById("pageCollege").classList.add("hidden");
+  document.getElementById("pageSubjects").classList.remove("hidden");
+
+  const box=document.getElementById("subjects");
+  box.innerHTML="";
+  subjectsList.forEach(s=>{
+    box.innerHTML+=`
+      <div class="card" onclick="openUnits('${s}')">
+        📘 ${s}
+      </div>`;
+  });
+}
+
+function openUnits(subject){
+  selectedSubject=subject;
+  document.getElementById("pageSubjects").classList.add("hidden");
+  document.getElementById("pageUnits").classList.remove("hidden");
+  document.getElementById("unitTitle").innerText=`${subject} – Units (R23)`;
+
+  const box=document.getElementById("units");
+  box.innerHTML="";
+  for(let u=1;u<=5;u++){
+    const video=`https://www.google.com/search?q=${selectedCollege}+${subject}+Unit+${u}+R23+video`;
+    const pdf=`https://www.google.com/search?q=${selectedCollege}+${subject}+Unit+${u}+R23+PDF`;
+    box.innerHTML+=`
+      <div class="unit">
+        <b>Unit ${u}</b><br>
+        <a class="btn view" target="_blank" href="${video}">View Video</a>
+        <a class="btn download" target="_blank" href="${pdf}">Download PDF</a>
+      </div>`;
+  }
+}
+
+function goBack(show,hide){
+  document.getElementById(show).classList.remove("hidden");
+  document.getElementById(hide).classList.add("hidden");
+}
+</script>
+
+</body>
+</html>

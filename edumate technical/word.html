@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Spelling Grimoire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --magic-gold: #1eff00;
+      --magic-purple: #9d50bb;
+      --magic-blue: #6e7ff3;
+      --bg-dark: #0f0c29;
+    }
+    body {
+      font-family: 'Georgia', serif;
+      text-align: center;
+      padding: 20px 10px;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      min-height: 100vh;
+    }
+    .grimoire-card {
+      max-width: 480px;
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 30px 5px 30px 5px;
+      background: rgba(25, 25, 50, 0.9);
+      box-shadow: 0 0 20px var(--magic-blue), inset 0 0 15px rgba(255,255,255,0.1);
+      border: 3px solid #4a4e69;
+      position: relative;
+    }
+    h1 { color: var(--magic-gold); font-variant: small-caps; letter-spacing: 2px; text-shadow: 0 0 10px var(--magic-gold); }
+    .scroll-stats {
+      background: url('https://www.transparenttextures.com/patterns/paper.png'), #f4e4bc;
+      color: #3c7054;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-around;
+      font-weight: bold;
+      margin-bottom: 25px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    }
+    .options-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
+    .spell-btn {
+      padding: 16px;
+      border-radius: 50px;
+      border: 2px solid var(--magic-blue);
+      background: rgba(110, 127, 243, 0.1);
+      color: #e0e1dd;
+      cursor: pointer;
+      font-size: 19px;
+      transition: 0.3s;
+      font-style: italic;
+    }
+    .spell-btn:hover:not(:disabled) {
+      background: var(--magic-purple);
+      box-shadow: 0 0 15px var(--magic-purple);
+      transform: scale(1.03);
+    }
+    .spell-btn:disabled { cursor: default; }
+    
+    #wand-result {
+      margin-top: 25px;
+      font-size: 20px;
+      min-height: 30px;
+      text-shadow: 0 0 5px #fff;
+    }
+    #next-quest {
+      margin-top: 20px;
+      padding: 15px;
+      background: var(--magic-gold);
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      font-weight: 900;
+      cursor: pointer;
+      display: none;
+      width: 100%;
+      font-size: 16px;
+      box-shadow: 0 0 20px var(--magic-gold);
+    }
+    .mana-bar {
+      height: 10px;
+      background: #4d0c0c;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border: 1px solid var(--magic-gold);
+    }
+    #mana-fill { height: 100%; width: 0%; background: linear-gradient(to right, #9d50bb, #6e7ff3); transition: 1s; }
+  </style>
+</head>
+<body>
+
+<div class="grimoire-card">
+  <h1>✨ learn word game✨</h1>
+  <div class="mana-bar"><div id="mana-fill"></div></div>
+  
+  <div class="scroll-stats">
+    <div>XP: <span id="xp">0</span></div>
+    <div>Quest: <span id="quest-lvl">1</span></div>
+    <div>Unseen Spells: <span id="spells-left">--</span></div>
+  </div>
+
+  <p style="color: var(--magic-blue)">Choose the correctly written incantation:</p>
+
+  <div class="options-container" id="spell-options">
+    <button class="spell-btn" id="s0" onclick="cast(0)"></button>
+    <button class="spell-btn" id="s1" onclick="cast(1)"></button>
+    <button class="spell-btn" id="s2" onclick="cast(2)"></button>
+    <button class="spell-btn" id="s3" onclick="cast(3)"></button>
+  </div>
+
+  <p id="wand-result"></p>
+  <button id="next-quest" onclick="summonNext()">Continue Quest ➔</button>
+</div>
+
+<script>
+  // The Great Library of Spells
+  const spellLibrary = [
+    "achievement", "brilliant", "calendar", "definite", "experience", "governor", "hierarchy", "independent", "knowledge", "library",
+    "maintenance", "necessary", "occurrence", "parallel", "questionnaire", "receive", "separate", "tomorrow", "unconscious", "vacuum",
+    "alchemist", "enchantment", "mysterious", "nebula", "portal", "wizardry", "phoenix", "astronomy", "celestial", "grimoire",
+    "equilibrium", "photosynthesis", "hypothesis", "metamorphosis", "spectrum", "entrepreneur", "bureaucracy", "architecture", "discipline", "fascinate",
+    "millennium", "privilege", "recommend", "rhythm", "schedule", "threshold", "unforgettable", "withhold", "conscience", "jewelry"
+  ];
+
+  let masteredSpells = [];
+  let currentSpell = "";
+  let goldIndex = 0;
+  let scoreXP = 0;
+  let questLevel = 1;
+  let isCasting = false;
+
+  function createCurse(spell) {
+    let variations = new Set();
+    while(variations.size < 3) {
+      let letters = spell.split('');
+      let curseType = Math.floor(Math.random() * 3);
+      
+      if(curseType === 0) { // Vowel transformation
+        const v = 'aeiou';
+        for(let i=0; i<letters.length; i++) {
+          if(v.includes(letters[i])) {
+            letters[i] = v[Math.floor(Math.random()*5)];
+            break;
+          }
+        }
+      } else if(curseType === 1) { // Shadow doubling
+        let i = Math.floor(Math.random() * letters.length);
+        letters[i] = letters[i] + letters[i];
+      } else { // Vanishing letter
+        letters.splice(Math.floor(Math.random() * letters.length), 1);
+      }
+      
+      let cursed = letters.join('');
+      if(cursed !== spell) variations.add(cursed);
+    }
+    return Array.from(variations);
+  }
+
+  function summonNext() {
+    if(masteredSpells.length === spellLibrary.length) {
+        document.querySelector('.grimoire-card').innerHTML = "<h1>🧙‍♂️ Grand Archmage</h1><p>You have mastered every spell in the library!</p><h2>Final XP: "+scoreXP+"</h2><button onclick='location.reload()' style='padding:15px; border-radius:10px; cursor:pointer;'>New Adventure</button>";
+        return;
+    }
+
+    isCasting = false;
+    document.getElementById('next-quest').style.display = 'none';
+    document.getElementById('wand-result').textContent = "";
+
+    // Ritual of Selection: Choose only unmastered words
+    let pool = spellLibrary.filter(s => !masteredSpells.includes(s));
+    currentSpell = pool[Math.floor(Math.random() * pool.length)];
+    masteredSpells.push(currentSpell);
+
+    // Update Scroll & Mana
+    document.getElementById('spells-left').textContent = spellLibrary.length - masteredSpells.length;
+    document.getElementById('quest-lvl').textContent = questLevel;
+    document.getElementById('mana-fill').style.width = (masteredSpells.length / spellLibrary.length * 100) + "%";
+
+    let choices = [currentSpell, ...createCurse(currentSpell)];
+    choices.sort(() => Math.random() - 0.5);
+    goldIndex = choices.indexOf(currentSpell);
+
+    for(let i=0; i<4; i++) {
+      let b = document.getElementById('s'+i);
+      b.textContent = choices[i];
+      b.style.borderColor = "var(--magic-blue)";
+      b.style.background = "rgba(110, 127, 243, 0.1)";
+      b.style.color = "#e0e1dd";
+      b.disabled = false;
+    }
+  }
+
+  function cast(idx) {
+    if(isCasting) return;
+    isCasting = true;
+
+    const buttons = [0,1,2,3].map(i => document.getElementById('s'+i));
+    buttons.forEach(b => b.disabled = true);
+
+    if(idx === goldIndex) {
+      scoreXP += 150;
+      questLevel++;
+      document.getElementById('wand-result').innerHTML = "<span style='color:var(--magic-gold)'>✨ Spell Cast Successfully! ✨</span>";
+      document.getElementById('xp').textContent = scoreXP;
+      buttons[idx].style.background = "rgba(255, 215, 0, 0.2)";
+      buttons[idx].style.borderColor = "var(--magic-gold)";
+    } else {
+      buttons[idx].style.borderColor = "#ff4d4d";
+      buttons[idx].style.color = "#ff4d4d";
+      buttons[goldIndex].style.borderColor = "var(--magic-gold)";
+      document.getElementById('wand-result').innerHTML = "<span style='color:#ff4d4d'>The spell fizzled! Correct incantation: " + currentSpell + "</span>";
+    }
+
+    document.getElementById('next-quest').style.display = 'block';
+  }
+
+  summonNext();
+</script>
+</body>
+</html>

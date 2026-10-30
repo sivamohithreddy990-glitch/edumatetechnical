@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B.Tech Universal Academic Library</title>
+<style>
+:root {
+  --primary: #a855f7;
+  --bg: #020617;
+  --card: #1e293b;
+  --shelf-wood: #451a03;
+  --gold: #fbbf24;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', system-ui, sans-serif; }
+body { background: var(--bg); color: #f8fafc; min-height: 100vh; padding: 15px; }
+
+/* STICKY SEARCH BAR */
+.search-container { position: sticky; top: 0; z-index: 1000; background: var(--bg); padding: 10px 0; }
+#searchBox {
+  width: 100%; padding: 15px 25px; border-radius: 50px;
+  border: 2px solid #334155; background: #0f172a;
+  color: white; font-size: 16px; outline: none; transition: 0.3s;
+}
+#searchBox:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
+
+h1 { text-align: center; margin: 15px 0; font-size: 1rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+
+.page { display: none; max-width: 1100px; margin: auto; animation: fadeIn 0.3s ease-in; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* BACK BUTTON AT TOP */
+.back-btn-top {
+  background: var(--primary); color: white; border: none; padding: 14px;
+  width: 100%; border-radius: 12px; margin-bottom: 15px; font-weight: bold; 
+  cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+}
+
+/* MAIN BRANCH GRID */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.card {
+  background: var(--card); border-radius: 12px; padding: 25px 5px;
+  text-align: center; cursor: pointer; border-bottom: 4px solid var(--primary);
+  transition: 0.3s; font-weight: bold; font-size: 13px;
+}
+.card:hover { background: var(--primary); transform: translateY(-3px); }
+
+/* SHELF SYSTEM */
+.vertical-shelf {
+  display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;
+  gap: 12px; padding: 20px; background: #0f172a; border-radius: 16px;
+  border: 8px solid var(--shelf-wood); margin-bottom: 30px;
+}
+
+.book {
+  width: 155px; height: 65px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; cursor: pointer; transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4); border-left: 4px solid rgba(255,255,255,0.3);
+}
+.book:hover { transform: translateY(-5px); filter: brightness(1.2); }
+.book-spine { font-size: 11px; font-weight: bold; color: white; text-align: center; padding: 5px; text-transform: uppercase; }
+
+/* MODAL */
+.modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:2000;
+}
+.modal-content {
+  background: #1e293b; padding: 20px; border-radius: 20px;
+  text-align: center; width: 92%; max-width: 400px; border: 2px solid var(--primary);
+}
+.modal-btn {
+  width: 100%; padding: 12px; margin: 6px 0; border: none; border-radius: 10px;
+  font-weight: bold; cursor: pointer; font-size: 14px;
+}
+.btn-exam { background: var(--gold); color: #000; } 
+.btn-test { background: #f8fafc; color: #000; } 
+.btn-book { background: #10b981; color: white; } 
+.btn-notes { background: #3b82f6; color: white; } 
+.btn-video { background: #ef4444; color: white; }
+.btn-close { background: #64748b; color: white; margin-top: 10px; }
+
+.lang-select {
+  width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px;
+  background: #0f172a; color: white; border: 1px solid var(--primary);
+}
+</style>
+</head>
+<body>
+
+<div class="search-container">
+  <input id="searchBox" placeholder="🔍 Search branch or subject..." onkeyup="globalSearch()">
+</div>
+
+<div class="page active" id="page-main">
+  <h1>🏛️ B.TECH UNIVERSAL ACADEMIC HUB</h1>
+  <div class="grid" id="branchGrid"></div>
+</div>
+
+<div class="page" id="page-shelf">
+  <button class="back-btn-top" onclick="goHome()">⬅ BACK TO BRANCHES</button>
+  <h1 id="shelfTitle"></h1>
+  <div class="vertical-shelf" id="bookShelf"></div>
+</div>
+
+<div class="modal" id="learningModal">
+  <div class="modal-content">
+    <h2 id="selectedBookTitle" style="color:var(--gold); margin-bottom:15px; font-size:1.1rem;"></h2>
+    
+    <button class="modal-btn btn-exam" onclick="openResource('papers')">📝 Semester & GATE Solved Papers</button>
+    <button class="modal-btn btn-test" onclick="openResource('test')">🎯 Practice Quiz / MCQ / Viva</button>
+    <button class="modal-btn btn-book" onclick="openResource('book')">📚 Reference Textbook (PDF)</button>
+    <button class="modal-btn btn-notes" onclick="openResource('notes')">📄 Clear Handwritten Study Notes</button>
+    
+    <div style="border-top:1px solid #475569; margin:15px 0; padding-top:10px;">
+      <p style="font-size:11px; opacity:0.8; margin-bottom:5px;">Video Language:</p>
+      <select id="langChoice" class="lang-select">
+        <option value="English">English (University/NPTEL)</option>
+        <option value="Hindi">Hindi (Simplified/Exam Prep)</option>
+        <option value="Telugu">Telugu (Detailed Explanation)</option>
+      </select>
+      <button class="modal-btn btn-video" onclick="openResource('video')">🎬 Watch Video Lectures</button>
+    </div>
+    
+    <button class="modal-btn btn-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+let activeBranch="", activeBook="";
+
+const data = {
+  "MATHS (ALL B.TECH)": {c:"#8b5cf6", b:["LA & Calculus","DMGT (Discrete Maths)","Optimization Techniques","Probability & Stats","Transform Calculus","Numerical Methods","Complex Variables","Vector Calculus","Differential Equations"]},
+  "FIRST YEAR (GEN)": {c:"#6366f1", b:["Engineering Physics","Engineering Chemistry","Basic Electrical","Basic Electronics","Engineering Mechanics","C Programming","Engineering Drawing","Environmental Science","Communicative English"]},
+  "COMPUTER SCIENCE": {c:"#2563eb", b:["Data Structures","Algorithms","Operating Systems","DBMS","Theory of Computation","Computer Networks","Compiler Design","Software Eng","Artificial Intelligence","Machine Learning","Cyber Security"]},
+  "IT (INFO TECH)": {c:"#0ea5e9", b:["Web Technologies","Cryptography","Cloud Computing","Mobile Computing","Java Programming","Information Security","Software Testing","Python Programming","Data Warehousing"]},
+  "ELECTRONICS (ECE)": {c:"#ef4444", b:["Network Theory","Electronic Devices","Signals & Systems","Analog Comm","Digital Comm","DSP","VLSI Design","Embedded Systems","Microprocessors","Microwave Eng"]},
+  "ELECTRICAL (EEE)": {c:"#eab308", b:["Circuit Analysis","Electrical Machines","Power Systems","Power Electronics","Control Systems","Renewable Energy","Electrical Measurements","High Voltage Eng","Switchgear & Protection"]},
+  "MECHANICAL": {c:"#64748b", b:["Thermodynamics","Strength of Materials","Fluid Mechanics","Kinematics","Heat Transfer","Machine Design","Manufacturing Technology","Metrology","Industrial Eng","CAD CAM"]},
+  "CIVIL": {c:"#10b981", b:["Surveying","Structural Analysis","Building Materials","Geotech Eng","Transportation Eng","RCC Design","Steel Structures","Environmental Eng","Hydrology & Water Resources"]},
+  "AUTOMOBILE": {c:"#dc2626", b:["IC Engines","Vehicle Chassis","Transmission Systems","Auto Electricals","EV Technology","Vehicle Dynamics","Auto Components Design","Alternative Energy Sources"]},
+  "AERONAUTICAL": {c:"#06b6d4", b:["Aerodynamics","Propulsion","Aircraft Structures","Flight Mechanics","Avionics","Rocket Science","Space Dynamics","Aircraft Design & Systems"]},
+  "CHEMICAL": {c:"#f97316", b:["Mass Transfer","Reaction Engineering","Process Control","Chemical Thermodynamics","Fluid Flow Operations","Plant Design","Heat Transfer Operations","Process Calculations"]},
+  "MINING": {c:"#78350f", b:["Surface Mining","Rock Mechanics","Mine Ventilation","Mine Surveying","Blasting Tech","Underground Mining","Mineral Processing","Mine Safety Eng"]},
+  "METALLURGY": {c:"#94a3b8", b:["Physical Metallurgy","Material Science","Iron Making","Steel Making","Extractive Metallurgy","Mechanical Metallurgy","Corrosion Engineering","Non-Ferrous Extraction"]},
+  "BIOTECH": {c:"#ec4899", b:["Microbiology","Biochemistry","Genetic Engineering","Bio-Process Eng","Cell Biology","Immunology","Bioinformatics","Plant Biotechnology","Animal Biotechnology"]}
+};
+
+const grid = document.getElementById("branchGrid");
+Object.keys(data).forEach(k => {
+  let d = document.createElement("div");
+  d.className = "card"; d.innerText = k;
+  d.onclick = () => openBranch(k);
+  grid.appendChild(d);
+});
+
+function openBranch(b) {
+  activeBranch = b;
+  document.getElementById("shelfTitle").innerText = b;
+  renderShelf(data[b].b);
+  show("page-shelf");
+  window.scrollTo(0,0);
+}
+
+function renderShelf(books) {
+  const shelf = document.getElementById("bookShelf");
+  shelf.innerHTML = "";
+  books.forEach(book => {
+    let b = document.createElement("div");
+    b.className = "book";
+    b.style.backgroundColor = data[activeBranch].c;
+    b.innerHTML = `<div class="book-spine">${book}</div>`;
+    b.onclick = () => openModal(book);
+    shelf.appendChild(b);
+  });
+}
+
+function globalSearch() {
+  let q = document.getElementById("searchBox").value.toLowerCase();
+  if (document.getElementById("page-main").classList.contains("active")) {
+    document.querySelectorAll(".card").forEach(c => c.style.display = c.innerText.toLowerCase().includes(q) ? "block" : "none");
+  } else {
+    document.querySelectorAll(".book").forEach(b => b.style.display = b.innerText.toLowerCase().includes(q) ? "flex" : "none");
+  }
+}
+
+function openModal(book) {
+  activeBook = book;
+  document.getElementById("selectedBookTitle").innerText = book;
+  document.getElementById("learningModal").style.display = "flex";
+}
+function closeModal() { document.getElementById("learningModal").style.display = "none"; }
+
+function openResource(type) {
+  const lang = document.getElementById("langChoice").value;
+  let q = "";
+  
+  // Logic: Targets normal university studies AND competitive exams
+  if (type === "book") q = `${activeBook} B.Tech engineering reference textbook filetype:pdf`;
+  else if (type === "notes") q = `${activeBook} engineering lecture notes PDF simplified`;
+  else if (type === "papers") q = `${activeBook} university exam solved question papers and GATE`;
+  else if (type === "test") q = `${activeBook} MCQs and viva questions with answers`;
+  else {
+    // Broad Video Search
+    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(activeBook + " " + lang + " full course tutorial engineering")}`, "_blank");
+    closeModal();
+    return;
+  }
+
+  window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`, "_blank");
+  closeModal();
+}
+
+function show(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+function goHome() { 
+  show("page-main"); 
+  document.getElementById("searchBox").value = ""; 
+  globalSearch(); 
+}
+</script>
+</body>
+</html>

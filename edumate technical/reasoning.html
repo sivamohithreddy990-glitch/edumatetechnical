@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reasoning App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{ --glow:#00f7ff; }
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:radial-gradient(circle at top,#0f2027,#000);
+  color:#fff;
+  min-height:100vh;
+}
+
+.page{
+  display:none;
+  padding:20px;
+  animation:fade .4s ease;
+  position:relative;
+}
+.page.active{display:block;}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(12px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+h2{
+  text-align:center;
+  margin:40px 0 25px;
+  letter-spacing:1px;
+}
+
+/* Back Button */
+.backTop{
+  position:absolute;
+  top:15px;
+  left:15px;
+  background:rgba(255,255,255,0.15);
+  padding:8px 14px;
+  border-radius:10px;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(0,247,255,.4);
+  backdrop-filter:blur(6px);
+}
+
+/* ======= Reasoning Circles Layout ======= */
+.circles{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:30px;
+  place-items:center;
+  margin-top:25px;
+}
+
+.circle{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+  background:linear-gradient(145deg,#0d0d0d,#050505);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-size:26px;
+  cursor:pointer;
+  box-shadow:0 0 18px rgba(0,247,255,.35), inset 0 0 10px rgba(0,247,255,.25);
+  transition:.3s;
+}
+
+.circle:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 28px var(--glow);
+}
+
+.circle span{
+  font-size:14px;
+  margin-top:6px;
+}
+
+/* Bottom circle centered */
+.circle:nth-child(3){
+  grid-column:1 / 3;
+}
+
+/* Cards */
+.card{
+  background:rgba(255,255,255,.06);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:18px;
+  box-shadow:0 0 20px rgba(0,247,255,.15);
+  cursor:pointer;
+}
+
+/* Test Options */
+.option{
+  padding:12px;
+  margin:10px 0;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.2);
+  cursor:pointer;
+}
+.option.correct{background:#064e3b;}
+.option.wrong{background:#7f1d1d;}
+
+.explain-card{
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.15);
+  padding:15px;
+  border-radius:14px;
+  margin-top:10px;
+}
+
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#00f7ff,#0077ff);
+  color:#000;
+  font-weight:bold;
+  margin-top:15px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HOME (Reasoning Only) -->
+<div class="page active" id="home">
+  <h2>🧩 Reasoning</h2>
+
+  <div class="circles">
+    <div class="circle" onclick="openP('videos')">🎥<span>Videos</span></div>
+    <div class="circle" onclick="openP('test')">🧠<span>Test</span></div>
+    <div class="circle" onclick="openP('notes')">📘<span>Notes</span></div>
+  </div>
+</div>
+
+<!-- VIDEOS -->
+<div class="page" id="videos">
+  <div class="backTop" onclick="openP('home')">⬅ Back</div>
+  <h2>📹 Reasoning Videos</h2>
+
+  <div class="card" onclick="openYT('https://youtu.be/XF45pbZVhaY?si=1Jy4WJjC1CDcs151')">
+    Logical Reasoning Basics to Advanced(telugu) — click here
+  </div>
+
+  <div class="card" onclick="openYT('https://youtu.be/fhXtxsY42Eo?si=ueDkLWlCE_sbt5UI')">
+    Blood Relation basic to advanced(english) — click me
+  </div>
+</div>
+
+<!-- TEST -->
+<div class="page" id="test">
+  <div class="backTop" onclick="openP('home')">⬅ Back</div>
+  <h2>🧠 Reasoning Test</h2>
+
+  <div id="qBox"></div>
+  <div id="expBox"></div>
+  <button class="btn" id="nextBtn" onclick="nextQ()">Next</button>
+</div>
+
+<!-- NOTES -->
+<div class="page" id="notes">
+  <div class="backTop" onclick="openP('home')">⬅ Back</div>
+  <h2>📘 Reasoning Notes</h2>
+
+  <div class="card">Blood Relations → Father, Mother, Brother, Sister</div>
+  <div class="card">Coding–Decoding → Reverse, +1, -1 Logic</div>
+  <div class="card">Directions → N, S, E, W Turning rules</div>
+   <!-- COMPLEX BLOOD RELATIONS -->
+  <div class="card">Complex Blood Relations → Mixed generations in one question</div>
+  <div class="card">Use symbols → ♂ male, ♀ female</div>
+  <div class="card">Solve from last statement backwards</div>
+  <div class="card">Avoid assuming gender unless mentioned</div>
+
+  <!-- ADVANCED DIRECTION SENSE -->
+  <div class="card">Multiple turns → Track facing direction carefully</div>
+  <div class="card">Diagonal movement → Use Pythagoras at end</div>
+  <div class="card">Final distance → Always shortest path</div>
+
+  <!-- DOUBLE CODING / MIXED CODING -->
+  <div class="card">Double Coding → Letters + Numbers combined</div>
+  <div class="card">Skip-letter coding → A→C, B→D</div>
+  <div class="card">Position difference logic → Z − A = 25</div>
+  <div class="card">Word-wise different patterns possible</div>
+
+  <!-- ADVANCED ANALOGY -->
+  <div class="card">Analogy → Multiple relations in one question</div>
+  <div class="card">Check direction of relationship</div>
+  <div class="card">Reject options with partial match</div>
+
+  <!-- COMPLEX SERIES -->
+  <div class="card">Difference series → Find gap between numbers</div>
+  <div class="card">Double pattern series → Two rules simultaneously</div>
+  <div class="card">Prime + Square mixed series</div>
+  <div class="card">Letter jump + reverse series</div>
+
+  <!-- HIGH LEVEL SEATING ARRANGEMENT -->
+  <div class="card">Circular + Linear combined seating</div>
+  <div class="card">Uncertain positions → Use possibilities method</div>
+  <div class="card">Facing center vs outside changes logic</div>
+  <div class="card">Fix one person to remove rotation confusion</div>
+
+  <!-- PUZZLE BASED REASONING -->
+  <div class="card">Multi-variable puzzles → Person, Color, City, Age</div>
+  <div class="card">Create table for elimination</div>
+  <div class="card">Negative information is key</div>
+  <div class="card">Never jump to conclusion early</div>
+
+  <!-- INEQUALITY (ADVANCED) -->
+  <div class="card">Coded inequalities → Symbols represent relations</div>
+  <div class="card">Indirect comparison → Use elimination</div>
+  <div class="card">Conflicting relations → Answer = No conclusion</div>
+
+  <!-- DATA SUFFICIENCY (ADVANCED) -->
+  <div class="card">Data sufficiency → Question may not need exact answer</div>
+  <div class="card">Check statements independently first</div>
+  <div class="card">Avoid solving fully if relation is clear</div>
+
+  <!-- INPUT OUTPUT (ADVANCED) -->
+  <div class="card">Input-Output → Multi-step rearrangement</div>
+  <div class="card">Observe movement of words/numbers</div>
+  <div class="card">Pattern repeats every step</div>
+
+  <!-- LOGICAL DEDUCTIONS -->
+  <div class="card">Logical deductions → Based strictly on facts</div>
+  <div class="card">If-then logic → Conditional reasoning</div>
+  <div class="card">False condition gives no conclusion</div>
+
+  <!-- CRITICAL REASONING -->
+  <div class="card">Arguments → Strong vs Weak</div>
+  <div class="card">Strengthen → Support core idea</div>
+  <div class="card">Weaken → Attack assumption</div>
+
+  <!-- ASSUMPTION (ADVANCED) -->
+  <div class="card">Hidden assumption → Unstated but necessary</div>
+  <div class="card">Statement collapses if assumption removed</div>
+
+  <!-- COURSE OF ACTION -->
+  <div class="card">Course of action → Immediate & practical solution</div>
+  <div class="card">Extreme or emotional actions are invalid</div>
+
+  <!-- DECISION MAKING -->
+  <div class="card">Decision making → Based on weighted conditions</div>
+  <div class="card">Ignore irrelevant information</div>
+
+  <!-- CAUSE & EFFECT -->
+  <div class="card">Cause must precede effect</div>
+  <div class="card">Effect cannot become cause</div>
+
+  <!-- CUBE & DICE (ADVANCED) -->
+  <div class="card">Opposite faces never appear together</div>
+  <div class="card">Three faces visible → All are adjacent</div>
+  <div class="card">Rotation does not change adjacency</div>
+
+  <!-- NON-VERBAL ADVANCED -->
+  <div class="card">Figure analogy → Shape + rotation logic</div>
+  <div class="card">Paper cutting → Count symmetry folds</div>
+  <div class="card">Pattern completion → Observe movement</div>
+<!-- TIMER / TIME MANAGEMENT -->
+  <div class="card">Timer-based tests → Accuracy first, speed later</div>
+  <div class="card">Time allocation → Easy → Medium → Hard</div>
+  <div class="card">Skip lengthy questions initially</div>
+  <div class="card">Last 30 seconds → Guess only if elimination possible</div>
+  <div class="card">Do not spend more than 1 minute per question</div>
+
+  <!-- MATHEMATICAL OPERATIONS -->
+  <div class="card">Mathematical Operations → Symbols represent operations</div>
+  <div class="card">Always replace symbols before solving</div>
+  <div class="card">Use BODMAS after symbol replacement</div>
+  <div class="card">Options checking saves time</div>
+
+  <!-- NUMBER SERIES (ADVANCED) -->
+  <div class="card">Series → Observe difference, ratio, pattern</div>
+  <div class="card">Second-level difference → Difference of differences</div>
+  <div class="card">Mixed logic → Square + addition</div>
+  <div class="card">Alternate terms → Two independent patterns</div>
+
+  <!-- SIMPLIFICATION -->
+  <div class="card">Simplification → Solve brackets first</div>
+  <div class="card">Approximation → Round numbers for speed</div>
+  <div class="card">Cancel common factors quickly</div>
+
+  <!-- PERCENTAGE -->
+  <div class="card">x% of y = y% of x</div>
+  <div class="card">Fraction conversion → 50%=1/2, 25%=1/4</div>
+  <div class="card">Successive percentage → Multiply factors</div>
+
+  <!-- RATIO & PROPORTION -->
+  <div class="card">Ratio → Compare same units only</div>
+  <div class="card">Compound ratio → Multiply ratios</div>
+  <div class="card">Direct proportion → Both increase together</div>
+  <div class="card">Inverse proportion → One increases, other decreases</div>
+
+  <!-- AVERAGE -->
+  <div class="card">Average = Sum ÷ Total items</div>
+  <div class="card">New average → Adjust using difference method</div>
+  <div class="card">Combined average → Weighted average</div>
+
+  <!-- TIME & WORK -->
+  <div class="card">Work = Rate × Time</div>
+  <div class="card">Efficiency → Inverse of time</div>
+  <div class="card">Together work → Add efficiencies</div>
+
+  <!-- TIME & DISTANCE -->
+  <div class="card">Speed = Distance ÷ Time</div>
+  <div class="card">Relative speed → Opposite direction = sum</div>
+  <div class="card">Same direction → Difference of speeds</div>
+
+  <!-- CUBES & DICE (CORE RULES) -->
+  <div class="card">Cube → 6 faces, 12 edges, 8 vertices</div>
+  <div class="card">Dice → Opposite faces sum = 7</div>
+  <div class="card">Opposite faces never appear together</div>
+  <div class="card">Three faces visible → All are adjacent</div>
+
+  <!-- CUBE ROTATION -->
+  <div class="card">Rotation does not change opposite faces</div>
+  <div class="card">If two faces are opposite → Third face is adjacent to both</div>
+  <div class="card">Same dice → Same opposite pairs always</div>
+
+  <!-- CUBE FOLDING -->
+  <div class="card">Cube folding → Adjacent faces share an edge</div>
+  <div class="card">Faces touching center are adjacent</div>
+  <div class="card">Opposite faces never share an edge</div>
+
+  <!-- COUNTING CUBES -->
+  <div class="card">Painted cube → Corner cubes have 3 painted faces</div>
+  <div class="card">Edge cubes → 2 painted faces</div>
+  <div class="card">Face center cubes → 1 painted face</div>
+  <div class="card">Inner cubes → No painted face</div>
+
+  <!-- ADVANCED CUBE QUESTIONS -->
+  <div class="card">Missing face → Use opposite-face logic</div>
+  <div class="card">Same dice → Rotation check, not mirror</div>
+  <div class="card">Mirror image → Changes left-right only</div>
+
+  <!-- EXAM STRATEGY -->
+  <div class="card">Maths + Cube questions → High scoring & quick</div>
+  <div class="card">Avoid lengthy calculations under timer</div>
+  <div class="card">Use elimination aggressively</div>
+  <!-- BLOOD RELATIONS -->
+  <div class="card">Blood Relations → Family based problems</div>
+  <div class="card">Father / Mother → Parents</div>
+  <div class="card">Son / Daughter → Male / Female child</div>
+  <div class="card">Brother / Sister → Male / Female sibling</div>
+  <div class="card">Father’s son → Brother</div>
+  <div class="card">Mother’s husband → Father</div>
+  <div class="card">Brother’s wife → Sister-in-law</div>
+  <div class="card">Father’s father → Grandfather</div>
+  <div class="card">Mother’s mother → Grandmother</div>
+  <div class="card">Use family tree for long relations</div>
+
+  <!-- DIRECTIONS -->
+  <div class="card">Directions → North (↑), South (↓), East (→), West (←)</div>
+  <div class="card">Right turn → Clockwise</div>
+  <div class="card">Left turn → Anti-clockwise</div>
+  <div class="card">Facing North + Right turn → East</div>
+  <div class="card">Facing East + Left turn → North</div>
+  <div class="card">Opposite direction → 180° turn</div>
+  <div class="card">Always draw direction diagram</div>
+  <!-- CODING-DECODING -->
+  <div class="card">Coding-Decoding → Letter/Number substitution</div>
+  <!-- CODING DECODING -->
+  <div class="card">Alphabet positions → A=1 to Z=26</div>
+  <div class="card">Reverse alphabet → A=26 to Z=1</div>
+  <div class="card">+1 / −1 logic → Next / Previous letter</div>
+  <div class="card">Word reverse → CAT → TAC</div>
+  <div class="card">Mixed coding → Position + reverse</div>
+  <div class="card">Symbol coding → Letters replaced by symbols</div>
+
+  <!-- ANALOGY -->
+  <div class="card">Analogy → A : B :: C : ?</div>
+  <div class="card">Meaning based analogy</div>
+  <div class="card">Function based analogy</div>
+  <div class="card">Alphabet based analogy</div>
+  <div class="card">Number based analogy</div>
+
+  <!-- CLASSIFICATION -->
+  <div class="card">Classification → Find odd one out</div>
+  <div class="card">Based on meaning</div>
+  <div class="card">Based on letters</div>
+  <div class="card">Based on numbers</div>
+  <div class="card">Living vs Non-living</div>
+
+  <!-- SERIES -->
+  <div class="card">Number series → +, −, ×, ÷ pattern</div>
+  <div class="card">Alternate series → Two patterns</div>
+  <div class="card">Square series → 1, 4, 9, 16</div>
+  <div class="card">Cube series → 1, 8, 27</div>
+  <div class="card">Alphabet series → A, C, E, G</div>
+  <div class="card">Mixed series → Number + Alphabet</div>
+
+  <!-- SEATING ARRANGEMENT -->
+  <div class="card">Linear seating → Left / Right based</div>
+  <div class="card">Circular seating → Facing center / outside</div>
+  <div class="card">Facing center → Left = Anti-clockwise</div>
+  <div class="card">Facing outside → Left = Clockwise</div>
+  <div class="card">Solve step-by-step using diagram</div>
+
+  <!-- RANKING -->
+  <div class="card">Ranking → Position based problems</div>
+  <div class="card">Rank from top + Rank from bottom − 1 = Total persons</div>
+  <div class="card">Height / Age / Marks ranking</div>
+
+  <!-- STATEMENT & CONCLUSION -->
+  <div class="card">Statement → Given facts only</div>
+  <div class="card">Conclusion → Must be definitely true</div>
+  <div class="card">No assumptions allowed</div>
+  <div class="card">Some / All / No logic important</div>
+
+  <!-- SYLLOGISM -->
+  <div class="card">All A are B → A ⊆ B</div>
+  <div class="card">Some A are B → Partial overlap</div>
+  <div class="card">No A are B → Separate circles</div>
+  <div class="card">Use Venn diagrams</div>
+
+  <!-- PUZZLES -->
+  <div class="card">Puzzle → Combination of multiple conditions</div>
+  <div class="card">Draw table or diagram</div>
+  <div class="card">Solve fixed information first</div>
+
+  <!-- NON VERBAL -->
+  <div class="card">Non-verbal → Figure based reasoning</div>
+  <div class="card">Mirror image → Left ↔ Right</div>
+  <div class="card">Water image → Up ↔ Down</div>
+  <div class="card">Paper folding → Count holes</div>
+  <div class="card">Figure series → Pattern based</div>
+  <!-- ADVANCED REASONING NOTES EXTENSION -->
+
+  <!-- MATHEMATICAL OPERATIONS -->
+  <div class="card">Mathematical Operations → Symbols represent operations</div>
+  <div class="card">BODMAS rule → Brackets, Orders, Division, Multiplication, Addition, Subtraction</div>
+  <div class="card">Solve inside brackets first</div>
+  <div class="card">Check options by substitution</div>
+
+  <!-- INEQUALITIES -->
+  <div class="card">Inequality → >, <, ≥, ≤ based comparison</div>
+  <div class="card">Use chain logic → A > B > C</div>
+  <div class="card">Same symbols → Compare directly</div>
+  <div class="card">Different symbols → Use elimination</div>
+  <div class="card">No definite relation → Answer = Cannot be determined</div>
+
+  <!-- ALPHABET TEST -->
+  <div class="card">Alphabet test → Position of letters</div>
+  <div class="card">Opposite letters → A ↔ Z, B ↔ Y</div>
+  <div class="card">Middle letters → M, N</div>
+  <div class="card">Vowels → A, E, I, O, U</div>
+  <div class="card">Consonants → Remaining letters</div>
+
+  <!-- WORD FORMATION -->
+  <div class="card">Word formation → Rearranging letters</div>
+  <div class="card">Meaningful word check</div>
+  <div class="card">Repeated letters → Important clue</div>
+  <div class="card">Check prefix & suffix</div>
+
+  <!-- CLOCK & CALENDAR -->
+  <div class="card">Clock → Angle between hour & minute hands</div>
+  <div class="card">Angle formula → |30H − 5.5M|</div>
+  <div class="card">Right angle → 90°</div>
+  <div class="card">Straight angle → 180°</div>
+  <div class="card">Calendar → Odd days concept</div>
+  <div class="card">Leap year → Divisible by 4 (except centuries)</div>
+
+  <!-- CUBE & DICE -->
+  <div class="card">Dice → Opposite faces sum = 7</div>
+  <div class="card">Adjacent faces → Share an edge</div>
+  <div class="card">Cube folding → Visualize faces</div>
+  <div class="card">Count visible faces carefully</div>
+
+  <!-- LOGICAL VENN DIAGRAMS -->
+  <div class="card">Venn diagrams → Category based logic</div>
+  <div class="card">All → One circle inside another</div>
+  <div class="card">Some → Partial overlap</div>
+  <div class="card">None → Separate circles</div>
+
+  <!-- CAUSE & EFFECT -->
+  <div class="card">Cause → Reason for event</div>
+  <div class="card">Effect → Result of event</div>
+  <div class="card">Must be logical & practical</div>
+  <div class="card">Avoid emotional conclusions</div>
+
+  <!-- ASSUMPTIONS -->
+  <div class="card">Assumption → Something taken for granted</div>
+  <div class="card">Implicit assumption → Hidden in statement</div>
+  <div class="card">Statement must stand true if assumption removed</div>
+
+  <!-- COURSE OF ACTION -->
+  <div class="card">Course of action → Practical solution</div>
+  <div class="card">Should address the problem</div>
+  <div class="card">Must be realistic & logical</div>
+
+  <!-- DECISION MAKING -->
+  <div class="card">Decision making → Choose best option</div>
+  <div class="card">Based on given data only</div>
+  <div class="card">Avoid personal bias</div>
+
+  <!-- DATA SUFFICIENCY -->
+  <div class="card">Data sufficiency → Check if data is enough</div>
+  <div class="card">Statement I alone sufficient?</div>
+  <div class="card">Statement II alone sufficient?</div>
+  <div class="card">Both together sufficient?</div>
+  <div class="card">Even both insufficient?</div>
+
+  <!-- INPUT OUTPUT -->
+  <div class="card">Input-Output → Step-wise word/number processing</div>
+  <div class="card">Observe pattern between steps</div>
+  <div class="card">Apply same rule to new input</div>
+
+  <!-- ASSERTION & REASON -->
+  <div class="card">Assertion → Statement</div>
+  <div class="card">Reason → Explanation</div>
+  <div class="card">Check truth of both</div>
+  <div class="card">Reason must explain assertion</div>
+
+  <!-- CRITICAL REASONING -->
+  <div class="card">Critical reasoning → Analyze argument</div>
+  <div class="card">Strengthen / Weaken logic</div>
+  <div class="card">Identify assumption</div>
+
+  <!-- FINAL MASTER TIP -->
+  <div class="card">🚀 Master Tip → Accuracy first, speed later</div>
+<div class="card">Notes is completed and all the best to exams</div>
+</div>
+
+<script>
+function openP(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function openYT(link){
+  window.open(link,"_blank");
+}
+
+/*** SIMPLE REASONING TEST ***/
+let i=0,score=0;
+
+const qs=[
+ { q:"A is father of B. B is father of C. A is ___ of C?", o:["Brother","Grandfather","Uncle"], a:1, exp:"A → B → C (A is Grandfather)" },
+ { q:"If CAT = DBU then DOG = ?", o:["EPH","FPI","DPH"], a:0, exp:"+1 rule → D,O,G → E,P,H" },
+ { q:"A is father of B. B is sister of C. What is A to C?", 
+  o:["Uncle","Father","Grandfather","Brother"], a:1,
+  exp:"A → B & C, so A is father of both" },
+
+{ q:"P is mother of Q. Q is father of R. What is P to R?", 
+  o:["Grandmother","Mother","Aunt","Sister"], a:0,
+  exp:"P → Q → R (P is R's grandmother)" },
+
+{ q:"A is brother of B. B is mother of C. What is A to C?", 
+  o:["Uncle","Brother","Nephew","Father"], a:0,
+  exp:"Brother of mother = Uncle" },
+
+{ q:"X is son of Y. Y is daughter of Z. What is X to Z?", 
+  o:["Son","Grandson","Uncle","Father"], a:1,
+  exp:"X → Y → Z (X is Z’s grandson)" },
+
+{ q:"J is father of K. K is father of L. J is ___ of L?", 
+  o:["Father","Grandfather","Uncle","Brother"], a:1,
+  exp:"J → K → L" },
+ { q:"If CAT = DBU, then DOG = ?", 
+  o:["EPH","FPI","DPH","FPH"], a:0,
+  exp:"+1 rule → C→D, A→B, T→U same for DOG → EPH" },
+
+{ q:"If SKY = TLS, then FAN = ?", 
+  o:["GBO","GAM","EBM","GBM"], a:0,
+  exp:"+1 rule → F→G, A→B, N→O" },
+
+{ q:"In a code, BOY = 25. GIRL = ?", 
+  o:["52","60","59","56"], a:2,
+  exp:"Sum of alphabetical positions: G7+I9+R18+L12 = 46" },
+
+{ q:"If APPLE = 50, then MANGO = ?", 
+  o:["52","54","56","60"], a:1,
+  exp:"A1+P16+P16+L12+E5=50; M13+A1+N14+G7+O15=50" },
+
+{ q:"If CAR = 31218, then BUS = ?", 
+  o:["22119","21319","22120","21219"], a:1,
+  exp:"C3 A1 R18 → B2 U21 S19 → 21319" },
+ { q:"If A is facing East and turns right, which direction now?", 
+  o:["West","North","South","East"], a:2,
+  exp:"East → turn right → South" },
+
+{ q:"A walks 5m North, 5m East, 5m South. Where is he now?", 
+  o:["West","East","North","South"], a:1,
+  exp:"Net movement = 5m East" },
+
+{ q:"Facing South, turn left twice. Now facing?", 
+  o:["East","West","South","North"], a:3,
+  exp:"South → East → North" },
+
+{ q:"Facing North, turn right + right. Facing?", 
+  o:["South","East","West","North"], a:0,
+  exp:"North → East → South" },
+
+{ q:"A walks 10m West, then 10m North. Where is he?", 
+  o:["North-West","South-East","South-West","North-East"], a:0,
+  exp:"10m left + 10m up = NW" },
+ { q:"2, 4, 8, 16, ?", 
+  o:["18","24","32","20"], a:2,
+  exp:"×2 pattern" },
+
+{ q:"5, 10, 20, 40, ?", 
+  o:["60","70","80","50"], a:2,
+  exp:"×2 each time → 80" },
+
+{ q:"A, C, E, G, ?", 
+  o:["H","I","J","K"], a:1,
+  exp:"+2 letters → I" },
+
+{ q:"3, 9, 27, ?", 
+  o:["54","81","72","60"], a:1,
+  exp:"×3 → 81" },
+
+{ q:"7, 14, 21, 28, ?", 
+  o:["32","33","35","36"], a:2,
+  exp:"+7 pattern" },
+   { q:"Doctor : Hospital :: Teacher : ?", 
+  o:["School","Office","Lab","Court"], a:0,
+  exp:"Teacher works in School" },
+
+{ q:"Bird : Nest :: Lion : ?", 
+  o:["Forest","Den","Cave","House"], a:1,
+  exp:"Lion lives in Den" },
+
+{ q:"Eye : See :: Ear : ?", 
+  o:["Hear","Smell","Taste","Touch"], a:0,
+  exp:"Ear used for hearing" },
+ { q:"Find the odd one out: Apple, Mango, Banana, Carrot", 
+  o:["Apple","Mango","Banana","Carrot"], a:3,
+  exp:"Carrot is a vegetable, others fruits" },
+
+{ q:"Dog, Cat, Cow, Tiger", 
+  o:["Tiger","Cat","Dog","Cow"], a:0,
+  exp:"Tiger is wild, others domestic" },
+  { q:"Find the odd one out: Apple, Mango, Banana, Carrot", 
+  o:["Apple","Mango","Banana","Carrot"], a:3,
+  exp:"Carrot is a vegetable, others fruits" },
+{ q:"What is 25% of 240?", o:["50","60","55","65"], a:1, exp:"25% = 1/4 → 240/4 = 60" },
+
+{ q:"A shopkeeper buys for 800 and sells for 1000. Profit %?", 
+  o:["20%","25%","15%","10%"], a:0, exp:"Profit=200 → 200/800 ×100=25%" },
+
+{ q:"Find average: 12, 18, 24, 30", 
+  o:["20","22","24","25"], a:1, exp:"Sum=84 → 84/4=21" },
+
+{ q:"Ratio of 2:3 is equal to?", 
+  o:["4:9","20:30","6:9","8:10"], a:1, exp:"Multiply by 10 → 20:30" },
+
+{ q:"Time taken for 60 km at 30 km/h?", 
+  o:["1 hr","1.5 hr","2 hr","2.5 hr"], a:2, exp:"T = D/S = 60/30 = 2 hr" },
+
+{ q:"Simple Interest on 2000 at 5% for 2 years?", 
+  o:["150","200","220","180"], a:1, exp:"SI = (2000×5×2)/100 = 200" },
+
+{ q:"If x=5, find 3x + 2", 
+  o:["15","17","18","20"], a:1, exp:"3*5+2=17" },
+
+{ q:"Square of 18?", 
+  o:["324","294","314","284"], a:0, exp:"18×18 = 324" },
+
+{ q:"Solve: 12 + 18 ÷ 3", 
+  o:["6","18","20","24"], a:2, exp:"18/3=6 → 12+6=18" },
+
+{ q:"LCM of 4, 6, 8?", 
+  o:["12","16","24","48"], a:2, exp:"LCM = 24" },
+
+{ q:"HCF of 12 & 18?", 
+  o:["3","6","9","12"], a:1, exp:"6 divides both" },
+
+{ q:"A train runs 120 km in 2 hours. Speed?", 
+  o:["40","50","60","70"], a:2, exp:"120/2 = 60 km/h" },
+
+{ q:"Convert 0.25 to fraction", 
+  o:["1/2","1/3","1/4","2/5"], a:2, exp:"0.25=1/4" },
+
+{ q:"Solve: √144", 
+  o:["10","11","12","13"], a:2, exp:"√144=12" },
+
+{ q:"Cube of 3?", 
+  o:["9","18","27","24"], a:2, exp:"3×3×3=27" },
+
+{ q:"Simplify: 45% of 200", 
+  o:["70","80","85","90"], a:3, exp:"0.45×200 = 90" },
+
+{ q:"Selling Price = Cost Price + ?", 
+  o:["Loss","Tax","Profit","Discount"], a:2, exp:"SP = CP + Profit" },
+
+{ q:"What is 2/5 of 150?", 
+  o:["40","50","60","70"], a:2, exp:"2/5×150=60" },
+
+{ q:"Solve: (15 × 4) – 10", 
+  o:["40","50","45","55"], a:2, exp:"60–10=50" },
+
+{ q:"What is the next prime after 17?", 
+  o:["18","19","21","23"], a:1, exp:"Next prime is 19" },  
+{ q:"A is brother of B. B is mother of C. A is?", 
+  o:["Father","Uncle","Grandfather","Brother"], a:1,
+  exp:"Brother of mother = Uncle" },
+
+{ q:"If EAST becomes ZHVW, WEST becomes?", 
+  o:["DGHV","DVHG","DHSV","DSHV"], a:0,
+  exp:"Opposite direction letters" },
+
+{ q:"Ravi faces North. Turns right + right. Now facing?", 
+  o:["South","East","West","North"], a:0,
+  exp:"North→East→South" },
+
+{ q:"Find odd one: Apple, Banana, Mango, Carrot", 
+  o:["Apple","Banana","Mango","Carrot"], a:3,
+  exp:"Carrot is vegetable" },
+
+{ q:"COW : MILK :: HEN : ?", 
+  o:["Egg","Meat","Feather","Fly"], a:0,
+  exp:"Hen gives egg" },
+
+{ q:"5, 10, 20, 40, ?", 
+  o:["60","70","80","90"], a:2,
+  exp:"×2 pattern" },
+
+{ q:"A is South of B. B is East of C. A is?", 
+  o:["SE of C","SW of C","NE of C","NW of C"], a:0,
+  exp:"East then South = SE" },
+
+{ q:"If CAT = DBU then FAN = ?", 
+  o:["GBO","GBN","FBP","GAM"], a:0,
+  exp:"+1 shift" },
+
+{ q:"Find missing: 3, 6, 9, 12, ?", 
+  o:["16","15","14","18"], a:1,
+  exp:"+3 pattern" },
+
+{ q:"Odd one out: Dog, Cat, Cow, Tiger", 
+  o:["Tiger","Cat","Dog","Cow"], a:0,
+  exp:"Tiger is wild" },
+
+{ q:"If RAM = 36, then SON = ?", 
+  o:["48","46","44","49"], a:2,
+  exp:"R18+A1+M13 = 32; S19+O15+N14=48" },
+
+{ q:"Series: A, C, F, J, ?", 
+  o:["K","N","O","P"], a:1,
+  exp:"+2, +3, +4, +5 → N" },
+
+{ q:"Cube has how many edges?", 
+  o:["8","10","12","14"], a:2,
+  exp:"Cube = 12 edges" },
+
+{ q:"Father’s son’s son = ?", 
+  o:["Brother","Nephew","Cousin","Grandson"], a:3,
+  exp:"Son’s son = Grandson" },
+
+{ q:"If TRAIN = 67, CAR = 22, then BUS = ?", 
+  o:["34","42","35","39"], a:3,
+  exp:"Sum of alphabetical positions" },
+
+{ q:"Find missing: 2, 5, 10, 17, ?", 
+  o:["24","26","28","29"], a:1,
+  exp:"+3, +5, +7 → +9 = 26" },
+
+{ q:"UP, TO, RN, ?", 
+  o:["OL","OM","ON","OK"], a:2,
+  exp:"Letters decreasing by -2" },
+
+{ q:"Square has how many diagonals?", 
+  o:["1","2","3","4"], a:1,
+  exp:"Square = 2 diagonals" },
+
+{ q:"If BLACK = CMBDL, then WHITE = ?", 
+  o:["XIJUF","XJHVG","XJIVF","XJHVF"], a:2,
+  exp:"+1 substitution" },
+
+{ q:"Brother’s mother’s brother = ?", 
+  o:["Uncle","Father","Cousin","Brother"], a:0,
+  exp:"Mother’s brother = Uncle" },
+ 
+{ q:"A is brother of B. B is mother of C. A is?", o:["Uncle","Father","Cousin","Grandfather"], a:0, exp:"Brother of mother = Uncle" },
+
+{ q:"P is father of Q. Q is sister of R. What is P to R?", o:["Uncle","Father","Grandfather","Brother"], a:1, exp:"P is father of both Q and R" },
+
+{ q:"A is mother of B. C is father of A. C is ___ of B?", o:["Grandfather","Father","Uncle","Brother"], a:0, exp:"C → A → B" },
+
+{ q:"X is son of Y. Y is daughter of Z. X is ___ of Z?", o:["Grandson","Nephew","Uncle","Brother"], a:0, exp:"X → Y → Z" },
+
+{ q:"A’s son’s daughter is?", o:["Daughter","Sister","Granddaughter","Mother"], a:2, exp:"Son’s daughter = Granddaughter" },
+
+{ q:"If EAST becomes ZHVW, WEST becomes?", o:["DGHV","DVHG","DSHV","DHSV"], a:0, exp:"Reverse alphabet rule" },
+
+{ q:"If CAT = DBU then FAN = ?", o:["GBO","GBN","FBP","GAM"], a:0, exp:"+1 letter shift" },
+
+{ q:"If SKY = TLS then WIN = ?", o:["XJO","XKP","XKO","YJP"], a:1, exp:"+1 for each letter" },
+
+{ q:"If BOY = CPZ then DOG = ?", o:["EPH","FPI","DPH","EOH"], a:0, exp:"+1 for each letter" },
+
+{ q:"COW : MILK :: HEN : ?", o:["Egg","Fly","Feather","Nest"], a:0, exp:"Hen gives eggs" },
+
+{ q:"Doctor : Hospital :: Teacher : ?", o:["Office","School","Court","College"], a:1, exp:"Teacher works in school" },
+
+{ q:"Bird : Nest :: Lion : ?", o:["Cave","Den","Forest","House"], a:1, exp:"Lion lives in Den" },
+
+{ q:"Eye : See :: Ear : ?", o:["Smell","Taste","Hear","Touch"], a:2, exp:"Ear used for hearing" },
+
+{ q:"Find odd one: Apple, Mango, Banana, Carrot", o:["Apple","Mango","Banana","Carrot"], a:3, exp:"Carrot is vegetable" },
+
+{ q:"Find odd one: Dog, Cat, Cow, Tiger", o:["Dog","Cat","Cow","Tiger"], a:3, exp:"Tiger is wild" },
+
+{ q:"Find odd one: Car, Bus, Train, Aeroplane", o:["Car","Bus","Train","Aeroplane"], a:3, exp:"Aeroplane is air transport" },
+
+{ q:"Which is different: Circle, Square, Triangle, Cube?", o:["Circle","Square","Triangle","Cube"], a:3, exp:"Cube is 3D" },
+
+{ q:"Series: A, C, E, G, ?", o:["H","I","J","K"], a:1, exp:"+2 letters" },
+
+{ q:"Series: 2, 6, 12, 20, ?", o:["28","30","32","36"], a:0, exp:"+4, +6, +8 → +10" },
+
+{ q:"Series: 3, 9, 27, ?", o:["54","72","81","60"], a:2, exp:"×3 pattern" },
+
+{ q:"3, 6, 12, 24, ?", o:["36","40","48","50"], a:2, exp:"×2 pattern" },
+
+{ q:"4, 9, 16, 25, ?", o:["30","36","40","49"], a:1, exp:"Squares → 6² = 36" },
+
+{ q:"Find missing: 5, 10, 20, 40, ?", o:["70","80","90","60"], a:1, exp:"×2" },
+
+{ q:"If A=1, B=2, C=3, find: CAT", o:["24","21","22","20"], a:0, exp:"3+1+20=24" },
+
+{ q:"If RAM = 36, then SON = ?", o:["46","48","49","44"], a:1, exp:"19+15+14=48" },
+
+{ q:"Ravi faces North. Turns right. Now facing?", o:["East","South","West","North"], a:0, exp:"Right of North is East" },
+
+{ q:"Facing East, turn left twice. Now facing?", o:["East","West","South","North"], a:1, exp:"East→North→West" },
+
+{ q:"A walks 5m North, 5m East. Where is he?", o:["NE","NW","SE","SW"], a:0, exp:"North + East = NE" },
+
+{ q:"If South = Down, North = Up, East = Right. Then Right of South?", o:["East","West","North","South"], a:0, exp:"Right of South is West." },
+
+{ q:"A is 10m South of B, B is 10m East of C. A is?", o:["SE of C","SW of C","NE of C","NW of C"], a:1, exp:"East then South = SE" },
+
+{ q:"Sister’s mother’s brother is?", o:["Uncle","Father","Cousin","Brother"], a:0, exp:"Mother’s brother = Uncle" },
+
+{ q:"Mother’s father’s son = ?", o:["Uncle","Cousin","Brother","Father"], a:0, exp:"Mother’s father’s son = Uncle" },
+
+{ q:"Son’s father’s mother = ?", o:["Mother","Grandmother","Sister","Aunt"], a:1, exp:"Father’s mother = Grandmother" },
+
+{ q:"Series: 11, 22, 33, 44, ?", o:["50","55","60","66"], a:1, exp:"+11 pattern" },
+
+{ q:"Series: 1, 4, 9, 16, ?", o:["20","25","26","30"], a:1, exp:"Squares → 5²=25" },
+
+{ q:"Which is different: Table, Chair, Bed, Fan?", o:["Table","Chair","Bed","Fan"], a:3, exp:"Fan is not furniture" },
+
+{ q:"Analog: Pen : Write :: Knife : ?", o:["Cut","Point","Stab","Break"], a:0, exp:"Knife used for cutting" },
+
+{ q:"Analog: Book : Read :: Food : ?", o:["Eat","Taste","Drink","Use"], a:0, exp:"Food is eaten" },
+
+{ q:"Find odd: January, March, April, May", o:["January","March","April","May"], a:0, exp:"January is winter month" },
+
+{ q:"Clock has how many hands?", o:["1","2","3","4"], a:2, exp:"Hour, minute, second" },
+
+{ q:"Triangle has how many sides?", o:["2","3","4","5"], a:1, exp:"Triangle = 3 sides" },
+
+{ q:"Cube has how many faces?", o:["4","6","8","12"], a:1, exp:"Cube = 6 faces" },
+
+{ q:"If MONKEY = 6 letters, TIGER has?", o:["4","5","6","7"], a:1, exp:"TIGER = 5 letters" },
+
+{ q:"Which is different: Red, Blue, Yellow, Pink", o:["Red","Blue","Yellow","Pink"], a:3, exp:"Pink is not primary color" },
+
+{ q:"Father’s sister is?", o:["Aunt","Sister","Mother","Wife"], a:0, exp:"Father’s sister = Aunt" },
+
+{ q:"Mother’s brother’s son is?", o:["Brother","Cousin","Uncle","Father"], a:1, exp:"Mother’s brother’s son = Cousin" },
+
+{ q:"Series: 100, 90, 80, 70, ?", o:["65","60","55","50"], a:1, exp:"-10 pattern" }
+ 
+];
+
+function loadQ(){
+  document.getElementById("expBox").innerHTML="";
+  let q=qs[i];
+
+  let html=`<div class='card'><b>Q${i+1}. ${q.q}</b>`;
+  q.o.forEach((op,ix)=>{
+    html+=`<div class='option' onclick='chk(${ix},this)'>${op}</div>`;
+  });
+  html+=`</div>`;
+  document.getElementById("qBox").innerHTML=html;
+
+  document.getElementById("nextBtn").innerText=(i===qs.length-1)?"Finish":"Next";
+}
+
+function chk(sel,el){
+  document.querySelectorAll(".option").forEach(o=>o.style.pointerEvents="none");
+
+  let q=qs[i];
+  if(sel===q.a){
+    el.classList.add("correct");
+  } else {
+    el.classList.add("wrong");
+  }
+  document.getElementById("expBox").innerHTML=
+    `<div class='explain-card'>${q.exp}</div>`;
+}
+
+function nextQ(){
+  if(i<qs.length-1){ i++; loadQ(); }
+  else{ alert("Test Completed!"); }
+}
+
+loadQ();
+</script>
+
+</body>
+</html>

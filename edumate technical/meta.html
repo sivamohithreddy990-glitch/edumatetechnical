@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Meta AI</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #0b0e14;
+        font-family: Arial, sans-serif;
+    }
+
+    .meta-btn {
+        background: linear-gradient(90deg, #0080fb, #00f2fe);
+        color: white;
+        border: none;
+        padding: 16px 30px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .meta-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    }
+</style>
+</head>
+<body>
+
+<button class="meta-btn" onclick="openMetaAI()">
+    🚀 Open Meta AI
+</button>
+
+<script>
+function openMetaAI() {
+    // Open official Meta AI in new tab / browser
+    window.open("https://www.meta.ai", "_blank");
+}
+</script>
+
+</body>
+</html>

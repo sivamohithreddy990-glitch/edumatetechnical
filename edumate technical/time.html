@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flexible Student Timetable</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f0f4f8; color: #333; padding: 20px; }
+h2 { color: #4CAF50; text-align: center; margin-bottom: 10px; }
+.info-box { padding: 10px; background: #e0f7fa; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: bold; }
+#controls { margin-bottom: 15px; text-align: center; }
+select, input[type=number], button { padding: 8px; border-radius: 5px; border: 1px solid #999; margin: 5px; cursor: pointer; }
+button { background: #4CAF50; color: white; border: none; }
+table { border-collapse: collapse; width: 100%; margin-top: 10px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); font-size: 14px; }
+th, td { border: 1px solid #999; padding: 6px; text-align: center; }
+th { background-color: #4CAF50; color: white; }
+input[type=text], input[type=time] { width: 90%; padding: 4px; border-radius: 4px; border: 1px solid #ccc; }
+.completed { width: 18px; height: 18px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h2>📘 Flexible Student Timetable</h2>
+
+<div class="info-box" id="dateTimeBox"></div>
+
+<div id="controls">
+    <label for="periodsSelect">Number of Periods:</label>
+    <input type="number" id="periodsSelect" value="8" min="1" max="12" style="width:60px;">
+    <button onclick="saveTimetable()">💾 Save</button>
+    <button onclick="downloadTimetable()">⬇ Download</button>
+</div>
+
+<div id="timetableContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+let periodsCount = 8;
+
+// ✅ LOAD SAVED DATA FROM LOCALSTORAGE
+let timetableData = JSON.parse(localStorage.getItem("timetableData")) || {};
+
+// Initialize timetable if empty
+days.forEach(day => {
+    if (!timetableData[day]) {
+        timetableData[day] = Array(periodsCount).fill(0).map((_, i) => ({
+            period:'P'+(i+1),
+            time:'',
+            work:'',
+            completed:false
+        }));
+    }
+});
+
+// Update date and time
+function updateDateTime() {
+    const now = new Date();
+    const options = { weekday:'long', year:'numeric', month:'short', day:'numeric'};
+    document.getElementById('dateTimeBox').innerText =
+        `📅 Today: ${now.toLocaleDateString(undefined, options)} | ⏰ Time: ${now.toLocaleTimeString()}`;
+}
+
+// Create timetable
+function createTimetable() {
+    const container = document.getElementById('timetableContainer');
+    container.innerHTML = '';
+    const periodCount = parseInt(document.getElementById('periodsSelect').value);
+    periodsCount = periodCount;
+
+    days.forEach(day => {
+        while(timetableData[day].length < periodCount)
+            timetableData[day].push({period:'P'+(timetableData[day].length+1), time:'', work:'', completed:false});
+        timetableData[day] = timetableData[day].slice(0, periodCount);
+    });
+
+    const table = document.createElement('table');
+    let headerRow = `<tr><th>Day</th>`;
+    for (let i=1; i <= periodCount; i++) headerRow += `<th colspan="3">Period ${i}</th>`;
+    headerRow += `</tr>`;
+
+    let subHeaderRow = `<tr><th></th>`;
+    for (let i=1;i<=periodCount;i++) subHeaderRow += '<th>Time</th><th>Work</th><th>✔</th>';
+    subHeaderRow += "</tr>";
+
+    table.innerHTML = `<thead>${headerRow}${subHeaderRow}</thead>`;
+    const tbody = document.createElement('tbody');
+
+    days.forEach(day => {
+        let row = `<tr><td><b>${day}</b></td>`;
+        timetableData[day].forEach((entry,i) => {
+            row += `
+                <td><input type="time" value="${entry.time}" onchange="updateData('${day}',${i},'time',this.value)"></td>
+                <td><input type="text" value="${entry.work}" onchange="updateData('${day}',${i},'work',this.value)"></td>
+                <td><input type="checkbox" class="completed" ${entry.completed?'checked':''} onchange="updateData('${day}',${i},'completed',this.checked)"></td>
+            `;
+        });
+        row += "</tr>";
+        tbody.innerHTML += row;
+    });
+
+    table.appendChild(tbody);
+    container.appendChild(table);
+}
+
+// Update data + auto save
+function updateData(day,index,key,value){
+    timetableData[day][index][key] = value;
+    localStorage.setItem("timetableData", JSON.stringify(timetableData)); // ✅ auto save
+}
+
+// Save button
+function saveTimetable(){
+    localStorage.setItem("timetableData", JSON.stringify(timetableData));
+    alert("✅ Timetable saved permanently!");
+}
+
+// Download timetable image
+function downloadTimetable(){
+    html2canvas(document.getElementById('timetableContainer')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = "Timetable_AllDays.png";
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+
+document.getElementById('periodsSelect').addEventListener('change', createTimetable);
+
+// Init
+updateDateTime();
+setInterval(updateDateTime,1000);
+createTimetable();
+</script>
+
+</body>
+</html>

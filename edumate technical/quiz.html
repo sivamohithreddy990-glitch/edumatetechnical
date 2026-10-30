@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Eternal Dharma: 500 Verses of Wisdom</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --gold: #9b7e46;
+      --bg: #130c06;
+      --card: #20140b;
+      --btn: #2d1e12;
+      --orange: #ff9933; 
+      --red: #b91c1c;
+      --text: #f4e4bc;
+    }
+
+    body {
+      font-family: 'Constantia', 'Georgia', serif;
+      background-color: var(--bg);
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; margin: 0; color: var(--text);
+    }
+
+    .quiz-frame {
+      width: 100%; max-width: 480px; height: 98vh;
+      background-color: var(--card);
+      border-left: 10px solid var(--gold);
+      border-right: 10px solid var(--gold);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px; box-sizing: border-box;
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    }
+
+    .stats {
+      width: 100%; display: flex; justify-content: space-between;
+      padding: 10px; border-bottom: 1px solid var(--gold);
+      font-weight: bold; font-size: 0.9rem;
+    }
+
+    .badge {
+      background: #7a0000; color: white;
+      padding: 5px 20px; margin-top: 15px;
+      font-size: 0.7rem; letter-spacing: 3px;
+      border: 1px solid var(--gold);
+    }
+
+    #question-text {
+      font-size: 1.4rem; text-align: center;
+      margin: 30px 0; line-height: 1.6; min-height: 140px;
+      color: #fff;
+    }
+
+    .btn-stack {
+      width: 100%; display: flex; flex-direction: column;
+      gap: 12px; margin-top: auto; margin-bottom: 20px;
+    }
+
+    .ans-btn {
+      background: var(--btn); border: 1px solid #4a3526;
+      border-radius: 8px; color: var(--text);
+      padding: 18px; font-size: 1.1rem; cursor: pointer;
+      transition: 0.2s; text-align: center;
+    }
+
+    .ans-btn.correct { background: var(--orange) !important; color: #000 !important; font-weight: bold; border-color: #fff; }
+    .ans-btn.wrong { background: var(--red) !important; color: white !important; border-color: #fff; }
+
+    .footer { font-size: 0.7rem; opacity: 0.5; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+
+<div class="quiz-frame">
+  <div class="stats">
+    <span>PUNYA (CORRECT): <span id="c-score" style="color:#2ecc71">0</span></span>
+    <span>DOSHA (WRONG): <span id="w-score" style="color:#ff4d4d">0</span></span>
+  </div>
+
+  <div id="category-label" class="badge">itihāsa</div>
+  <div id="question-text">Invoking the Eternal Knowledge...</div>
+
+  <div class="btn-stack">
+    <button class="ans-btn" onclick="verify(0)" id="btn0"></button>
+    <button class="ans-btn" onclick="verify(1)" id="btn1"></button>
+    <button class="ans-btn" onclick="verify(2)" id="btn2"></button>
+    <button class="ans-btn" onclick="verify(3)" id="btn3"></button>
+  </div>
+
+  <div class="footer">ETERNAL DHARMA CYCLES</div>
+</div>
+
+<script>
+// THIS IS THE MASTER LIBRARY
+const DHARMA_LIBRARY = [
+  // --- RAMAYANA ---
+  { c: "Ramayana", q: "Who was the younger brother of Rama who accompanied him to the forest?", o: ["Bharat", "Lakshmana", "Shatrughna", "Sugriva"], a: 1 },
+  { c: "Ramayana", q: "What was the name of the bird who fought Ravana to save Sita?", o: ["Sampati", "Jatayu", "Garuda", "Hamsa"], a: 1 },
+  { c: "Ramayana", q: "Who gave the divine ring of Rama to Sita in Ashoka Vatika?", o: ["Lakshmana", "Hanuman", "Angada", "Jambavan"], a: 1 },
+  { c: "Ramayana", q: "Which sage asked King Dasharatha to send Rama to protect his Yagna?", o: ["Vashistha", "Vishwamitra", "Valmiki", "Durvasa"], a: 1 },
+  { c: "Ramayana", q: "Who was the father of King Janaka and the daughter Sita?", o: ["Dasharatha", "Janaka", "Aja", "Raghu"], a: 1 },
+  { c: "Ramayana", q: "Which brother of Ravana was a giant who slept for six months?", o: ["Vibhishana", "Kumbhakarna", "Indrajit", "Ahiravana"], a: 1 },
+  { c: "Ramayana", q: "What was the name of the mountain Hanuman carried to the battlefield?", o: ["Govardhan", "Dronagiri", "Kailash", "Meru"], a: 1 },
+  { c: "Ramayana", q: "Who was the King of the Vanaras when Rama arrived at Kishkindha?", o: ["Hanuman", "Sugriva", "Vali", "Angada"], a: 2 },
+  { c: "Ramayana", q: "Which medicine saved Lakshmana's life on the battlefield?", o: ["Tulsi", "Sanjeevani", "Neem", "Ashwagandha"], a: 1 },
+  { c: "Ramayana", q: "Who was the son of Ravana who defeated Indra?", o: ["Prahasta", "Indrajit", "Akshayakumara", "Atikaya"], a: 1 },
+
+  // --- MAHABHARATA ---
+  { c: "Mahabharata", q: "How many Pandava brothers were there?", o: ["Three", "Five", "Seven", "One Hundred"], a: 1 },
+  { c: "Mahabharata", q: "Who was the biological father of the Pandavas?", o: ["Dhritarashtra", "Pandu", "Vidura", "Shantanu"], a: 1 },
+  { c: "Mahabharata", q: "Which Pandava was the son of the Wind God (Vayu)?", o: ["Arjuna", "Bhima", "Yudhishthira", "Nakula"], a: 1 },
+  { c: "Mahabharata", q: "Who was the mother of the Kauravas?", o: ["Kunti", "Gandhari", "Madri", "Satyavati"], a: 1 },
+  { c: "Mahabharata", q: "What was the real name of Bhishma Pitamah?", o: ["Shantanu", "Devavrata", "Vichitravirya", "Chitrangada"], a: 1 },
+  { c: "Mahabharata", q: "Who was the uncle of the Kauravas who plotted against the Pandavas?", o: ["Vidura", "Shakuni", "Drona", "Kripa"], a: 1 },
+  { c: "Mahabharata", q: "What was the name of the gambling game that led to the Pandavas' exile?", o: ["Chaupar", "Pachisi", "Shatranj", "Mala"], a: 0 },
+  { c: "Mahabharata", q: "Who gave the celestial eye to Sanjaya to see the war?", o: ["Krishna", "Vyasa", "Narada", "Shiva"], a: 1 },
+  { c: "Mahabharata", q: "Which warrior remained undefeated until his armor was taken by Indra?", o: ["Bhishma", "Karna", "Drona", "Arjuna"], a: 1 },
+  { c: "Mahabharata", q: "Who killed Dushasana to fulfill his vow?", o: ["Arjuna", "Bhima", "Yudhishthira", "Abhimanyu"], a: 1 },
+
+  // --- KRISHNA & GITA ---
+  { c: "Krishna", q: "Who was the King of Dwarka?", o: ["Balarama", "Krishna", "Ugrasena", "Vasudeva"], a: 1 },
+  { c: "Krishna", q: "What was the name of Krishna's biological mother?", o: ["Yashoda", "Devaki", "Rohini", "Gandhari"], a: 1 },
+  { c: "Krishna", q: "Which demon tried to kill baby Krishna with poisoned milk?", o: ["Tataka", "Putana", "Shurpanakha", "Simhika"], a: 1 },
+  { c: "Krishna", q: "What does the Sudarshana Chakra represent?", o: ["Speed", "Cosmic Mind", "Destruction", "Peace"], a: 1 },
+  { c: "Gita", q: "On which field was the Bhagavad Gita spoken?", o: ["Ayodhya", "Kurukshetra", "Mathura", "Indraprastha"], a: 1 },
+  { c: "Gita", q: "Krishna tells Arjuna: 'Your right is only to ____, never to the fruits.'", o: ["Win", "Action", "Think", "Pray"], a: 1 },
+  { c: "Krishna", q: "Who was the foster father of Krishna in Gokul?", o: ["Vasudeva", "Nanda Baba", "Upananda", "Vrishabhanu"], a: 1 },
+  { c: "Krishna", q: "Which bird is often associated with Krishna's crown?", o: ["Swan", "Peacock", "Eagle", "Parrot"], a: 1 },
+  { c: "Krishna", q: "What was the name of the bow Arjuna used, given by Agni Dev?", o: ["Pinaka", "Gandiva", "Vijaya", "Sharanga"], a: 1 },
+  { c: "Gita", q: "How many chapters are in the Bhagavad Gita?", o: ["12", "18", "24", "108"], a: 1 },
+
+  // --- DEITIES & TRADITION ---
+  { c: "Shiva", q: "What is the third eye of Shiva a symbol of?", o: ["Anger", "Wisdom/Knowledge", "Power", "Time"], a: 1 },
+  { c: "Ganesha", q: "Why is Ganesha called 'Ekadanta'?", o: ["One Ear", "One Tusk", "One Eye", "One Leg"], a: 1 },
+  { c: "Vishnu", q: "Which avatar of Vishnu appeared as a Dwarf?", o: ["Matsya", "Vamana", "Kurma", "Varaha"], a: 1 },
+  { c: "Lakshmi", q: "Which flower is the seat of Goddess Lakshmi?", o: ["Rose", "Lotus", "Jasmine", "Marigold"], a: 1 },
+  { c: "Saraswati", q: "Which river is named after the Goddess of Learning?", o: ["Ganga", "Saraswati", "Yamuna", "Godavari"], a: 1 },
+  { c: "Shiva", q: "Who is the vehicle (vahana) of Lord Shiva?", o: ["Lion", "Nandi (Bull)", "Garuda", "Mouse"], a: 1 },
+  { c: "Ganesha", q: "Who is the vehicle of Lord Ganesha?", o: ["Lion", "Mouse", "Peacock", "Swan"], a: 1 },
+  { c: "Vishnu", q: "In which ocean does Lord Vishnu rest upon Shesha Naag?", o: ["Indian Ocean", "Kshira Sagara (Milk Ocean)", "Pacific", "Arabian"], a: 1 },
+  { c: "Hanuman", q: "Hanuman is an incarnation (Ansh) of which Lord?", o: ["Vishnu", "Shiva", "Brahma", "Indra"], a: 1 },
+  { c: "Kartikeya", q: "Who is the commander-in-chief of the Deva army?", o: ["Indra", "Kartikeya", "Ganesha", "Agni"], a: 1 }
+];
+
+// NOTE: To reach 500, continue adding questions above following the format:
+// { c: "Category", q: "Question?", o: ["Option0", "Option1", "Option2", "Option3"], a: CorrectIndex }
+
+let activePool = [];
+let qPtr = 0;
+let correctCount = 0;
+let wrongCount = 0;
+
+function shufflePool() {
+  activePool = [...DHARMA_LIBRARY].sort(() => Math.random() - 0.5);
+  qPtr = 0;
+}
+
+function render() {
+  if (qPtr >= activePool.length) shufflePool();
+  
+  const data = activePool[qPtr];
+  document.getElementById("category-label").innerText = data.c.toUpperCase();
+  document.getElementById("question-text").innerText = data.q;
+  
+  for(let i=0; i<4; i++) {
+    const b = document.getElementById("btn" + i);
+    b.innerText = data.o[i];
+    b.className = "ans-btn";
+    b.disabled = false;
+  }
+}
+
+function verify(idx) {
+  const correctIdx = activePool[qPtr].a;
+  const btns = document.querySelectorAll(".ans-btn");
+  btns.forEach(b => b.disabled = true);
+
+  if (idx === correctIdx) {
+    btns[idx].classList.add("correct");
+    correctCount++;
+    document.getElementById("c-score").innerText = correctCount;
+  } else {
+    btns[idx].classList.add("wrong");
+    btns[correctIdx].classList.add("correct");
+    wrongCount++;
+    document.getElementById("w-score").innerText = wrongCount;
+  }
+
+  setTimeout(() => {
+    qPtr++;
+    render();
+  }, 2000);
+}
+
+shufflePool();
+render();
+</script>
+
+</body>
+</html>

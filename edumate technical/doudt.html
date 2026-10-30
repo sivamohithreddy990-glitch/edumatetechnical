@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDUMATE PRO</title>
+
+<style>
+:root {
+  --primary: #2563eb;
+  --bg-dark: #09090b;
+  --panel: #18181b;
+  --user-msg: #6076a6;
+  --ai-msg: #27272a;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI', Tahoma, sans-serif;
+}
+
+body{
+  background: var(--bg-dark);
+  color:#fff;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+}
+
+/* Sidebar */
+.sidebar{
+  position:fixed; left:-300px; top:0; width:300px; height:100%;
+  background: var(--panel); padding:20px; transition:.3s; z-index:1000;
+  border-right: 1px solid #333;
+}
+.sidebar.active{ left:0 }
+.new-chat{
+  background: var(--primary); padding:12px; border-radius:12px;
+  text-align:center; cursor:pointer; margin-bottom:20px; font-weight:600;
+}
+.history{ overflow-y:auto; height: calc(100% - 120px); }
+.history-row{
+  padding:12px; border-radius:8px; margin-bottom:5px;
+  cursor:pointer; font-size:14px; color:#ccc;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.history-row:hover{ background:#27272a; color:#fff; }
+.history-controls{ display:flex; gap:8px; margin-top:8px; }
+
+.clear-history{
+  background:#3f3f46; color:#fff; padding:8px 10px; border-radius:8px; cursor:pointer;
+  font-size:13px;
+}
+
+/* Overlay */
+.overlay{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,.7); display:none; z-index:900;
+  backdrop-filter:blur(4px);
+}
+.overlay.active{ display:block }
+
+/* Main Layout */
+.main{
+  flex:1; height:100vh; display:flex; flex-direction:column;
+  max-width:800px; margin:0 auto; width:100%; position:relative;
+}
+
+.top-bar{
+  display:flex; align-items:center; padding:15px; gap:15px;
+  background: rgba(9,9,11,0.8); backdrop-filter: blur(10px); z-index:10;
+}
+.menu-btn{ font-size:24px; cursor:pointer; color:#a1a1aa; }
+.title-pill{ font-weight:700; letter-spacing:1px; color:var(--primary); font-size:1.2rem; }
+
+/* Chat Area */
+.chat-area{
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+}
+
+.msg{
+  max-width:85%; margin-bottom:20px; padding:12px 16px;
+  border-radius:18px; font-size:15px; line-height:1.5;
+}
+
+.user{
+  align-self:flex-end;
+  background:var(--user-msg);
+  border-bottom-right-radius:4px;
+}
+
+.ai{
+  align-self:flex-start;
+  background:var(--ai-msg);
+  border-bottom-left-radius:4px;
+}
+
+/* Thinking Animation */
+.thinking{ display:flex; align-items:center; gap:8px; color:#a1a1aa; font-style:italic; }
+.dot{
+  width:6px; height:6px; background:var(--primary);
+  border-radius:50%; animation: blink 1.4s infinite both;
+}
+.dot:nth-child(2){ animation-delay: .2s }
+.dot:nth-child(3){ animation-delay: .4s }
+
+@keyframes blink {
+  0%, 80%, 100% { opacity:0 }
+  40% { opacity:1 }
+}
+
+/* Input Bar (FULLY RESPONSIVE + FLOATING LIKE CHATGPT) */
+.input-bar-container{
+  background: var(--bg-dark);
+  padding: 10px 0 30px;
+  margin-bottom: 25px;      /* ⭐ moves bar UP */
+}
+
+/* floating, centered input bar */
+.input-bar{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  background: var(--panel);
+  padding: 10px 16px;
+  border-radius: 30px;
+  border: 1px solid #333;
+
+  width: 92%;               /* ⭐ responsive width */
+  margin: 0 auto;           /* ⭐ center on all screens */
+
+  max-width: 600px;         /* ⭐ looks clean on PC too */
+}
+
+.plus-btn{
+  color:#a1a1aa; font-size:24px; cursor:pointer;
+}
+
+.input-box{
+  flex:1; display:flex; align-items:center;
+}
+
+.input-box input{
+  flex:1; background:transparent; border:none;
+  outline:none; color:#fff; font-size:15px;
+}
+
+.send-btn{ color:var(--primary); font-size:22px; cursor:pointer; }
+
+/* Attach Menu */
+.attach-menu{
+  position:absolute; bottom:85px; left:20px;
+  background:var(--panel); border-radius:12px;
+  display:none; flex-direction:column;
+  width:160px; border:1px solid #333; z-index:50;
+}
+.attach-menu div{ padding:14px; cursor:pointer; font-size:14px; }
+.attach-menu div:hover{ background:#27272a; }
+
+/* Staged Preview */
+.staged-box{
+  display:none; background:#1e1e21; padding:10px;
+  border-radius:15px; margin-bottom:10px;
+  align-items:center; gap:12px; border:1px solid #333;
+}
+
+.staged-box img{
+  width:50px; height:50px; object-fit:cover; border-radius:8px;
+}
+
+.staged-text{ flex:1; color:#a1a1aa; font-size:14px; }
+
+.remove-staged{
+  color:#ef4444;
+  cursor:pointer;
+  font-size:20px;
+  font-weight:bold;
+}
+
+/* Modal */
+.preview-overlay{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.95); display:none;
+  flex-direction:column; align-items:center; justify-content:center;
+  z-index:2000; padding:20px;
+}
+.preview-overlay.active{ display:flex; }
+.preview-content{
+  max-width:100%; max-height:70vh; border-radius:15px; margin-bottom:20px;
+}
+.preview-actions{ display:flex; gap:15px; width:100%; max-width:300px; }
+.preview-btn{
+  flex:1; padding:12px; border-radius:10px;
+  border:none; font-weight:bold; cursor:pointer;
+}
+.btn-send{ background:var(--primary); color:white; }
+.btn-cancel{ background:#3f3f46; color:white; }
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar" id="sidebar">
+  <div class="new-chat" id="newChat">➕ New Chat</div>
+  <div class="history" id="history"></div>
+
+  <div class="history-controls">
+    <button class="clear-history" id="clearHistory">Clear History</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="main">
+
+  <div class="top-bar">
+    <div class="menu-btn" id="menuBtn">☰</div>
+    <div class="title-pill">EDUMATE</div>
+  </div>
+
+  <div class="chat-area" id="chat">
+    <div class="msg ai">Hello! I am EDUMATE. How can I help you today?</div>
+  </div>
+
+  <div class="input-bar-container">
+
+    <div class="staged-box" id="stagedBox">
+      <img src="" id="stagedImg" style="display:none;">
+      <div class="staged-text">Image ready to send...</div>
+      <div class="remove-staged" id="removeStaged">×</div>
+    </div>
+
+    <div class="input-bar">
+      <div class="plus-btn" id="plusBtn">+</div>
+      <div class="attach-menu" id="attachMenu">
+        <div id="cameraBtn">📷 Camera</div>
+        <div id="photoBtn">🖼️ Gallery</div>
+      </div>
+
+      <div class="input-box">
+        <input id="question" placeholder="Ask EDUMATE..." autocomplete="off">
+        <div class="send-btn" id="sendBtn">➤</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="preview-overlay" id="previewOverlay">
+  <img src="" id="previewImg" class="preview-content">
+  <div class="preview-actions">
+    <button class="preview-btn btn-cancel" id="cancelPreview">Discard</button>
+    <button class="preview-btn btn-send" id="confirmSend">Add Photo</button>
+  </div>
+</div>
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+<input type="file" id="galleryInput" accept="image/*" hidden>
+
+<script type="module">
+/*
+  Updates:
+  - Conversations are treated as sessions.
+  - Messages for the active session are collected in memory (currentSessionMessages).
+  - A history (saved session) is created only when the user completes a session by clicking "New Chat".
+    This prevents saving a history entry on every send.
+  - Loading a previous history opens that session (it becomes the active session) so the user can continue;
+    continued messages update the stored history entry in-place.
+  - Firestore lookup (collection 'qa') still used to return correct answers when available.
+*/
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+import {
+  getFirestore, collection, query, where, getDocs, addDoc
+} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAuKiIO5uoaLPz8tzDcjeSy-uhT8Y29PBM",
+  authDomain: "edumate-technical.firebaseapp.com",
+  projectId: "edumate-technical",
+  storageBucket: "edumate-technical.firebasestorage.app",
+  messagingSenderId: "856347096269",
+  appId: "1:856347096269:web:af2d3e4874e3f330652584",
+  measurementId: "G-7BZKYQ4H2D"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+
+// Local storage key
+const STORAGE_KEY = 'edumate_history_v1';
+
+// DOM references
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const menuBtn = document.getElementById('menuBtn');
+const newChatBtn = document.getElementById('newChat');
+
+const plusBtn = document.getElementById('plusBtn');
+const attachMenu = document.getElementById('attachMenu');
+const cameraBtn = document.getElementById('cameraBtn');
+const photoBtn = document.getElementById('photoBtn');
+const cameraInput = document.getElementById('cameraInput');
+const galleryInput = document.getElementById('galleryInput');
+
+const previewOverlay = document.getElementById('previewOverlay');
+const previewImg = document.getElementById('previewImg');
+const cancelPreview = document.getElementById('cancelPreview');
+const confirmSend = document.getElementById('confirmSend');
+
+const stagedBox = document.getElementById('stagedBox');
+const stagedImg = document.getElementById('stagedImg');
+const removeStaged = document.getElementById('removeStaged');
+
+const questionInput = document.getElementById('question');
+const sendBtn = document.getElementById('sendBtn');
+const chat = document.getElementById('chat');
+const historyEl = document.getElementById('history');
+const clearHistoryBtn = document.getElementById('clearHistory');
+
+// In-memory state
+let histories = []; // saved sessions
+let currentSessionId = null; // null = active unsaved session
+let currentSessionMessages = []; // messages of the active session (array of {role,type,content})
+let lastSelectedFileDataUrl = null;
+
+// ---------- Storage helpers ----------
+function loadHistories() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    histories = raw ? JSON.parse(raw) : [];
+  } catch (err) {
+    console.error('Failed to load history', err);
+    histories = [];
+  }
+}
+function saveHistories() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(histories));
+  } catch (err) {
+    console.error('Failed to save history', err);
+  }
+}
+function addHistoryEntry(entry) {
+  histories.unshift(entry);
+  saveHistories();
+  renderHistoryList();
+}
+function updateHistoryEntryMessages(id, messages) {
+  const idx = histories.findIndex(h => h.id === id);
+  if (idx === -1) return;
+  histories[idx].messages = messages.slice();
+  histories[idx].title = deriveTitleFromMessages(messages);
+  histories[idx].modifiedAt = Date.now();
+  saveHistories();
+  renderHistoryList();
+}
+function deleteHistoryEntry(id) {
+  histories = histories.filter(h => h.id !== id);
+  saveHistories();
+  renderHistoryList();
+}
+function clearAllHistory() {
+  histories = [];
+  saveHistories();
+  renderHistoryList();
+}
+function deriveTitleFromMessages(messages) {
+  const titleMsg = messages.find(m => m.role === 'user' && m.type === 'text');
+  return titleMsg ? (titleMsg.content.length > 40 ? titleMsg.content.slice(0,37) + '...' : titleMsg.content) : 'Image chat';
+}
+function createHistoryObject(messages) {
+  return {
+    id: 'h_' + Date.now(),
+    title: deriveTitleFromMessages(messages) || 'Untitled',
+    createdAt: Date.now(),
+    modifiedAt: Date.now(),
+    messages: messages.slice()
+  };
+}
+
+// ---------- UI render ----------
+function renderHistoryList() {
+  historyEl.innerHTML = '';
+  if (!histories.length) {
+    const n = document.createElement('div');
+    n.style.color = '#9ca3af';
+    n.style.fontSize = '13px';
+    n.textContent = 'No previous chats';
+    historyEl.appendChild(n);
+    return;
+  }
+
+  histories.forEach(h => {
+    const row = document.createElement('div');
+    row.className = 'history-row';
+    row.dataset.id = h.id;
+
+    const left = document.createElement('div');
+    left.textContent = h.title;
+    left.style.flex = '1';
+    left.style.paddingRight = '8px';
+    left.title = new Date(h.createdAt).toLocaleString();
+
+    const right = document.createElement('div');
+    right.style.display = 'flex';
+    right.style.gap = '8px';
+    right.style.alignItems = 'center';
+
+    const time = document.createElement('div');
+    time.style.color = '#787b86';
+    time.style.fontSize = '12px';
+    time.textContent = new Date(h.createdAt).toLocaleDateString();
+
+    const del = document.createElement('div');
+    del.textContent = '✖';
+    del.style.cursor = 'pointer';
+    del.style.color = '#ef4444';
+    del.title = 'Delete chat';
+
+    right.appendChild(time);
+    right.appendChild(del);
+
+    row.appendChild(left);
+    row.appendChild(right);
+
+    // click loads session and makes it active (continuable)
+    row.addEventListener('click', (e) => {
+      if (e.target === del) return;
+      loadHistoryToChat(h.id);
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+
+    del.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm('Delete this chat from history?')) {
+        deleteHistoryEntry(h.id);
+        // if deleting currently active history, reset to new session
+        if (currentSessionId === h.id) {
+          currentSessionId = null;
+          currentSessionMessages = [];
+          clearChatArea(true);
+        }
+      }
+    });
+
+    historyEl.appendChild(row);
+  });
+}
+
+// ---------- Chat rendering ----------
+function appendMessageEl(el, className = 'user') {
+  const wrapper = document.createElement('div');
+  wrapper.className = `msg ${className}`;
+  wrapper.appendChild(el);
+  chat.appendChild(wrapper);
+  chat.scrollTop = chat.scrollHeight;
+}
+function appendTextMessage(text, role = 'user') {
+  const d = document.createElement('div');
+  d.textContent = text;
+  appendMessageEl(d, role);
+}
+function appendImageMessage(dataUrl, role = 'user') {
+  // ✅ STOP if image is empty or invalid
+  if (!dataUrl || dataUrl === "" || dataUrl === window.location.href) return;
+
+  const img = document.createElement('img');
+  img.src = dataUrl;
+
+  // ✅ if image fails to load, remove it
+  img.onerror = function () {
+    this.remove();
+  };
+
+  appendMessageEl(img, role);
+}
+function clearChatArea(keepWelcome = true) {
+  chat.innerHTML = '';
+  if (keepWelcome) {
+    const welcome = document.createElement('div');
+    welcome.className = 'msg ai';
+    welcome.textContent = 'Hello! I am EDUMATE. How can I help you today?';
+    chat.appendChild(welcome);
+  }
+}
+function loadHistoryToChat(id) {
+  const h = histories.find(x => x.id === id);
+  if (!h) return;
+  // set this history as the active session so new messages update the stored entry
+  currentSessionId = h.id;
+  currentSessionMessages = h.messages.slice(); // copy
+  // render messages
+  clearChatArea(false);
+  currentSessionMessages.forEach(m => {
+    if (m.type === 'text') appendTextMessage(m.content, m.role === 'ai' ? 'ai' : 'user');
+    else if (m.type === 'image') appendImageMessage(m.content, m.role === 'ai' ? 'ai' : 'user');
+  });
+}
+
+// ---------- File helpers ----------
+function fileToDataUrl(file, cb) {
+  const reader = new FileReader();
+  reader.onload = () => cb(null, reader.result);
+  reader.onerror = (err) => cb(err);
+  reader.readAsDataURL(file);
+}
+
+// ---------- Firestore QA lookup ----------
+async function queryAnswerForQuestion(questionText) {
+  if (!questionText) return null;
+  const normalized = questionText.trim().toLowerCase();
+  try {
+    const qaCol = collection(db, 'qa');
+    const q = query(qaCol, where('normalized', '==', normalized));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      const docSnap = snap.docs[0];
+      const data = docSnap.data();
+      return data.answer || null;
+    }
+    return null;
+  } catch (err) {
+    console.error('Firestore query failed', err);
+    return null;
+  }
+}
+async function addAnswerToFirestore(questionText, answerText) {
+  try {
+    const normalized = questionText.trim().toLowerCase();
+    await addDoc(collection(db, 'qa'), {
+      question: questionText,
+      normalized,
+      answer: answerText,
+      createdAt: Date.now()
+    });
+  } catch (err) {
+    console.error('Failed to add QA to Firestore', err);
+  }
+}
+
+// ---------- UI wiring ----------
+menuBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+});
+
+// New Chat logic:
+// - If current session contains user messages, save it to history (session finished).
+// - Then clear for a new session.
+newChatBtn.addEventListener('click', () => {
+  // if there are existing messages in the active session, save them as a history entry
+  if (currentSessionMessages && currentSessionMessages.length > 0) {
+    const entry = createHistoryObject(currentSessionMessages);
+    addHistoryEntry(entry);
+  }
+  // reset active session
+  currentSessionId = null;
+  currentSessionMessages = [];
+  clearChatArea(true);
+  sidebar.classList.remove('active');
+  overlay.classList.remove('active');
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('active');
+  overlay.classList.remove('active');
+  attachMenu.style.display = 'none';
+});
+
+plusBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  attachMenu.style.display = attachMenu.style.display === 'flex' ? 'none' : 'flex';
+});
+
+cameraBtn.addEventListener('click', () => cameraInput.click());
+photoBtn.addEventListener('click', () => galleryInput.click());
+
+function handleFileSelection(file) {
+  if (!file) return;
+  fileToDataUrl(file, (err, dataUrl) => {
+    if (err) {
+      console.error('Failed to read file', err);
+      return;
+    }
+    lastSelectedFileDataUrl = dataUrl;
+    previewImg.src = dataUrl;
+    previewOverlay.classList.add('active');
+    attachMenu.style.display = 'none';
+  });
+}
+
+cameraInput.addEventListener('change', (e) => {
+  const file = e.target.files && e.target.files[0];
+  handleFileSelection(file);
+  cameraInput.value = '';
+});
+galleryInput.addEventListener('change', (e) => {
+  const file = e.target.files && e.target.files[0];
+  handleFileSelection(file);
+  galleryInput.value = '';
+});
+
+cancelPreview.addEventListener('click', () => {
+  previewOverlay.classList.remove('active');
+  previewImg.src = '';
+  lastSelectedFileDataUrl = null;
+});
+
+confirmSend.addEventListener('click', () => {
+  if (!previewImg.src) return;
+  stagedImg.src = previewImg.src;
+  stagedBox.style.display = 'flex';
+  previewOverlay.classList.remove('active');
+  previewImg.src = '';
+});
+
+removeStaged.addEventListener('click', () => {
+  stagedImg.src = '';
+  stagedBox.style.display = 'none';
+  lastSelectedFileDataUrl = null;
+});
+
+// send logic:
+// - append user messages to the active session in memory (currentSessionMessages).
+// - If the active session is a previously saved history (currentSessionId != null) update the stored history entry on each send.
+// - If the session is unsaved (new), we do NOT create history entries on each send — they are stored in currentSessionMessages and only saved
+//   when user clicks "New Chat".
+sendBtn.addEventListener('click', async () => {
+  const text = questionInput.value.trim();
+  const hasImage = stagedImg.src && stagedImg.src.startsWith("data:image");
+  if (!text && !hasImage) return;
+
+  // Add image first if exists
+  if (hasImage) {
+    appendImageMessage(stagedImg.src, 'user');
+    // push to session
+    currentSessionMessages.push({ role: 'user', type: 'image', content: stagedImg.src });
+  }
+
+  if (text) {
+    appendTextMessage(text, 'user');
+    currentSessionMessages.push({ role: 'user', type: 'text', content: text });
+  }
+
+  // clear inputs/staged
+  questionInput.value = '';
+  stagedImg.src = '';
+  stagedBox.style.display = 'none';
+  lastSelectedFileDataUrl = null;
+
+  // If active session is a saved history, update it now
+  if (currentSessionId) {
+    updateHistoryEntryMessages(currentSessionId, currentSessionMessages);
+  }
+
+  // Thinking indicator
+  const thinking = document.createElement('div');
+  thinking.className = 'thinking';
+  thinking.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>Thinking...';
+  const thinkingWrapper = document.createElement('div');
+  thinkingWrapper.className = 'msg ai';
+  thinkingWrapper.appendChild(thinking);
+  chat.appendChild(thinkingWrapper);
+  chat.scrollTop = chat.scrollHeight;
+
+  // Query Firestore for an exact match only if text exists
+  let aiText = null;
+  if (text) {
+    aiText = await queryAnswerForQuestion(text);
+  }
+
+  setTimeout(() => {
+    if (chat.contains(thinkingWrapper)) chat.removeChild(thinkingWrapper);
+
+    if (aiText) {
+      appendTextMessage(aiText, 'ai');
+      currentSessionMessages.push({ role: 'ai', type: 'text', content: aiText });
+    } else {
+      const fallback = 'Sorry, I am a demo and cannot answer that yet. (No DB match found.)';
+      appendTextMessage(fallback, 'ai');
+      currentSessionMessages.push({ role: 'ai', type: 'text', content: fallback });
+    }
+
+    // If active session is a saved history, update it to include this AI reply
+    if (currentSessionId) {
+      updateHistoryEntryMessages(currentSessionId, currentSessionMessages);
+    }
+  }, 600);
+});
+
+// Enter key -> send
+questionInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    sendBtn.click();
+  }
+});
+
+// clear history
+clearHistoryBtn.addEventListener('click', () => {
+  if (confirm('Clear all saved chats?')) {
+    clearAllHistory();
+    // if clearing history, also reset current session to new
+    currentSessionId = null;
+    currentSessionMessages = [];
+    clearChatArea(true);
+  }
+});
+
+// close attach menu if clicking outside
+document.addEventListener('click', (e) => {
+  if (!attachMenu.contains(e.target) && e.target !== plusBtn) {
+    attachMenu.style.display = 'none';
+  }
+});
+
+// initial load
+function init() {
+  loadHistories();
+  renderHistoryList();
+  currentSessionId = null;
+  currentSessionMessages = [];
+  clearChatArea(true);
+}
+init();
+
+</script>
+
+</body>
+</html>

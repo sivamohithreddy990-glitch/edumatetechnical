@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WELCOME TO TECHNICAL</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 8;
+      padding: 8;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: lab(21.25% -0.23 2.05);
+    }
+
+    .screen {
+      min-height: 75vh;
+      background-image: url("background.jpg"); /* <- your image here */
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+    }
+
+    .title {
+      font-size: 30px;
+      font-weight: 650;
+      color: #cfbec0;
+      text-shadow: 0 3px 6px rgba(142, 142, 124, 0.476);
+      margin-top: 12px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      width: 100%;
+      max-width: 400px;
+      justify-items: center;
+    }
+
+    .circle-btn {
+      width: 14px;
+      aspect-ratio: 1 / 1;
+      border-radius: 120%;
+      background: radial-gradient(circle at top,
+          rgba(84, 127, 152, 0.281),
+          rgba(1, 3, 18, 0.687));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      box-shadow: 0 12px 12px rgba(21, 29, 100, 0.687);
+      backdrop-filter: blur(6px);
+    }
+
+    .circle-btn-icon {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .circle-btn-label {
+      font-size: 16px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Optional hover effect (will show on desktop) */
+    .circle-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
+    }
+
+    @media (min-width: 600px) {
+      .title {
+        font-size: 42px;
+      }
+
+      .circle-btn {
+        width: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <h1 class="title">WELCOME TO TECHNICAL ZONE</h1>
+
+    <div class="menu-grid">
+      <!-- Coding Game -->
+      <a class="circle-btn" href="codinggame.html">
+        <div class="circle-btn-icon">&lt;/&gt;</div>
+        <div class="circle-btn-label">Coding Game</div>
+      </a>
+
+      <!-- Points Join -->
+      <a class="circle-btn" href="point.html">
+        <div class="circle-btn-icon">○</div>
+        <div class="circle-btn-label">Points Join</div>
+      </a>
+
+      <!-- Word Game -->
+      <a class="circle-btn" href="word.html">
+        <div class="circle-btn-icon">🅆</div>
+        <div class="circle-btn-label">Word Game</div>
+      </a>
+
+      <!-- Quiz Game -->
+      <a class="circle-btn" href="quiz.html">
+        <div class="circle-btn-icon">?</div>
+        <div class="circle-btn-label">Quiz Game</div>
+      </a>
+
+      
+    </div>
+  </div>
+</body>
+</html>
